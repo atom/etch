@@ -36,6 +36,7 @@
     "gulp-notify": "^2.1.0",
     "gulp-plumber": "^0.6.6",
     "isparta": "^2.0.0",
+    "jsdom": "^5.6.1",
     "jshint-stylish": "^1.0.0",
     "mkdirp": "^0.5.0",
     "mocha": "^2.1.0",
@@ -43,5 +44,7 @@
     "sinon-chai": "^2.7.0"
   },
   "dependencies": {
+    "data-observer": "0.0.3",
+    "virtual-dom": "^2.0.1"
   }
 }
