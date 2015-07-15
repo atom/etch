@@ -5,7 +5,7 @@ import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 import {getScheduler} from './scheduler-assignment';
 
-export default class WidgetObservation {
+export default class ObservationWidget {
   constructor(observation) {
     this.type = 'Widget';
     this.observation = observation;
@@ -19,9 +19,6 @@ export default class WidgetObservation {
     this.domNode = createElement(this.vnode);
     this.observationSubscription = this.observation.onDidChangeValue((newVnode) => {
       getScheduler().updateDocument(() => {
-
-        console.log('apply diff');
-
         patch(this.domNode, diff(this.vnode, newVnode));
         this.vnode = newVnode;
       });
