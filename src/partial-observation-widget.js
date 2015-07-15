@@ -37,6 +37,17 @@ export default class PartialObservationWidget {
   }
 
   trackObservationProperties() {
+    for (let key in this.properties) {
+      let value = this.properties[key];
+      if (key !== 'attributes' && isScalarObservation(value)) {
+        this.observationSubscriptions.add(value.onDidChangeValue(newValue => {
+          getScheduler().updateDocument(() => {
+            this.domNode[key] = newValue;
+          });
+        }));
+      }
+    }
+
     if (this.properties.attributes) {
       for (let key in this.properties.attributes) {
         let value = this.properties.attributes[key];

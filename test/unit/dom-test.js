@@ -43,4 +43,17 @@ describe('virtual DOM', () => {
 
     expect(element.className).to.equal('salutation');
   });
+
+  it('allows observations to be used as properties', async () => {
+    let model = {property: 'bar'};
+    let vnode = <div properties={{foo: observe(model, 'property')}}>Hello World</div>;
+
+    let element = createElement(vnode);
+    expect(element.foo).to.equal('bar');
+
+    model.property = 'baz';
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.foo).to.equal('baz');
+  });
 });
