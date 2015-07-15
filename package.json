@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "data-observer": "0.0.3",
+    "event-kit": "^1.2.0",
     "virtual-dom": "^2.0.1"
   }
 }

@@ -5,7 +5,7 @@ import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 import {getScheduler} from './scheduler-assignment';
 
-export default class ObservationWidget {
+export default class FullObservationWidget {
   constructor(observation) {
     this.type = 'Widget';
     this.observation = observation;

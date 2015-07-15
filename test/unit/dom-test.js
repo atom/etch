@@ -30,4 +30,17 @@ describe('virtual DOM', () => {
     expect(element.querySelector('.greeting').textContent).to.equal('Goodbye');
     expect(element.querySelector('.greeted').textContent).to.equal('Moon');
   });
+
+  it('allows observations to be used as attributes', async () => {
+    let model = {class: 'greeting'};
+    let vnode = <div class={observe(model, 'class')}>Hello World</div>;
+
+    let element = createElement(vnode);
+    expect(element.className).to.equal('greeting');
+
+    model.class = 'salutation';
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.className).to.equal('salutation');
+  });
 });
