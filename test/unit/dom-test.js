@@ -48,6 +48,13 @@ describe('virtual DOM', () => {
     patch(element, diff(vnode, newVnode));
 
     expect(element.className).to.equal('greeting');
+
+    model.class = 'foo';
+    newModel.class = 'bar';
+
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.className).to.equal('bar');
   });
 
   it('allows observations to be used as properties', async () => {
@@ -67,5 +74,11 @@ describe('virtual DOM', () => {
     patch(element, diff(vnode, newVnode));
 
     expect(element.foo).to.equal('bar');
+
+    model.property = 'foo';
+    newModel.property = 'qux';
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.foo).to.equal('qux');
   });
 });

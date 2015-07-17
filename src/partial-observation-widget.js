@@ -13,6 +13,8 @@ export default class PartialObservationWidget {
     this.properties = properties;
     this.children = children;
     this.observationSubscriptions = new CompositeDisposable();
+    this.vnode = null;
+    this.domNode = null;
   }
 
   init() {
@@ -26,10 +28,15 @@ export default class PartialObservationWidget {
     this.domNode = domNode;
     this.vnode = this.getCurrentVnode();
     patch(domNode, diff(previous.vnode, this.vnode));
+    this.trackObservationProperties();
+    previous.destroy();
   }
 
   destroy() {
     this.observationSubscriptions.dispose();
+    this.observationSubscriptions = null;
+    this.vnode = null;
+    this.domNode = null;
   }
 
   getCurrentVnode() {
@@ -42,8 +49,10 @@ export default class PartialObservationWidget {
       if (key !== 'attributes' && isScalarObservation(value)) {
         this.observationSubscriptions.add(value.onDidChangeValue(newValue => {
           getScheduler().updateDocument(() => {
-            this.vnode.properties[key] = newValue;
-            this.domNode[key] = newValue;
+            if (this.domNode) {
+              this.vnode.properties[key] = newValue;
+              this.domNode[key] = newValue;
+            }
           });
         }));
       }
@@ -55,8 +64,10 @@ export default class PartialObservationWidget {
         if (isScalarObservation(value)) {
           this.observationSubscriptions.add(value.onDidChangeValue(newValue => {
             getScheduler().updateDocument(() => {
-              this.vnode.properties.attributes[key] = newValue;
-              this.domNode.setAttribute(key, newValue);
+              if (this.domNode) {
+                this.vnode.properties.attributes[key] = newValue;
+                this.domNode.setAttribute(key, newValue);
+              }
             });
           }));
         }
