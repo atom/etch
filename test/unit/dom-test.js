@@ -1,7 +1,7 @@
 "use babel";
 /** @jsx dom */
 
-import {dom, observe, createElement} from '../../src/index';
+import {dom, observe, createElement, diff, patch} from '../../src/index';
 
 describe('virtual DOM', () => {
   it('can construct elements based on scalar observations', async () => {
@@ -42,6 +42,12 @@ describe('virtual DOM', () => {
     await scheduler.getNextUpdatePromise();
 
     expect(element.className).to.equal('salutation');
+
+    let newModel = {class: 'greeting'};
+    let newVnode = <div class={observe(newModel, 'class')}>Hello World</div>;
+    patch(element, diff(vnode, newVnode));
+
+    expect(element.className).to.equal('greeting');
   });
 
   it('allows observations to be used as properties', async () => {
@@ -55,5 +61,11 @@ describe('virtual DOM', () => {
     await scheduler.getNextUpdatePromise();
 
     expect(element.foo).to.equal('baz');
+
+    let newModel = {property: 'bar'}
+    let newVnode = <div properties={{foo: observe(newModel, 'property')}}>Hello World</div>;
+    patch(element, diff(vnode, newVnode));
+
+    expect(element.foo).to.equal('bar');
   });
 });

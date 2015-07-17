@@ -42,6 +42,7 @@ export default class PartialObservationWidget {
       if (key !== 'attributes' && isScalarObservation(value)) {
         this.observationSubscriptions.add(value.onDidChangeValue(newValue => {
           getScheduler().updateDocument(() => {
+            this.vnode.properties[key] = newValue;
             this.domNode[key] = newValue;
           });
         }));
@@ -54,6 +55,7 @@ export default class PartialObservationWidget {
         if (isScalarObservation(value)) {
           this.observationSubscriptions.add(value.onDidChangeValue(newValue => {
             getScheduler().updateDocument(() => {
+              this.vnode.properties.attributes[key] = newValue;
               this.domNode.setAttribute(key, newValue);
             });
           }));
