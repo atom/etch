@@ -82,6 +82,43 @@ describe('virtual DOM', () => {
     expect(element.foo).to.equal('qux');
   });
 
+  it('allows scalar observations to be used as children', async () => {
+    let model = {greeting: 'Hello', greeted: 'World'};
+
+    let vnode = <div>
+      {observe(model, 'greeting', (greeting) => <span class="greeting">{greeting}</span>)}
+      {observe(model, 'greeted', (greeted) => <span class="greeted">{greeted}</span>)}
+    </div>;
+
+    let element = createElement(vnode);
+    expect(element.querySelector('.greeting').textContent).to.equal('Hello');
+    expect(element.querySelector('.greeted').textContent).to.equal('World');
+
+    model.greeting = 'Goodbye';
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.querySelector('.greeting').textContent).to.equal('Goodbye');
+    expect(element.querySelector('.greeted').textContent).to.equal('World');
+
+    let newModel = {greeting: 'Hello', greeted: 'World'};
+    let newVnode = <div>
+      {observe(newModel, 'greeting', (greeting) => <span class="greeting">{greeting}</span>)}
+      {observe(newModel, 'greeted', (greeted) => <span class="greeted">{greeted}</span>)}
+    </div>;
+
+    patch(element, diff(vnode, newVnode));
+
+    expect(element.querySelector('.greeting').textContent).to.equal('Hello');
+    expect(element.querySelector('.greeted').textContent).to.equal('World');
+
+    newModel.greeting = 'Yo';
+    model.greeting = 'Hey';
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.querySelector('.greeting').textContent).to.equal('Yo');
+    expect(element.querySelector('.greeted').textContent).to.equal('World');
+  });
+
   it('allows array observations to be used as children', async () => {
     let array = ['a', 'b', 'c'];
 

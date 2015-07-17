@@ -15,24 +15,35 @@ export default class FullObservationWidget {
   }
 
   init() {
+    this.trackObservation();
     this.vnode = this.observation.getValue();
     this.domNode = createElement(this.vnode);
-    this.observationSubscription = this.observation.onDidChangeValue((newVnode) => {
-      getScheduler().updateDocument(() => {
-        patch(this.domNode, diff(this.vnode, newVnode));
-        this.vnode = newVnode;
-      });
-    });
     return this.domNode;
   }
 
   update(previous, domNode) {
     this.domNode = domNode;
-    this.vnode = observation.getValue();
+    this.trackObservation();
+    this.vnode = this.observation.getValue();
     patch(domNode, diff(previous.vnode, this.vnode));
+    previous.destroy()
   }
 
   destroy() {
     this.observationSubscription.dispose();
+    this.observationSubscription = null;
+    this.domNode = null;
+    this.vnode = null;
+  }
+
+  trackObservation() {
+    this.observationSubscription = this.observation.onDidChangeValue((newVnode) => {
+      getScheduler().updateDocument(() => {
+        if (this.domNode) {
+          patch(this.domNode, diff(this.vnode, newVnode));
+          this.vnode = newVnode;
+        }
+      });
+    });
   }
 }
