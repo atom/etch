@@ -31,7 +31,7 @@ describe('virtual DOM', () => {
     expect(element.querySelector('.greeted').textContent).to.equal('Moon');
   });
 
-  it('allows observations to be used as attributes', async () => {
+  it('allows scalar observations to be used as attributes', async () => {
     let model = {class: 'greeting'};
     let vnode = <div class={observe(model, 'class')}>Hello World</div>;
 
@@ -57,7 +57,7 @@ describe('virtual DOM', () => {
     expect(element.className).to.equal('bar');
   });
 
-  it('allows observations to be used as properties', async () => {
+  it('allows scalar observations to be used as properties', async () => {
     let model = {property: 'bar'};
     let vnode = <div properties={{foo: observe(model, 'property')}}>Hello World</div>;
 
@@ -80,5 +80,45 @@ describe('virtual DOM', () => {
     await scheduler.getNextUpdatePromise();
 
     expect(element.foo).to.equal('qux');
+  });
+
+  it('allows array observations to be used as children', async () => {
+    let array = ['a', 'b', 'c'];
+
+    let vnode = <ul>
+      <li>X</li>
+      {observe(array, item => <li>{item}</li>)}
+      <li>Y</li>
+      {observe(array, item => <li>{item.toUpperCase()}</li>)}
+      <li>Z</li>
+    </ul>;
+
+    let element = createElement(vnode);
+
+    expect(element.outerHTML).to.equal('<ul><li>X</li><li>a</li><li>b</li><li>c</li><li>Y</li><li>A</li><li>B</li><li>C</li><li>Z</li></ul>');
+
+    array.splice(1, 1, 'd', 'e', 'f')
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.outerHTML).to.equal('<ul><li>X</li><li>a</li><li>d</li><li>e</li><li>f</li><li>c</li><li>Y</li><li>A</li><li>D</li><li>E</li><li>F</li><li>C</li><li>Z</li></ul>');
+
+    let newArray = ['a', 'b', 'c'];
+    let newVnode = <ul>
+      <li>X</li>
+      {observe(newArray, item => <li>{item}</li>)}
+      <li>Y</li>
+      {observe(newArray, item => <li>{item.toUpperCase()}</li>)}
+      <li>Z</li>
+    </ul>;
+
+    patch(element, diff(vnode, newVnode));
+
+    expect(element.outerHTML).to.equal('<ul><li>X</li><li>a</li><li>b</li><li>c</li><li>Y</li><li>A</li><li>B</li><li>C</li><li>Z</li></ul>');
+
+    newArray.length = 0;
+    newArray.push('g', 'h')
+    await scheduler.getNextUpdatePromise();
+
+    expect(element.outerHTML).to.equal('<ul><li>X</li><li>g</li><li>h</li><li>Y</li><li>G</li><li>H</li><li>Z</li></ul>');
   });
 });

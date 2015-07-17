@@ -2,11 +2,12 @@
 
 import h from 'virtual-dom/h';
 import PartialObservationWidget from './partial-observation-widget';
-import {isScalarObservation} from './helpers';
+import {isScalarObservation, isArrayObservation} from './helpers';
 
 export default function dom(tagName, attributes, ...children) {
   let properties = null;
   let hasObservationProperties = false;
+  let hasObservationChildren = false;
 
   if (attributes) {
     properties = attributes.properties || {};
@@ -15,7 +16,14 @@ export default function dom(tagName, attributes, ...children) {
     properties.attributes = attributes;
   }
 
-  if (hasObservationProperties) {
+  for (let child of children) {
+    if (isArrayObservation(child)) {
+      hasObservationChildren = true;
+      break;
+    }
+  }
+
+  if (hasObservationProperties || hasObservationChildren) {
     return new PartialObservationWidget(tagName, properties, children);
   } else {
     return h(tagName, properties, children);
