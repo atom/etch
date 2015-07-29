@@ -3,8 +3,8 @@ const $ = require('gulp-load-plugins')();
 const del = require('del');
 const path = require('path');
 const mkdirp = require('mkdirp');
-const isparta = require('isparta');
 const karma = require('karma');
+const standard = require('gulp-standard')
 
 const manifest = require('./package.json');
 const config = manifest.nodeBoilerplateOptions;
@@ -16,22 +16,13 @@ gulp.task('clean', function(cb) {
   del([destinationFolder], cb);
 });
 
-function createLintTask(taskName, files) {
-  gulp.task(taskName, function() {
-    return gulp.src(files)
-      .pipe($.plumber())
-      .pipe($.jshint())
-      .pipe($.jshint.reporter('jshint-stylish'))
-      .pipe($.jscs())
-      .pipe($.jshint.reporter('fail'));
-  });
-}
-
-// Lint our source code
-createLintTask('lint-src', ['src/**/*.js'])
-
-// Lint our test code
-createLintTask('lint-test', ['test/**/*.js'])
+gulp.task('standard', function () {
+  return gulp.src(['src/**/*.js', 'test/**/*.js'])
+    .pipe(standard())
+    .pipe(standard.reporter('default', {
+      breakOnError: true
+    }))
+})
 
 // Build two versions of the library
 gulp.task('build', ['lint-src', 'clean'], function() {
@@ -47,19 +38,7 @@ gulp.task('build', ['lint-src', 'clean'], function() {
 // Make babel preprocess the scripts the user tries to import from here on.
 require('babel/register');
 
-gulp.task('coverage', function(done) {
-  gulp.src(['src/*.js'])
-    .pipe($.plumber())
-    .pipe($.istanbul({ instrumenter: isparta.Instrumenter }))
-    .pipe($.istanbul.hookRequire())
-    .on('finish', function() {
-      return test()
-      .pipe($.istanbul.writeReports())
-      .on('end', done);
-    });
-});
-
-gulp.task('test', ['lint-src', 'lint-test'], function (done) {
+gulp.task('test', ['standard'], function (done) {
   new karma.Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
