@@ -4,6 +4,7 @@ const del = require('del');
 const path = require('path');
 const mkdirp = require('mkdirp');
 const isparta = require('isparta');
+const karma = require('karma');
 
 const manifest = require('./package.json');
 const config = manifest.nodeBoilerplateOptions;
@@ -15,27 +16,13 @@ gulp.task('clean', function(cb) {
   del([destinationFolder], cb);
 });
 
-// Send a notification when JSHint fails,
-// so that you know your changes didn't build
-function jshintNotify(file) {
-  if (!file.jshint) { return; }
-  return file.jshint.success ? false : 'JSHint failed';
-}
-
-function jscsNotify(file) {
-  if (!file.jscs) { return; }
-  return file.jscs.success ? false : 'JSCS failed';
-}
-
 function createLintTask(taskName, files) {
   gulp.task(taskName, function() {
     return gulp.src(files)
       .pipe($.plumber())
       .pipe($.jshint())
       .pipe($.jshint.reporter('jshint-stylish'))
-      .pipe($.notify(jshintNotify))
       .pipe($.jscs())
-      .pipe($.notify(jscsNotify))
       .pipe($.jshint.reporter('fail'));
   });
 }
@@ -57,12 +44,6 @@ gulp.task('build', ['lint-src', 'clean'], function() {
     .pipe(gulp.dest(destinationFolder));
 });
 
-function test() {
-  return gulp.src(['test/setup/node.js', 'test/unit/**/*.js'], {read: false})
-    .pipe($.plumber())
-    .pipe($.mocha({reporter: 'dot', globals: config.mochaGlobals}));
-}
-
 // Make babel preprocess the scripts the user tries to import from here on.
 require('babel/register');
 
@@ -78,13 +59,17 @@ gulp.task('coverage', function(done) {
     });
 });
 
+gulp.task('test', ['lint-src', 'lint-test'], function (done) {
+  new karma.Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
 
-// Lint and run our tests
-gulp.task('test', ['lint-src', 'lint-test'], test);
-
-// Run the headless unit tests as you make changes.
-gulp.task('watch', ['test'], function() {
-  gulp.watch(['src/**/*', 'test/**/*', 'package.json', '**/.jshintrc', '.jscsrc'], ['test']);
+gulp.task('tdd', function (done) {
+  new karma.Server({
+    configFile: __dirname + '/karma.conf.js'
+  }, done).start();
 });
 
 // An alias of test

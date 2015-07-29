@@ -1,4 +1,3 @@
-"use babel";
 /** @jsx dom */
 
 import {dom, observe, createElement, diff, patch} from '../../src/index';

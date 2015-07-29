@@ -1,5 +1,3 @@
-'use babel';
-
 import diff from 'virtual-dom/diff';
 import patch from 'virtual-dom/patch';
 import observe from 'data-observer';

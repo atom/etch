@@ -1,11 +1,11 @@
-import 'babelify/polyfill';
-
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import {setScheduler} from '../../src/scheduler-assignment';
 import TestScheduler from './test-scheduler';
+
+require("babelify/polyfill");
 
 global.chai = chai;
 global.sinon = sinon;

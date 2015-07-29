@@ -1,5 +1,3 @@
-'use babel';
-
 import h from 'virtual-dom/h';
 import FullObservationWidget from './full-observation-widget';
 import PartialObservationWidget from './partial-observation-widget';

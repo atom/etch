@@ -1,5 +1,3 @@
-'use babel';
-
 export default class TestScheduler {
   constructor() {
     this.updateRequests = [];

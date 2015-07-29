@@ -1,5 +1,3 @@
-'use babel';
-
 import vdomCreateElement from 'virtual-dom/create-element';
 import FullObservationWidget from './full-observation-widget';
 
