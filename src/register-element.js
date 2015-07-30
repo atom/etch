@@ -1,7 +1,9 @@
+import ElementPrototype from './element-prototype'
+
 let elementConstructors = {}
 
 export default function registerElement (elementName, elementSpec) {
-  let elementPrototype = Object.create(HTMLElement.prototype)
+  let elementPrototype = Object.create(ElementPrototype)
   for (let key in elementSpec) {
     elementPrototype[key] = elementSpec[key]
   }

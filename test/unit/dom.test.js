@@ -1,5 +1,5 @@
+/** global beforeEach, describe, it, expect */
 /** @jsx dom */
-/* global beforeEach, describe, it, expect */
 
 import {dom, observe, createElement, diff, patch, getScheduler} from '../../src/index'
 
