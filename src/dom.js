@@ -1,7 +1,7 @@
 import h from 'virtual-dom/h'
 import FullObservationWidget from './full-observation-widget'
 import PartialObservationWidget from './partial-observation-widget'
-import { isScalarObservation, isArrayObservation } from './helpers'
+import {isScalarObservation, isArrayObservation} from './helpers'
 
 export default function dom (tagName, properties, ...children) {
   let hasObservationProperties = false

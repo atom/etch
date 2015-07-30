@@ -2,9 +2,9 @@ import h from 'virtual-dom/h'
 import createElement from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
-import { CompositeDisposable } from 'event-kit'
-import { isScalarObservation, isArrayObservation } from './helpers'
-import { getScheduler } from './scheduler-assignment'
+import {CompositeDisposable} from 'event-kit'
+import {isScalarObservation, isArrayObservation} from './helpers'
+import {getScheduler} from './scheduler-assignment'
 
 export default class PartialObservationWidget {
   constructor (tagName, properties, children) {

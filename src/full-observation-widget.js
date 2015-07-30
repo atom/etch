@@ -2,7 +2,7 @@ import createElement from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
 import VText from 'virtual-dom/vnode/vtext'
-import { getScheduler } from './scheduler-assignment'
+import {getScheduler} from './scheduler-assignment'
 
 export default class FullObservationWidget {
   constructor (observation) {
