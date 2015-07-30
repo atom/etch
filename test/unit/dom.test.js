@@ -3,7 +3,7 @@
 
 import {dom, observe, createElement, diff, patch, getScheduler} from '../../src/index'
 
-describe('virtual DOM', () => {
+describe('etch.dom', () => {
   let scheduler
 
   beforeEach(() => {
