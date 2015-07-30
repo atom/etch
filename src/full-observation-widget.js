@@ -45,9 +45,10 @@ export default class FullObservationWidget {
   }
 
   trackObservation () {
-    this.observationSubscription = this.observation.onDidChangeValue((newVnode) => {
+    this.observationSubscription = this.observation.onDidChangeValue(() => {
       getScheduler().updateDocument(() => {
         if (this.domNode) {
+          let newVnode = this.getObservationValue()
           patch(this.domNode, diff(this.vnode, newVnode))
           this.vnode = newVnode
         }
