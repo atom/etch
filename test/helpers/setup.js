@@ -8,6 +8,7 @@ import {setScheduler} from '../../src/scheduler-assignment'
 import TestScheduler from './test-scheduler'
 
 chai.use(sinonChai)
+global.expect = chai.expect
 
 beforeEach(function () {
   this.sandbox = sinon.sandbox.create()

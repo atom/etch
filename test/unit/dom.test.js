@@ -1,10 +1,7 @@
 /** @jsx dom */
-/* global beforeEach, describe, it */
+/* global beforeEach, describe, it, expect */
 
-import chai from 'chai'
 import {dom, observe, createElement, diff, patch, getScheduler} from '../../src/index'
-
-const { expect } = chai
 
 describe('virtual DOM', () => {
   let scheduler
