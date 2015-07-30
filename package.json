@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "npm run standard && node_modules/.bin/electron-mocha --renderer --recursive test",
+    "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive test",
     "prepublish": "npm run standard && npm run clean && npm run build",
     "standard": "node_modules/.bin/standard src test",
     "build": "node_modules/.bin/babel src --out-dir dist",
@@ -27,7 +28,7 @@
     "babel": "^5.0.0",
     "babel-eslint": "^4.0.5",
     "chai": "^2.0.0",
-    "electron-mocha": "^0.2.1",
+    "electron-mocha": "git://github.com/nathansobo/electron-mocha.git#interactive-option",
     "electron-prebuilt": "^0.30.1",
     "mocha": "^2.1.0",
     "sinon": "^1.12.2",
