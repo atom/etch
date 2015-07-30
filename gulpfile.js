@@ -25,7 +25,7 @@ gulp.task('standard', function () {
 })
 
 // Build two versions of the library
-gulp.task('build', ['lint-src', 'clean'], function() {
+gulp.task('build', ['standard', 'clean'], function() {
 
   // Create our output directory
   mkdirp.sync(destinationFolder);
