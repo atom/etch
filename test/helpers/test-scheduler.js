@@ -27,7 +27,6 @@ export default class TestScheduler {
   performUpdates () {
     this.updateRequested = false
     while (this.updateRequests.length > 0) {
-      debugger
       this.updateRequests.shift()()
     }
     if (this.nextUpdatePromise) {
