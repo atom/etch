@@ -30,10 +30,8 @@ class DefaultScheduler {
   performUpdates () {
     this.frameRequested = false
 
-    let updateRequest = this.updateRequests.shift()
-    while (updateRequest) {
-      updateRequest()
-      updateRequest = this.updateRequests.shift()
+    while (this.updateRequests.length > 0) {
+      this.updateRequests.shift()()
     }
   }
 }

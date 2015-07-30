@@ -26,10 +26,9 @@ export default class TestScheduler {
 
   performUpdates () {
     this.updateRequested = false
-    let updateRequest = this.updateRequests.shift()
-    while (updateRequest) {
-      updateRequest()
-      updateRequest = this.updateRequests.shift()
+    while (this.updateRequests.length > 0) {
+      debugger
+      this.updateRequests.shift()()
     }
     if (this.nextUpdatePromise) {
       let resolveNextUpdatePromise = this.resolveNextUpdatePromise
