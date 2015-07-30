@@ -68,7 +68,7 @@ describe('virtual DOM', () => {
 
   it('allows scalar observations to be used as properties', async () => {
     let model = {property: 'bar'}
-    let vnode = <div properties={{foo: observe(model, 'property')}}>Hello World</div>
+    let vnode = <div foo={observe(model, 'property')}>Hello World</div>
 
     let element = createElement(vnode)
     expect(element.foo).to.equal('bar')
@@ -79,7 +79,7 @@ describe('virtual DOM', () => {
     expect(element.foo).to.equal('baz')
 
     let newModel = {property: 'bar'}
-    let newVnode = <div properties={{foo: observe(newModel, 'property')}}>Hello World</div>
+    let newVnode = <div foo={observe(newModel, 'property')}>Hello World</div>
     patch(element, diff(vnode, newVnode))
 
     expect(element.foo).to.equal('bar')
