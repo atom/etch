@@ -11,6 +11,7 @@ chai.use(sinonChai)
 global.expect = chai.expect
 
 beforeEach(function () {
+  document.body.innerHTML = ''
   this.sandbox = sinon.sandbox.create()
   setScheduler(new TestScheduler())
 })
