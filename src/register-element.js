@@ -2,7 +2,15 @@
 
 import ElementPrototype from './element-prototype'
 
-let elementConstructors = {}
+if (!global.__etch__) {
+  global.__etch__ = {
+    1: {
+      elementConstructors: {}
+    }
+  }
+}
+
+let elementConstructors = global.__etch__[1].elementConstructors
 
 export default function registerElement (elementName, elementSpec) {
   let elementPrototype = Object.create(ElementPrototype)
