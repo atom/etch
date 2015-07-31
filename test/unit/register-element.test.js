@@ -129,7 +129,8 @@ describe('etch.registerElement', () => {
 
     TestElement.unregister()
 
-    // should not be problematic if the element is unregistered
+    // attaching without a render method should not be problematic if
+    // the element is unregistered
     document.body.appendChild(element2)
   });
 });
