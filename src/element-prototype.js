@@ -23,9 +23,9 @@ export default Object.create(HTMLElement.prototype, {
         return
       }
 
-      if (this.detachSetImmediateHandle) {
-        global.clearImmediate(this.detachSetImmediateHandle)
-        this.detachSetImmediateHandle = null
+      if (this.setImmediateHandle) {
+        global.clearImmediate(this.setImmediateHandle)
+        this.setImmediateHandle = null
       } else {
         this.vnode = this.render()
         patch(this, diff(dom(this.tagName.toLowerCase()), this.vnode))
@@ -47,9 +47,9 @@ export default Object.create(HTMLElement.prototype, {
         this._detachedCallback()
       }
 
-      this.detachSetImmediateHandle = global.setImmediate(() => {
+      this.setImmediateHandle = global.setImmediate(() => {
         patch(this, diff(this.vnode, dom(this.tagName.toLowerCase())))
-        this.detachSetImmediateHandle = null
+        this.setImmediateHandle = null
       })
     }
   },
