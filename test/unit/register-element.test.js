@@ -71,6 +71,26 @@ describe('etch.registerElement', () => {
     TestElement.unregister()
   });
 
+  it('wires references to DOM nodes with ref attributes', () => {
+    let TestElement = etch.registerElement('test-element', {
+      render () {
+        return (
+          <test-element>
+            <div ref='greeting'>Hello</div> <div ref='greeted'>World</div>
+          </test-element>
+        )
+      }
+    })
+
+    let element = document.createElement('test-element')
+    document.body.appendChild(element)
+    expect(element.textContent).to.equal('Hello World')
+    expect(element.refs.greeting.textContent).to.equal('Hello')
+    expect(element.refs.greeted.textContent).to.equal('World')
+
+    TestElement.unregister()
+  });
+
   it('schedules a content update when .update() is called on the element', async () => {
     let scheduler = etch.getScheduler()
 

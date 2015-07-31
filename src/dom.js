@@ -2,6 +2,7 @@ import h from 'virtual-dom/h'
 import FullObservationWidget from './full-observation-widget'
 import PartialObservationWidget from './partial-observation-widget'
 import {isScalarObservation, isArrayObservation} from './helpers'
+import refsStack from './refs-stack'
 
 export default function dom (tagName, properties, ...children) {
   let hasObservationProperties = false
@@ -11,6 +12,10 @@ export default function dom (tagName, properties, ...children) {
     hasObservationProperties =
       hasObservationValues(properties) ||
         properties.attributes && hasObservationValues(properties.attributes)
+
+    if (properties.ref) {
+      properties.ref = new RefHook(properties.ref)
+    }
   }
 
   for (let i = 0; i < children.length; i++) {
@@ -36,4 +41,22 @@ function hasObservationValues (object) {
     }
   }
   return false
+}
+
+class RefHook {
+  constructor (refName) {
+    this.refName = refName
+  }
+
+  hook (node) {
+    if (refsStack.length > 0) {
+      refsStack[refsStack.length - 1][this.refName] = node
+    }
+  }
+
+  unhook (node) {
+    if (refsStack.length > 0) {
+      delete refsStack[refsStack.length - 1][this.refName]
+    }
+  }
 }

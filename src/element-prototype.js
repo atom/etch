@@ -4,6 +4,7 @@ import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
 import dom from './dom'
 import {getScheduler} from './scheduler-assignment'
+import refsStack from './refs-stack'
 
 export default Object.create(HTMLElement.prototype, {
   createdCallback: {
@@ -12,6 +13,7 @@ export default Object.create(HTMLElement.prototype, {
         return
       }
 
+      this.refs = {}
       this._setImmediateHandle = null
       this._attached = false
       this._updateRequested = false
@@ -93,9 +95,11 @@ export default Object.create(HTMLElement.prototype, {
   updateSync: {
     value: function () {
       if (this.isAttached()) {
+        refsStack.push(this.refs)
         let newVnode = this.render()
         patch(this, diff(this.vnode, newVnode))
         this.vnode = newVnode
+        refsStack.pop()
         return true
       } else {
         return false
