@@ -22,9 +22,11 @@ describe('etch.registerElement', () => {
     let element2 = document.createElement('test-element')
     expect(element2.foo).to.be.undefined
     expect(element2.baz).to.equal('qux')
+
+    TestElement.unregister()
   });
 
-  it('patches in content when the element is attached, and clears content when the element is detached without being reattached in the same tick', async () => {
+  it('renders content when the element is attached, clears content when the element is detached, and calls lifecycle hooks', async () => {
     let TestElement = etch.registerElement('test-element', {
       render () {
         return (
@@ -32,27 +34,59 @@ describe('etch.registerElement', () => {
             <div className='greeting'>Hello</div> <div className='greeted'>World</div>
           </test-element>
         )
+      },
+
+      createdCount: 0,
+      attachedCount: 0,
+      detachedCount: 0,
+
+      createdCallback () {
+        this.createdCount++
+      },
+
+      attachedCallback () {
+        this.attachedCount++
+        expect(this.textContent).to.equal('Hello World')
+      },
+
+      detachedCallback () {
+        this.detachedCount++
+        expect(this.textContent).to.equal('Hello World')
       }
     })
 
     let element = document.createElement('test-element')
     expect(element.textContent).to.equal('')
+    expect(element.createdCount).to.equal(1)
+    expect(element.attachedCount).to.equal(0)
+    expect(element.detachedCount).to.equal(0)
 
     document.body.appendChild(element)
     expect(element.textContent).to.equal('Hello World')
+    expect(element.createdCount).to.equal(1)
+    expect(element.attachedCount).to.equal(1)
+    expect(element.detachedCount).to.equal(0)
 
     element.remove()
     expect(element.textContent).to.equal('Hello World')
-    document.body.appendChild(element)
+    expect(element.createdCount).to.equal(1)
+    expect(element.attachedCount).to.equal(1)
+    expect(element.detachedCount).to.equal(1)
 
+    document.body.appendChild(element)
     await getSetImmediatePromise()
 
     expect(element.textContent).to.equal('Hello World')
+    expect(element.createdCount).to.equal(1)
+    expect(element.attachedCount).to.equal(2)
+    expect(element.detachedCount).to.equal(1)
 
     element.remove()
-
     await getSetImmediatePromise()
 
     expect(element.textContent).to.equal('')
+    expect(element.createdCount).to.equal(1)
+    expect(element.attachedCount).to.equal(2)
+    expect(element.detachedCount).to.equal(2)
   });
 });

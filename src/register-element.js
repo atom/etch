@@ -4,8 +4,25 @@ let elementConstructors = {}
 
 export default function registerElement (elementName, elementSpec) {
   let elementPrototype = Object.create(ElementPrototype)
+
   for (let key in elementSpec) {
-    elementPrototype[key] = elementSpec[key]
+    switch (key) {
+      case 'createdCallback':
+        elementPrototype._createdCallback = elementSpec.createdCallback
+        break
+      case 'attachedCallback':
+        elementPrototype._attachedCallback = elementSpec.attachedCallback
+        break
+      case 'detachedCallback':
+        elementPrototype._detachedCallback = elementSpec.detachedCallback
+        break
+      case 'attributeChangedCallback':
+        elementPrototype._attributeChangedCallback = elementSpec.attributeChangedCallback
+        break
+      default:
+        elementPrototype[key] = elementSpec[key]
+        break
+    }
   }
 
   let elementConstructor = elementConstructors[elementName]
