@@ -7,6 +7,10 @@ import dom from './dom'
 export default Object.create(HTMLElement.prototype, {
   createdCallback: {
     value: function () {
+      if (isElementUnregistered(this)) {
+        return
+      }
+
       if (typeof this._createdCallback === 'function') {
         this._createdCallback()
       }
@@ -15,9 +19,13 @@ export default Object.create(HTMLElement.prototype, {
 
   attachedCallback: {
     value: function () {
+      if (isElementUnregistered(this)) {
+        return
+      }
+
       if (this.detachSetImmediateHandle) {
         global.clearImmediate(this.detachSetImmediateHandle)
-        this.detachSetImmediateHandle = null;
+        this.detachSetImmediateHandle = null
       } else {
         this.vnode = this.render()
         patch(this, diff(dom(this.tagName.toLowerCase()), this.vnode))
@@ -31,13 +39,17 @@ export default Object.create(HTMLElement.prototype, {
 
   detachedCallback: {
     value: function () {
+      if (isElementUnregistered(this)) {
+        return
+      }
+
       if (typeof this._detachedCallback === 'function') {
         this._detachedCallback()
       }
 
       this.detachSetImmediateHandle = global.setImmediate(() => {
         patch(this, diff(this.vnode, dom(this.tagName.toLowerCase())))
-        this.detachSetImmediateHandle = null;
+        this.detachSetImmediateHandle = null
       })
     }
   },
@@ -50,3 +62,7 @@ export default Object.create(HTMLElement.prototype, {
     }
   }
 })
+
+function isElementUnregistered (element) {
+  return Object.getPrototypeOf(Object.getPrototypeOf(element)) === HTMLElement.prototype
+}
