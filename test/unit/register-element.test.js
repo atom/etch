@@ -71,6 +71,44 @@ describe('etch.registerElement', () => {
     TestElement.unregister()
   });
 
+  it('schedules a content update when .update() is called on the element', async () => {
+    let scheduler = etch.getScheduler()
+
+    let TestElement = etch.registerElement('test-element', {
+      render () {
+        this.renderCount++
+        return (
+          <test-element>
+            <div className='greeting'>{this.greeting}</div> <div className='greeted'>World</div>
+          </test-element>
+        )
+      },
+
+      renderCount: 0,
+
+      greeting: 'Hello'
+    })
+
+    let element = document.createElement('test-element')
+    document.body.appendChild(element)
+
+    expect(element.textContent).to.equal('Hello World')
+    expect(element.renderCount).to.equal(1)
+
+    element.greeting = 'Goodbye'
+    element.update()
+    element.update()
+    expect(element.textContent).to.equal('Hello World')
+    expect(element.renderCount).to.equal(1)
+
+    await scheduler.getNextUpdatePromise()
+
+    expect(element.textContent).to.equal('Goodbye World')
+    expect(element.renderCount).to.equal(2)
+
+    TestElement.unregister()
+  });
+
   it('allows registered elements to be unregistered', () => {
     let TestElement = etch.registerElement('test-element', {
       foo: 'bar'
