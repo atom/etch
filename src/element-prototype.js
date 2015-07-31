@@ -11,6 +11,8 @@ export default Object.create(HTMLElement.prototype, {
         return
       }
 
+      this.setImmediateHandle = null
+
       if (typeof this._createdCallback === 'function') {
         this._createdCallback()
       }
