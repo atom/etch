@@ -1,3 +1,5 @@
+/* global HTMLElement */
+
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
 import dom from './dom'

@@ -1,3 +1,5 @@
+/* global HTMLElement */
+
 import ElementPrototype from './element-prototype'
 
 let elementConstructors = {}
