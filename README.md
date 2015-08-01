@@ -10,7 +10,7 @@ Etch custom elements define a `render` method, which returns a fragment of virtu
 
 ```js
 // Tell Babel how to compile JSX:
-/** @dom etch.dom */
+/** @jsx etch.dom */
 
 import etch from 'etch'
 
@@ -60,7 +60,7 @@ taskListElement.update()
 That was just the basics. Mostly, you'll want to express your view as a function of your underlying data model by expressing the parts of your your virtual DOM that change as *observations* constructed via `etch.observe`. Instead of needing to call `.update()` manually, minimal subtrees of your document will update automatically whenever your data changes.
 
 ```js
-/** @dom etch.dom */
+/** @jsx etch.dom */
 
 import etch from 'etch'
 
