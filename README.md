@@ -62,12 +62,10 @@ That was just the basics. Mostly, you'll want to express your view as a function
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
-
 // the `observe` function wraps `Object.obsere` and `Array.observe`, allowing
 // you to directly express how pieces of your DOM tree map to the underlying
 // data model:
-let {observe} = etch
+import etch, {observe} from 'etch'
 
 etch.registerElement('task-list', {
   render () {
