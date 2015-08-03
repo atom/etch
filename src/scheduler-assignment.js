@@ -1,14 +1,13 @@
 let scheduler = null
 
 export function setScheduler (customScheduler) {
-  if (customScheduler) {
-    scheduler = customScheduler
-  } else {
-    scheduler = new DefaultScheduler()
-  }
+  scheduler = customScheduler
 }
 
 export function getScheduler () {
+  if (!scheduler) {
+    scheduler = new DefaultScheduler()
+  }
   return scheduler
 }
 
