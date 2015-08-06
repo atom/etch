@@ -22,12 +22,12 @@ etch.registerElement('task-list', {
       <task-list>
         <h1>Tasks:</h1>
         <ol>{
-          this.tasks.map(task => {
+          this.tasks.map(task =>
             <li className='task' key={task.id}>
               <input type='checkbox' checked={task.completed}>
               task.description
             </li>
-          })
+          )
         }</ol>
       </task-list>
     )
@@ -62,7 +62,7 @@ That was just the basics. Mostly, you'll want to express your view as a function
 ```js
 /** @jsx etch.dom */
 
-// the `observe` function wraps `Object.obsere` and `Array.observe`, allowing
+// the `observe` function wraps `Object.observe` and `Array.observe`, allowing
 // you to directly express how pieces of your DOM tree map to the underlying
 // data model:
 import etch, {observe} from 'etch'
@@ -75,14 +75,14 @@ etch.registerElement('task-list', {
         <ol>{
           // Here we map over an *observation* of an array, which allows the
           // DOM to be updated whenever elements are added or removed.
-          observe(this.tasks).map(task => {
+          observe(this.tasks).map(task =>
             <li className='task'>
               // Observations can be passed as properties:
               <input type='checkbox' checked={observe(task, 'completed')}>
               // Observations can also be passed as text content:
               observe(task, 'description')
             </li>
-          })
+          )
         }</ol>
       </task-list>
     )
@@ -94,7 +94,7 @@ etch.registerElement('task-list', {
 })
 
 let tasks = ['Write README', 'Build example']
-let taskListElement = document.createElement('task-list')
+let taskListElement = document.createElement('task-list').initialize(tasks)
 
 // No need to trigger an update when the data changes. It happens automatically.
 tasks.push({id: 3, description: 'Feed cats', completed: false})
