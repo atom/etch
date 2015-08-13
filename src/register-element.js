@@ -1,6 +1,6 @@
 /* global HTMLElement */
 
-import ElementPrototype from './element-prototype'
+import createCustomElementPrototype from './create-custom-element-prototype'
 
 if (!global.__etch__) {
   global.__etch__ = {
@@ -11,6 +11,7 @@ if (!global.__etch__) {
 }
 
 let elementConstructors = global.__etch__[1].elementConstructors
+const ElementPrototype = createCustomElementPrototype(HTMLElement.prototype)
 
 export default function registerElement (elementName, elementSpec) {
   let elementPrototype = Object.create(ElementPrototype)
