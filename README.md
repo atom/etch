@@ -14,12 +14,12 @@ Etch custom elements define a `render` method, which returns a fragment of virtu
 
 import etch from 'etch'
 
-// Register a custom element
-etch.registerElement('task-list', {
+// Define a custom element...
+const TaskList = etch.defineElement('div', {
   // Define the element's content via a `render` method
   render () {
     return (
-      <task-list>
+      <div className='task-list'>
         <h1>Tasks:</h1>
         <ol>{
           this.tasks.map(task =>
@@ -29,7 +29,7 @@ etch.registerElement('task-list', {
             </li>
           )
         }</ol>
-      </task-list>
+      </div>
     )
   },
 
@@ -44,7 +44,7 @@ let tasks = [
   {id: 1, description: 'Write README', completed: true},
   {id: 2, description: 'Build etch example package', completed: false}
 ]
-let taskListElement = document.createElement('task-list').initialize(tasks)
+let taskListElement = TaskList().initialize(tasks)
 
 // Populate element content based result of `render` method on attachment:
 document.body.appendChild(taskListElement)
@@ -67,10 +67,10 @@ That was just the basics. Mostly, you'll want to express your view as a function
 // data model:
 import etch, {observe} from 'etch'
 
-etch.registerElement('task-list', {
+const TaskList = etch.defineElement('div', {
   render () {
     return (
-      <task-list>
+      <div className='task-list'>
         <h1>Tasks:</h1>
         <ol>{
           // Here we map over an *observation* of an array, which allows the
@@ -84,7 +84,7 @@ etch.registerElement('task-list', {
             </li>
           )
         }</ol>
-      </task-list>
+      </div>
     )
   },
 
@@ -94,7 +94,7 @@ etch.registerElement('task-list', {
 })
 
 let tasks = ['Write README', 'Build example']
-let taskListElement = document.createElement('task-list').initialize(tasks)
+let taskListElement = TaskList().initialize(tasks)
 
 // No need to trigger an update when the data changes. It happens automatically.
 tasks.push({id: 3, description: 'Feed cats', completed: false})
@@ -102,6 +102,26 @@ tasks[1].completed = true
 ```
 
 You can freely mix observation and diff-based updates.
+
+### Associating Elements With Custom Tag Names
+
+Unless you're exposing elements for other people to use, you should use `etch.defineElement` to define anonymous custom elements. These don't consume an entry in the global namespace and can only be constructed via the returned factory function.
+
+If you want to associate your element with a custom tag name so that it can be created via HTML, use `etch.registerElement`:
+
+```js
+/** @jsx etch.dom */
+
+etch.registerElement('task-list', {
+  render () {
+    // Note the use of `task-list` as the root tag:
+    return <task-list>/* ...content... */</task-list>
+  }
+}
+
+// Instances can be created via your tag name just like a native HTML element...
+let taskListElement = document.createElement('task-list')
+```
 
 ### Lifecycle Hooks
 
@@ -119,13 +139,13 @@ When an element is moved from one place in the DOM to another within the same ev
 If you want to refer to a specific DOM node within your element, add a `ref` property to the element's virtual DOM node in your render method. This will automatically populate a `refs` object on the root element with a named reference to your node.
 
 ```js
-etch.registerElement('task-list', {
+const TaskList = etch.defineElement('div', {
   render () {
     return (
-      <task-list>
+      <div className='task-list'>
         /* ... other content ... */
         <button ref='createTaskButton'>Create New Task</button>
-      </task-list>
+      </div>
     )
   },
 
@@ -151,7 +171,7 @@ This library deliberately omits any special event-handling facilities, leaving y
 ```js
 import DOMListener from 'dom-listener'
 
-etch.registerElement('task-list', {
+const TaskList = etch.defineElement('task-list', {
   render () { /* ... */ },
 
   createdCallback () {
@@ -165,11 +185,7 @@ etch.registerElement('task-list', {
 
 My goal is to keep this library small and focused, so I don't plan to add many features beyond what's present here unless a compelling case can be made for them. That said, here are a couple things I'm looking to add soon:
 
-#### Anonymous Elements
-
-Custom elements are a great way to integrate behavior with the DOM, but it can be a bummer to have to name every single component in a global namespace. I have some ideas for a way to get prototype customization and lifecycle hooks without having to register a global name. Ideally, I'd like that to be the preferred way of defining custom elements that are only used internally, saving name registration for elements you want to expose for other people to use.
-
-#### Versioning
+#### Named Element Versioning
 
 If you expose a named custom element in a library that you want other people to consume, how do you evolve its API? In the situation where custom elements are being used within a single web page, it's not a huge deal because a single person is in control of all the version choices. In an environment like Atom, it's problematic because different packages may depend on different versions of your component.
 
