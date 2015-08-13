@@ -93,7 +93,10 @@ const TaskList = etch.defineElement('div', {
   }
 })
 
-let tasks = ['Write README', 'Build example']
+let tasks = [
+  {id: 1, description: 'Write README', completed: true},
+  {id: 2, description: 'Build etch example package', completed: false}
+]
 let taskListElement = TaskList().initialize(tasks)
 
 // No need to trigger an update when the data changes. It happens automatically.
