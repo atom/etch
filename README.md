@@ -118,7 +118,7 @@ If you want to associate your element with a custom tag name so that it can be c
 etch.registerElement('task-list', {
   render () {
     // Note the use of `task-list` as the root tag:
-    return <task-list>/* ...content... */</task-list>
+    return <task-list>/* ... content ... */</task-list>
   }
 }
 
@@ -164,7 +164,7 @@ const TaskList = etch.defineElement('div', {
     this.refs.createTaskButton.removeEventListener(this.createTask)
   },
 
-  createTask () { /* ... create task... */ }
+  createTask () { /* ... create task ... */ }
 ```
 
 ### Event Handling
