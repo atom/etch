@@ -7,8 +7,9 @@ import {setScheduler, getScheduler} from './scheduler-assignment'
 import defineElement from './define-element'
 
 let etch = {
-  defineElement, observe, dom, createElement, setScheduler,
-  diff, patch, getScheduler
+  defineElement, observe,
+  dom, createElement, diff, patch,
+  setScheduler, getScheduler
 }
 
 export default etch
