@@ -1,5 +1,5 @@
 import h from 'virtual-dom/h'
-import createElement from 'virtual-dom/create-element'
+import render from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
 import {CompositeDisposable} from 'event-kit'
@@ -22,7 +22,7 @@ export default class PartialObservationWidget {
     this.trackObservationProperties()
     this.trackObservationChildren()
     this.vnode = this.getCurrentVnode()
-    this.domNode = createElement(this.vnode)
+    this.domNode = render(this.vnode)
     return this.domNode
   }
 
@@ -113,7 +113,7 @@ export default class PartialObservationWidget {
         for (let {index, removedCount, added} of changes) {
           let childIndex = indexTracker.index + index
           totalDelta += added.length - removedCount
-          spliceDOMChildren(this.domNode, childIndex, removedCount, added.map(createElement))
+          spliceDOMChildren(this.domNode, childIndex, removedCount, added.map(render))
           this.vnode.children.splice(childIndex, removedCount, ...added)
         }
 

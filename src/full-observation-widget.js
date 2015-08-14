@@ -1,4 +1,4 @@
-import createElement from 'virtual-dom/create-element'
+import render from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
 import VText from 'virtual-dom/vnode/vtext'
@@ -16,7 +16,7 @@ export default class FullObservationWidget {
   init () {
     this.trackObservation()
     this.vnode = this.getObservationValue()
-    this.domNode = createElement(this.vnode)
+    this.domNode = render(this.vnode)
     return this.domNode
   }
 

@@ -1,7 +1,7 @@
 /** global beforeEach, describe, it, expect */
 /** @jsx dom */
 
-import {dom, observe, createElement, diff, patch, getScheduler} from '../../src/index'
+import {dom, observe, render, diff, patch, getScheduler} from '../../src/index'
 
 describe('etch.dom', () => {
   let scheduler
@@ -20,7 +20,7 @@ describe('etch.dom', () => {
       </div>
     )
 
-    let element = createElement(vnodeObservation)
+    let element = render(vnodeObservation)
     expect(element.querySelector('.greeting').textContent).to.equal('Hello')
     expect(element.querySelector('.greeted').textContent).to.equal('World')
 
@@ -41,7 +41,7 @@ describe('etch.dom', () => {
     let model = {class: 'greeting'}
     let vnode = <div className={observe(model, 'class')}>Hello World</div>
 
-    let element = createElement(vnode)
+    let element = render(vnode)
     expect(element.className).to.equal('greeting')
 
     model.class = 'salutation'
@@ -67,7 +67,7 @@ describe('etch.dom', () => {
     let model = {property: 'bar'}
     let vnode = <div foo={observe(model, 'property')}>Hello World</div>
 
-    let element = createElement(vnode)
+    let element = render(vnode)
     expect(element.foo).to.equal('bar')
 
     model.property = 'baz'
@@ -96,7 +96,7 @@ describe('etch.dom', () => {
       {observe(model, 'greeted', (greeted) => <span className='greeted'>{greeted}</span>)}
     </div>)
 
-    let element = createElement(vnode)
+    let element = render(vnode)
     expect(element.querySelector('.greeting').textContent).to.equal('Hello')
     expect(element.querySelector('.greeted').textContent).to.equal('World')
 
@@ -133,7 +133,7 @@ describe('etch.dom', () => {
       <span className='greeted'>{observe(model, 'greeted')}</span>
     </div>)
 
-    let element = createElement(vnode)
+    let element = render(vnode)
     expect(element.querySelector('.greeting').textContent).to.equal('Hello')
     expect(element.querySelector('.greeted').textContent).to.equal('World')
 
@@ -173,7 +173,7 @@ describe('etch.dom', () => {
       <li>Z</li>
     </ul>)
 
-    let element = createElement(vnode)
+    let element = render(vnode)
 
     expect(element.outerHTML).to.equal('<ul><li>X</li><li>a</li><li>b</li><li>c</li><li>Y</li><li>A</li><li>B</li><li>C</li><li>Z</li></ul>')
 
