@@ -5,6 +5,11 @@ import {isScalarObservation, isArrayObservation} from './helpers'
 import refsStack from './refs-stack'
 
 export default function dom (tagName, properties, ...children) {
+
+  if (typeof tagName === 'function'){
+    debugger
+  }
+
   let hasObservationProperties = false
   let hasArrayObservationChildren = false
 

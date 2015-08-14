@@ -106,26 +106,6 @@ tasks[1].completed = true
 
 You can freely mix observation and diff-based updates.
 
-### Associating Elements With Custom Tag Names
-
-Unless you're exposing elements for other people to use, you should use `etch.defineElement` to define anonymous custom elements. These don't consume an entry in the global namespace and can only be constructed via the returned factory function.
-
-If you want to associate your element with a custom tag name so that it can be created via HTML, use `etch.registerElement`:
-
-```js
-/** @jsx etch.dom */
-
-etch.registerElement('task-list', {
-  render () {
-    // Note the use of `task-list` as the root tag:
-    return <task-list>/* ... content ... */</task-list>
-  }
-}
-
-// Instances can be created via your tag name just like a native HTML element...
-let taskListElement = document.createElement('task-list')
-```
-
 ### Lifecycle Hooks
 
 You can make use of the standard custom element callbacks by defining the following methods on your element's prototype during registration:
@@ -184,40 +164,6 @@ const TaskList = etch.defineElement('task-list', {
 }
 ```
 
-### Roadmap
-
-My goal is to keep this library small and focused, so I don't plan to add many features beyond what's present here unless a compelling case can be made for them. That said, here are a couple things I'm looking to add soon:
-
-#### Named Element Versioning
-
-If you expose a named custom element in a library that you want other people to consume, how do you evolve its API? In the situation where custom elements are being used within a single web page, it's not a huge deal because a single person is in control of all the version choices. In an environment like Atom, it's problematic because different packages may depend on different versions of your component.
-
-I'd like to make it possible to have multiple semantic versions of the same component running in the same document at the same time.
-
-```js
-// One version of the component
-etch.registerElement('my-quickly-evolving-element', {
-  version: '1.2.3'
-
-  // ... implementation ...
-})
-
-// Another version of the component
-etch.registerElement('my-quickly-evolving-element', {
-  version: '2.3.0'
-
-  // ... implementation ...
-})
-```
-
-Then, in HTML, you'd specify the version you expect in a given context:
-
-```html
-<my-quickly-evolving-element version='^1.2.3'>
-```
-
-This ensures that when a newer version of a component is loaded into the environment for some reason, code that depends on older versions continues to work correctly.
-
-#### Compatibility and Interoperability
+### Compatibility and Interoperability
 
 Being based on standard browser elements already helps with this, but my overall goal is that it should be possible to mix components from any version of this library with any other version and have things continue to work smoothly. I won't go 1.0 until I have a plan in place for interoperating between 1.x and 2.x components at runtime.

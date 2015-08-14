@@ -4,10 +4,6 @@ import createCustomElementPrototype from './create-custom-element-prototype'
 const elementConstructors = etchGlobal[1].elementConstructors
 
 export default function defineElement (tagName, elementSpec) {
-  if (tagName.indexOf('-') !== -1) {
-    throw new Error('Use defineElement to register anonymous custom elements. Elements with custom names should be registered with etch.registerElement.')
-  }
-
   let customElementName = 'etch-' + tagName
   if (!elementConstructors[customElementName]) {
     elementConstructors[customElementName] = document.registerElement(customElementName, {
