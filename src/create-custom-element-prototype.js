@@ -10,10 +10,6 @@ export default function createCustomElementPrototype (nativePrototype) {
   return Object.create(nativePrototype, {
     createdCallback: {
       value: function () {
-        if (isElementUnregistered(this)) {
-          return
-        }
-
         this.refs = {}
         this._setImmediateHandle = null
         this._attached = false
@@ -27,10 +23,6 @@ export default function createCustomElementPrototype (nativePrototype) {
 
     attachedCallback: {
       value: function () {
-        if (isElementUnregistered(this)) {
-          return
-        }
-
         this._attached = true
 
         if (this._setImmediateHandle) {
@@ -49,10 +41,6 @@ export default function createCustomElementPrototype (nativePrototype) {
 
     detachedCallback: {
       value: function () {
-        if (isElementUnregistered(this)) {
-          return
-        }
-
         this._attached = false
 
         if (typeof this._detachedCallback === 'function') {
@@ -108,8 +96,4 @@ export default function createCustomElementPrototype (nativePrototype) {
       }
     }
   })
-
-  function isElementUnregistered (element) {
-    return Object.getPrototypeOf(Object.getPrototypeOf(element)) === nativePrototype
-  }
 }
