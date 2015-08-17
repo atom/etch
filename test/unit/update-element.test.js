@@ -21,7 +21,7 @@ describe('etch.updateElement(component)', () => {
     await etch.getScheduler().getNextUpdatePromise()
 
     expect(element.textContent).to.equal('Goodbye World')
-  });
+  })
 
   it('updates references to DOM elements', async () => {
     let component = {
@@ -47,5 +47,5 @@ describe('etch.updateElement(component)', () => {
 
     expect(component.refs.greeted.textContent).to.equal('World')
     expect(component.refs.greeting).to.be.undefined
-  });
-});
+  })
+})

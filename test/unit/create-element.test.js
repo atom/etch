@@ -25,5 +25,5 @@ describe('etch.createElement(component)', () => {
 
     expect(component.refs.greeting.textContent).to.equal('Hello')
     expect(component.refs.greeted.textContent).to.equal('World')
-  });
-});
+  })
+})
