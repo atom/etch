@@ -1,3 +1,5 @@
+import DefaultScheduler from './default-scheduler'
+
 let scheduler = null
 
 export function setScheduler (customScheduler) {
@@ -9,27 +11,4 @@ export function getScheduler () {
     scheduler = new DefaultScheduler()
   }
   return scheduler
-}
-
-class DefaultScheduler {
-  constructor () {
-    this.updateRequests = []
-    this.frameRequested = false
-    this.performUpdates = this.performUpdates.bind(this)
-  }
-
-  updateDocument (fn) {
-    this.updateRequests.push(fn)
-    if (!this.frameRequested) {
-      this.frameRequested = true
-      window.requestAnimationFrame(this.performUpdates)
-    }
-  }
-
-  performUpdates () {
-    while (this.updateRequests.length > 0) {
-      this.updateRequests.shift()()
-    }
-    this.frameRequested = false
-  }
 }

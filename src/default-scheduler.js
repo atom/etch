@@ -1,9 +1,7 @@
-export default class TestScheduler {
+export default class DefaultScheduler {
   constructor () {
     this.updateRequests = []
     this.updateRequested = false
-    this.nextUpdatePromise = null
-    this.resolveNextUpdatePromise = null
     this.performUpdates = this.performUpdates.bind(this)
   }
 
@@ -11,7 +9,14 @@ export default class TestScheduler {
     this.updateRequests.push(fn)
     if (!this.updateRequested) {
       this.updateRequested = true
-      global.setImmediate(this.performUpdates)
+      window.requestAnimationFrame(this.performUpdates)
+    }
+  }
+
+  updateDocumentSync (fn) {
+    this.updateRequests.push(fn)
+    if (!this.updateRequested) {
+      this.performUpdates()
     }
   }
 
