@@ -1,13 +1,13 @@
-import dom from './dom'
-import render from './render'
+import render from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
-import observe from 'data-observer'
+import dom from './dom'
+import createElement from './create-element'
+import updateElement from './update-element'
 import {setScheduler, getScheduler} from './scheduler-assignment'
-import defineElement from './define-element'
 
 let etch = {
-  defineElement, observe,
+  createElement, updateElement,
   dom, render, diff, patch,
   setScheduler, getScheduler
 }
