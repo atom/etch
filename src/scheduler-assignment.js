@@ -27,10 +27,9 @@ class DefaultScheduler {
   }
 
   performUpdates () {
-    this.frameRequested = false
-
     while (this.updateRequests.length > 0) {
       this.updateRequests.shift()()
     }
+    this.frameRequested = false
   }
 }

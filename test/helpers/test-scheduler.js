@@ -25,10 +25,10 @@ export default class TestScheduler {
   }
 
   performUpdates () {
-    this.updateRequested = false
     while (this.updateRequests.length > 0) {
       this.updateRequests.shift()()
     }
+    this.updateRequested = false
     if (this.nextUpdatePromise) {
       let resolveNextUpdatePromise = this.resolveNextUpdatePromise
       this.nextUpdatePromise = null
