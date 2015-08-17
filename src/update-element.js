@@ -1,8 +1,8 @@
-import updateElementSync from './update-element-sync'
 import {getScheduler} from './scheduler-assignment'
+import performElementUpdate from './perform-element-update'
 
 export default function updateElement (component) {
   getScheduler().updateDocument(function () {
-    updateElementSync(component)
+    performElementUpdate(component)
   })
 }
