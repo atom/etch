@@ -13,7 +13,7 @@ describe('etch.createElement(component)', () => {
 
     expect(element.textContent).to.equal('Hello World')
     expect(component.element).to.equal(element)
-  });
+  })
 
   it('creates references to DOM elements', () => {
     let component = {

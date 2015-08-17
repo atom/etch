@@ -32,8 +32,8 @@ describe('etch.dom', () => {
 
         let element = etch.createElement(parentComponent)
         expect(element.textContent).to.equal('Hello World')
-      });
-    });
+      })
+    })
 
     describe('on update', () => {
       describe('if the child component class is the same', () => {
@@ -82,8 +82,8 @@ describe('etch.dom', () => {
 
             expect(element.textContent).to.equal('Goodnight Moon')
             expect(element.firstChild).to.equal(initialChildElement)
-          });
-        });
+          })
+        })
 
         describe('if the child component does not define an update method', () => {
           it('builds a new component instance and replaces the previous element with its element', async () => {
@@ -124,9 +124,9 @@ describe('etch.dom', () => {
 
             expect(element.textContent).to.equal('Goodnight Moon')
             expect(element.firstChild).not.to.equal(initialChildElement)
-          });
-        });
-      });
+          })
+        })
+      })
 
       describe('if the component class changes', () => {
         it('builds a new component instance and replaces the previous element with its element', async () => {
@@ -245,7 +245,7 @@ describe('etch.dom', () => {
         expect(parentComponent.refs.child instanceof ChildComponentB).to.be.true
         expect(parentComponent.refs.child.properties.ref).to.equal('child')
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('B')
-      });
-    });
+      })
+    })
   })
 })
