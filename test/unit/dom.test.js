@@ -178,6 +178,81 @@ describe('etch.dom', () => {
           expect(element.firstChild).not.to.equal(initialChildElement)
         })
       })
+
+      describe('if components are reordered', () => {
+        it('builds a new component instance and replaces the previous element with its element', async () => {
+          class ChildComponentA {
+            constructor () {
+              this.updateCalled = false
+              etch.createElement(this)
+            }
+
+            render () {
+              return <div>A</div>
+            }
+
+            update () {
+              this.updateCalled = true
+            }
+          }
+
+          class ChildComponentB {
+            constructor () {
+              this.updateCalled = false
+              etch.createElement(this)
+            }
+
+            render () {
+              return <div>B</div>
+            }
+
+            update () {
+              this.updateCalled = true
+            }
+          }
+
+          let parentComponent = {
+            condition: true,
+
+            render () {
+              if (this.condition) {
+                return (
+                  <div>
+                    <ChildComponentA key='a' ref='a'></ChildComponentA>
+                    <ChildComponentB key='b' ref='b'></ChildComponentB>
+                  </div>
+                )
+              } else {
+                return (
+                  <div>
+                    <ChildComponentB key='b' ref='b'></ChildComponentB>
+                    <ChildComponentA key='a' ref='a'></ChildComponentA>
+                  </div>
+                )
+              }
+            }
+          }
+
+          let element = etch.createElement(parentComponent)
+          let childComponentA = parentComponent.refs.a
+          let childComponentB = parentComponent.refs.b
+          let childElementA = element.children[0]
+          let childElementB = element.children[1]
+          expect(childComponentA.updateCalled).to.be.false
+          expect(childComponentB.updateCalled).to.be.false
+
+          parentComponent.condition = false
+          etch.updateElement(parentComponent)
+          await etch.getScheduler().getNextUpdatePromise()
+
+          expect(element.children[0]).to.equal(childElementB)
+          expect(element.children[1]).to.equal(childElementA)
+          expect(parentComponent.refs.a).to.equal(childComponentA)
+          expect(parentComponent.refs.a.element).to.equal(childElementA)
+          expect(parentComponent.refs.b).to.equal(childComponentB)
+          expect(parentComponent.refs.b.element).to.equal(childElementB)
+        })
+      })
     })
 
     describe('when the child component constructor tag has a ref property', () => {

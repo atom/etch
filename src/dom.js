@@ -18,6 +18,10 @@ class ComponentWidget {
     this.constructor = constructor
     this.properties = properties
     this.children = children
+
+    if (this.properties && this.properties.key) {
+      this.key = this.properties.key
+    }
   }
 
   init () {
