@@ -36,8 +36,6 @@
     "standard": "^4.5.4"
   },
   "dependencies": {
-    "data-observer": "0.0.3",
-    "event-kit": "^1.2.0",
     "virtual-dom": "^2.0.1"
   },
   "standard": {
