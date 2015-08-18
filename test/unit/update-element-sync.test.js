@@ -3,7 +3,7 @@
 import etch from '../../src/index'
 
 describe('etch.updateElementSync(component)', () => {
-  it.only('performs an update of the component\'s element and any resulting child updates synchronously', () => {
+  it('performs an update of the component\'s element and any resulting child updates synchronously', () => {
     class ParentComponent {
       constructor () {
         this.greeting = 'Hello'
