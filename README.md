@@ -198,3 +198,4 @@ Earlier versions of this library experimented with providing library-agnostic at
 
 
 [babel]: https://babeljs.io/
+[dom-listener]: https://github.com/atom/dom-listener
