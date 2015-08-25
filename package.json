@@ -7,7 +7,7 @@
     "test": "npm run standard && node_modules/.bin/electron-mocha --renderer --recursive ./test/helpers/register-babel  test",
     "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/register-babel  test",
     "prepublish": "npm run standard && npm run clean && npm run build",
-    "standard": "node_modules/.bin/standard src test",
+    "standard": "node_modules/.bin/standard --recursive src test",
     "build": "node_modules/.bin/babel src --out-dir dist",
     "clean": "rm -rf dist"
   },
@@ -37,6 +37,7 @@
     "virtual-dom": "^2.0.1"
   },
   "standard": {
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "global": ["describe", "it", "expect"]
   }
 }
