@@ -1,7 +1,5 @@
 # etch
 
-**Warning:** This library is work-in-progress and hasn't been used in production yet.
-
 Etch is a library for writing HTML-based view components that provides the convenience of a **virtual DOM** while at the same time striving to be **minimal**, **interoperable**, and **explicit**. Etch can be used anywhere, but it was specifically designed with **Atom packages** and **Electron applications** in mind.
 
 ### Overview
