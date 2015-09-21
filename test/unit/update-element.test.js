@@ -41,9 +41,7 @@ describe('etch.updateElement(component)', () => {
     expect(component.refs.greeted).to.be.undefined
 
     component.condition = false
-    etch.updateElement(component)
-
-    await etch.getScheduler().getNextUpdatePromise()
+    await etch.updateElement(component)
 
     expect(component.refs.greeted.textContent).to.equal('World')
     expect(component.refs.greeting).to.be.undefined
