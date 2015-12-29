@@ -16,9 +16,8 @@ describe('etch.updateElement(component)', () => {
     expect(element.textContent).to.equal('Hello World')
 
     component.greeting = 'Goodbye'
-    etch.updateElement(component)
 
-    await etch.getScheduler().getNextUpdatePromise()
+    await etch.updateElement(component)
 
     expect(element.textContent).to.equal('Goodbye World')
   })

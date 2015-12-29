@@ -77,8 +77,7 @@ describe('etch.dom', () => {
 
             parentComponent.greeting = 'Goodnight'
             parentComponent.greeted = 'Moon'
-            etch.updateElement(parentComponent)
-            await etch.getScheduler().getNextUpdatePromise()
+            await etch.updateElement(parentComponent)
 
             expect(element.textContent).to.equal('Goodnight Moon')
             expect(element.firstChild).to.equal(initialChildElement)
@@ -119,8 +118,7 @@ describe('etch.dom', () => {
 
             parentComponent.greeting = 'Goodnight'
             parentComponent.greeted = 'Moon'
-            etch.updateElement(parentComponent)
-            await etch.getScheduler().getNextUpdatePromise()
+            await etch.updateElement(parentComponent)
 
             expect(element.textContent).to.equal('Goodnight Moon')
             expect(element.firstChild).not.to.equal(initialChildElement)
@@ -171,8 +169,7 @@ describe('etch.dom', () => {
           let initialChildElement = element.firstChild
 
           parentComponent.condition = false
-          etch.updateElement(parentComponent)
-          await etch.getScheduler().getNextUpdatePromise()
+          await etch.updateElement(parentComponent)
 
           expect(element.textContent).to.equal('B')
           expect(element.firstChild).not.to.equal(initialChildElement)
@@ -242,8 +239,7 @@ describe('etch.dom', () => {
           expect(childComponentB.updateCalled).to.be.false
 
           parentComponent.condition = false
-          etch.updateElement(parentComponent)
-          await etch.getScheduler().getNextUpdatePromise()
+          await etch.updateElement(parentComponent)
 
           expect(element.children[0]).to.equal(childElementB)
           expect(element.children[1]).to.equal(childElementA)
@@ -303,8 +299,7 @@ describe('etch.dom', () => {
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'kid'
-        etch.updateElement(parentComponent)
-        await etch.getScheduler().getNextUpdatePromise()
+        await etch.updateElement(parentComponent)
 
         expect(parentComponent.refs.child).to.be.undefined
         expect(parentComponent.refs.kid instanceof ChildComponentA).to.be.true
@@ -313,8 +308,7 @@ describe('etch.dom', () => {
 
         parentComponent.refName = 'child'
         parentComponent.condition = false
-        etch.updateElement(parentComponent)
-        await etch.getScheduler().getNextUpdatePromise()
+        await etch.updateElement(parentComponent)
 
         expect(parentComponent.refs.kid).to.be.undefined
         expect(parentComponent.refs.child instanceof ChildComponentB).to.be.true
