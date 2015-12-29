@@ -247,6 +247,8 @@ describe('etch.dom', () => {
           expect(parentComponent.refs.a.element).to.equal(childElementA)
           expect(parentComponent.refs.b).to.equal(childComponentB)
           expect(parentComponent.refs.b.element).to.equal(childElementB)
+          expect(childComponentA.updateCalled).to.be.true
+          expect(childComponentB.updateCalled).to.be.true
         })
       })
     })
