@@ -57,6 +57,10 @@ let taskList = new TaskListComponent({tasks: [
 ]})
 document.body.appendChild(taskList.element)
 taskList.addTask({id: 3, description: 'Feed cats', completed: false})
+
+// ... when we're done with our component and want to clean up:
+document.body.removeChild(taskList.element)
+taskList.destroy()
 ```
 
 Note that when we want to *use* the component, we don't have to interact with any Etch APIs. The component is an ordinary object that can be constructed normally. After construction, its `element` property points at a DOM node that is ready to use and can be appended to the document using standard APIs. This enables straightforward *interoperability* between our component and any code that works with standard DOM elements.
