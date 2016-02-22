@@ -12,6 +12,20 @@ export default function dom (tag, properties, ...children) {
   }
 }
 
+function recursivelyDestroyComponents(widget) {
+  let children
+  if (widget.component) {
+    children = widget.component.virtualElement.children
+  } else {
+    children = widget.children
+  }
+
+  children.forEach(recursivelyDestroyComponents)
+  if (widget.component && widget.component.destroy) {
+    widget.component.destroy()
+  }
+}
+
 class ComponentWidget {
   constructor (constructor, properties, children) {
     this.type = 'Widget'
@@ -63,6 +77,10 @@ class ComponentWidget {
       let newElement = this.init()
       oldElement.parentNode.replaceChild(newElement, oldElement)
     }
+  }
+
+  destroy (domNode) {
+    recursivelyDestroyComponents(this)
   }
 }
 
