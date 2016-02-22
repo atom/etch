@@ -45,4 +45,28 @@ describe('etch.updateElement(component)', () => {
     expect(component.refs.greeted.textContent).to.equal('World')
     expect(component.refs.greeting).to.be.undefined
   })
+
+  it('throws when attempting to change the top-level node type', () => {
+    class Component {
+      constructor () {
+        this.renderDiv = true
+        etch.createElement(this)
+      }
+
+      render () {
+        if (this.renderDiv) {
+          return <div />
+        } else {
+          return <span />
+        }
+      }
+    }
+
+    let component = new Component()
+    component.renderDiv = false
+
+    expect(() => {
+      etch.updateElementSync(component)
+    }).to.throw(/root DOM node type/)
+  })
 })
