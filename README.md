@@ -131,6 +131,7 @@ In addition to embedding other Etch components, you can pass an arbitrary constr
 * Your function must be a constructor. It will be called with the `new` keyword and passed the JSX expression's properties and children as arguments.
 * The component object returned by your constructor must have an `element` field pointing to a DOM node. This element will be inserted into the DOM.
 * The component object returned by your constructor may have an `update` method. This method will be called whenever the same function appears in the same location in successive calls to `render`.
+* The component object returned by your constructor may have a `destroy` method. This method will be called when the component is removed from the DOM. If you do any event binding to the DOM in your component, this is where you should clean it up.
 
 ### References
 
