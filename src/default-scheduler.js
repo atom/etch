@@ -19,9 +19,7 @@ export default class DefaultScheduler {
 
   updateDocumentSync (fn) {
     this.updateRequests.push(fn)
-    if (!this.updateRequested) {
-      this.performUpdates()
-    }
+    this.performUpdates()
   }
 
   getNextUpdatePromise () {

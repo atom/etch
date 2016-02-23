@@ -42,20 +42,24 @@ describe('DefaultScheduler', () => {
   })
 
   describe('.prototype.updateDocumentSync(fn)', () => {
-    it('performs the update request and any requests made during the update request immediately', () => {
+    it('performs pending update requests, the given update request, and any requests made *during* the update request immediately', () => {
       let events = []
 
-      scheduler.updateDocumentSync(() => {
+      scheduler.updateDocument(() => {
         events.push(1)
+      })
+
+      scheduler.updateDocumentSync(() => {
+        events.push(2)
         scheduler.updateDocument(() => {
-          events.push(2)
+          events.push(3)
         })
         scheduler.updateDocumentSync(()=> {
-          events.push(3)
+          events.push(4)
         })
       })
 
-      expect(events).to.eql([1, 2, 3])
+      expect(events).to.eql([1, 2, 3, 4])
     })
   })
 })
