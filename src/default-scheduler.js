@@ -5,19 +5,19 @@
 export default class DefaultScheduler {
   constructor () {
     this.updateRequests = []
-    this.updateRequested = false
+    this.pendingAnimationFrame = null
     this.performUpdates = this.performUpdates.bind(this)
   }
 
   updateDocument (fn) {
     this.updateRequests.push(fn)
-    if (!this.updateRequested) {
-      this.updateRequested = true
-      window.requestAnimationFrame(this.performUpdates)
+    if (!this.pendingAnimationFrame) {
+      this.pendingAnimationFrame = window.requestAnimationFrame(this.performUpdates)
     }
   }
 
   updateDocumentSync (fn) {
+    if (this.pendingAnimationFrame) window.cancelAnimationFrame(this.pendingAnimationFrame)
     this.updateRequests.push(fn)
     this.performUpdates()
   }
@@ -35,7 +35,7 @@ export default class DefaultScheduler {
     while (this.updateRequests.length > 0) {
       this.updateRequests.shift()()
     }
-    this.updateRequested = false
+    this.pendingAnimationFrame = null
     if (this.nextUpdatePromise) {
       let resolveNextUpdatePromise = this.resolveNextUpdatePromise
       this.nextUpdatePromise = null
