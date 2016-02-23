@@ -22,6 +22,37 @@ describe('etch.updateElement(component)', () => {
     expect(element.textContent).to.equal('Goodbye World')
   })
 
+  it('updates individual compontents no more than once in a given update cycle', async () => {
+    let componentA = {
+      renderCount: 0,
+
+      render () {
+        this.renderCount++
+        return <div></div>
+      }
+    }
+
+    let componentB = {
+      renderCount: 0,
+
+      render () {
+        this.renderCount++
+        return <div></div>
+      }
+    }
+
+    etch.createElement(componentA)
+    etch.createElement(componentB)
+
+    etch.updateElement(componentA)
+    etch.updateElement(componentB)
+    etch.updateElement(componentA)
+    await etch.updateElement(componentB)
+
+    expect(componentA.renderCount).to.equal(2)
+    expect(componentB.renderCount).to.equal(2)
+  })
+
   it('updates references to DOM elements', async () => {
     let component = {
       condition: true,
