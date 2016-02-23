@@ -80,4 +80,10 @@ export default class ComponentWidget {
       oldElement.parentNode.replaceChild(newElement, oldElement)
     }
   }
+
+  destroy () {
+    if (typeof this.component.destroy === 'function') {
+      this.component.destroy()
+    }
+  }
 }

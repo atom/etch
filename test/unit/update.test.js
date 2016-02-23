@@ -77,6 +77,87 @@ describe('etch.update(component)', () => {
     expect(component.refs.greeting).to.be.undefined
   })
 
+  it('calls the destroy method on removed child components if it is present', async () => {
+    let destroyCalls = []
+
+    class ParentComponent {
+      constructor () {
+        this.renderChildren = true
+        etch.initialize(this)
+      }
+
+      render () {
+        if (this.renderChildren) {
+          return (
+            <div>
+              <ChildComponent ref='child' />
+              <ChildComponentWithNoDestroyMethod ref='childWithNoDestroyMethod' />
+            </div>
+          )
+        } else {
+          return <div />
+        }
+      }
+
+      // this method should not be called when we call etch.destroy with this component
+      destroy () {
+        etch.destroy(this)
+        destroyCalls.push(this)
+      }
+    }
+
+    class ChildComponent {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      render () {
+        return <div><GrandchildComponent ref='grandchild' /></div>
+      }
+
+      destroy () {
+        etch.destroy(this)
+        destroyCalls.push(this)
+      }
+    }
+
+    class GrandchildComponent {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      render () {
+        return <div></div>
+      }
+
+      destroy () {
+        etch.destroy(this)
+        destroyCalls.push(this)
+      }
+    }
+
+    class ChildComponentWithNoDestroyMethod {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      render () {
+        return <div></div>
+      }
+    }
+
+    let parent = new ParentComponent()
+    let child = parent.refs.child
+    let grandchild = child.refs.grandchild
+    let childWithNoDestroyMethod = parent.refs.childWithNoDestroyMethod
+
+    parent.renderChildren = false
+    await etch.update(parent)
+
+    expect(destroyCalls).to.eql([grandchild, child])
+    expect(parent.element.innerHTML).to.equal('')
+  })
+
   it('throws when attempting to change the top-level node type', () => {
     class Component {
       constructor () {

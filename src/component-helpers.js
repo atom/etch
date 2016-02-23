@@ -1,10 +1,36 @@
-import {getScheduler} from './scheduler-assignment'
+import createElement from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
+
 import refsStack from './refs-stack'
+import {getScheduler} from './scheduler-assignment'
 
 const componentsWithPendingUpdates = new WeakSet
 let syncUpdatesInProgressCounter = 0
+let syncDestructionsInProgressCounter = 0
+
+// This function associates a component object with a DOM element by calling
+// the components `render` method, assigning an `.element` property on the
+// object and also returning the element.
+//
+// It also assigns a `virtualElement` property based on the return value of the
+// `render` method. This will be used later by `performElementUpdate` to diff
+// the new results of `render` with the previous results when updating the
+// component's element.
+//
+// Finally, this function also associates the component with a `refs` object,
+// which is populated with references to elements based on `ref` properties on
+// nodes of the `virtual-dom` tree. Before calling into `virtual-dom` to create
+// the DOM tree, it pushes this `refs` object to a shared stack so it can be
+// accessed by hooks during the creation of individual elements.
+export function initialize(component) {
+  component.refs = {}
+  component.virtualElement = component.render()
+  refsStack.push(component.refs)
+  component.element = createElement(component.virtualElement)
+  refsStack.pop()
+  return component.element
+}
 
 // This function receives a component that has already been associated with an
 // element via a previous call to `initialize` and updates this element by
@@ -74,4 +100,34 @@ export function updateSync (component) {
   }
 
   syncUpdatesInProgressCounter--
+}
+
+export function destroy (component) {
+  if (syncUpdatesInProgressCounter > 0 || syncDestructionsInProgressCounter > 0) {
+    destroySync(component)
+    return Promise.resolve()
+  }
+
+  let scheduler = getScheduler()
+  scheduler.updateDocument(function () {
+    destroySync(component)
+  })
+  return scheduler.getNextUpdatePromise()
+}
+
+export function destroySync (component) {
+  syncDestructionsInProgressCounter++
+  destroyChildComponents(component.virtualElement)
+  if (syncDestructionsInProgressCounter === 1) component.element.remove()
+  syncDestructionsInProgressCounter--
+}
+
+function destroyChildComponents(virtualNode) {
+  if (virtualNode.type === 'Widget') {
+    if (virtualNode.component && typeof virtualNode.component.destroy === 'function') {
+      virtualNode.component.destroy()
+    }
+  } else if (virtualNode.children) {
+    virtualNode.children.forEach(destroyChildComponents)
+  }
 }

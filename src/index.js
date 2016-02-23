@@ -1,11 +1,10 @@
 import dom from './dom'
-import initialize from './initialize'
-import {update, updateSync} from './update'
+import {initialize, update, updateSync, destroy, destroySync} from './component-helpers'
 import {setScheduler, getScheduler} from './scheduler-assignment'
 
 let etch = {
   dom,
-  initialize, update, updateSync,
+  initialize, update, updateSync, destroy, destroySync,
   setScheduler, getScheduler
 }
 
