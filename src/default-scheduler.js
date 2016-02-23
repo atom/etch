@@ -19,14 +19,6 @@ export default class DefaultScheduler {
     }
   }
 
-  // Enqueues a DOM writer, then runs all enqueued functions and cancels the
-  // pending animation frame.
-  updateDocumentSync (fn) {
-    if (this.pendingAnimationFrame) window.cancelAnimationFrame(this.pendingAnimationFrame)
-    this.updateRequests.push(fn)
-    this.performUpdates()
-  }
-
   // Returns a promise that will resolve at the end of the next update cycle,
   // after all the functions passed to `updateDocument` and `updateDocumentSync`
   // have been run.

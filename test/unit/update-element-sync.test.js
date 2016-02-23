@@ -43,34 +43,4 @@ describe('etch.updateElementSync(component)', () => {
     etch.updateElementSync(component)
     expect(component.element.textContent).to.equal('Goodnight Moon')
   });
-
-  it('performs only one update if an async update for the component is pending', () => {
-    let componentA = {
-      renderCount: 0,
-
-      render () {
-        this.renderCount++
-        return <div></div>
-      }
-    }
-
-    let componentB = {
-      renderCount: 0,
-
-      render () {
-        this.renderCount++
-        return <div></div>
-      }
-    }
-
-    etch.createElement(componentA)
-    etch.createElement(componentB)
-    etch.updateElement(componentA)
-    etch.updateElement(componentB)
-
-    etch.updateElementSync(componentA)
-
-    expect(componentA.renderCount).to.equal(2)
-    expect(componentB.renderCount).to.equal(2)
-  })
 });

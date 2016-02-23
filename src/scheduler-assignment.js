@@ -1,12 +1,12 @@
 // This file implements getter and setter functions for a scheduler to be used
 // by this library when updating the DOM. The scheduler's job is to ensure that
-// DOM interaction is performed efficiently.
+// DOM interaction is performed efficiently. When using `etch` in Atom, you
+// should tell `etch` to use Atom's scheduler by calling
+// `setScheduler(atom.views)`.
 //
 // Schedulers should support the following interface:
 // * `updateDocument(fn)` This method is asynchronous. It enqueues functions to
 // be executed later.
-// * `updateDocumentSync(fn)` This method is synchronous. It should run all
-// previously-enqueued update functions and the current function immediately.
 // * `getNextUpdatePromise()` This function should return a promise that
 // resolves after all pending document update functions have been invoked.
 //
