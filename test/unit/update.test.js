@@ -2,7 +2,7 @@
 
 import etch from '../../src/index'
 
-describe('etch.updateElement(component)', () => {
+describe('etch.update(component)', () => {
   it('schedules an update of the element associated with the component', async () => {
     let component = {
       greeting: 'Hello',
@@ -12,12 +12,12 @@ describe('etch.updateElement(component)', () => {
       }
     }
 
-    let element = etch.createElement(component)
+    let element = etch.initialize(component)
     expect(element.textContent).to.equal('Hello World')
 
     component.greeting = 'Goodbye'
 
-    await etch.updateElement(component)
+    await etch.update(component)
 
     expect(element.textContent).to.equal('Goodbye World')
   })
@@ -41,13 +41,13 @@ describe('etch.updateElement(component)', () => {
       }
     }
 
-    etch.createElement(componentA)
-    etch.createElement(componentB)
+    etch.initialize(componentA)
+    etch.initialize(componentB)
 
-    etch.updateElement(componentA)
-    etch.updateElement(componentB)
-    etch.updateElement(componentA)
-    await etch.updateElement(componentB)
+    etch.update(componentA)
+    etch.update(componentB)
+    etch.update(componentA)
+    await etch.update(componentB)
 
     expect(componentA.renderCount).to.equal(2)
     expect(componentB.renderCount).to.equal(2)
@@ -65,13 +65,13 @@ describe('etch.updateElement(component)', () => {
         }
       }
     }
-    etch.createElement(component)
+    etch.initialize(component)
 
     expect(component.refs.greeting.textContent).to.equal('Hello')
     expect(component.refs.greeted).to.be.undefined
 
     component.condition = false
-    await etch.updateElement(component)
+    await etch.update(component)
 
     expect(component.refs.greeted.textContent).to.equal('World')
     expect(component.refs.greeting).to.be.undefined
@@ -81,7 +81,7 @@ describe('etch.updateElement(component)', () => {
     class Component {
       constructor () {
         this.renderDiv = true
-        etch.createElement(this)
+        etch.initialize(this)
       }
 
       render () {
@@ -97,7 +97,7 @@ describe('etch.updateElement(component)', () => {
     component.renderDiv = false
 
     expect(() => {
-      etch.updateElementSync(component)
+      etch.updateSync(component)
     }).to.throw(/root DOM node type/)
   })
 })

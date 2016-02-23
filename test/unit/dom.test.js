@@ -10,7 +10,7 @@ describe('etch.dom', () => {
           constructor (properties, children) {
             this.properties = properties
             this.children = children
-            etch.createElement(this)
+            etch.initialize(this)
           }
 
           render () {
@@ -30,7 +30,7 @@ describe('etch.dom', () => {
           }
         }
 
-        let element = etch.createElement(parentComponent)
+        let element = etch.initialize(parentComponent)
         expect(element.textContent).to.equal('Hello World')
       })
     })
@@ -43,7 +43,7 @@ describe('etch.dom', () => {
               constructor (properties, children) {
                 this.properties = properties
                 this.children = children
-                etch.createElement(this)
+                etch.initialize(this)
               }
 
               render () {
@@ -53,7 +53,7 @@ describe('etch.dom', () => {
               update (properties, children) {
                 this.properties = properties
                 this.children = children
-                etch.updateElement(this)
+                etch.update(this)
               }
             }
 
@@ -71,13 +71,13 @@ describe('etch.dom', () => {
               }
             }
 
-            let element = etch.createElement(parentComponent)
+            let element = etch.initialize(parentComponent)
             expect(element.textContent).to.equal('Hello World')
             let initialChildElement = element.firstChild
 
             parentComponent.greeting = 'Goodnight'
             parentComponent.greeted = 'Moon'
-            await etch.updateElement(parentComponent)
+            await etch.update(parentComponent)
 
             expect(element.textContent).to.equal('Goodnight Moon')
             expect(element.firstChild).to.equal(initialChildElement)
@@ -90,7 +90,7 @@ describe('etch.dom', () => {
               constructor (properties, children) {
                 this.properties = properties
                 this.children = children
-                etch.createElement(this)
+                etch.initialize(this)
               }
 
               render () {
@@ -112,13 +112,13 @@ describe('etch.dom', () => {
               }
             }
 
-            let element = etch.createElement(parentComponent)
+            let element = etch.initialize(parentComponent)
             expect(element.textContent).to.equal('Hello World')
             let initialChildElement = element.firstChild
 
             parentComponent.greeting = 'Goodnight'
             parentComponent.greeted = 'Moon'
-            await etch.updateElement(parentComponent)
+            await etch.update(parentComponent)
 
             expect(element.textContent).to.equal('Goodnight Moon')
             expect(element.firstChild).not.to.equal(initialChildElement)
@@ -130,7 +130,7 @@ describe('etch.dom', () => {
         it('builds a new component instance and replaces the previous element with its element', async () => {
           class ChildComponentA {
             constructor () {
-              etch.createElement(this)
+              etch.initialize(this)
             }
 
             render () {
@@ -142,7 +142,7 @@ describe('etch.dom', () => {
 
           class ChildComponentB {
             constructor () {
-              etch.createElement(this)
+              etch.initialize(this)
             }
 
             render () {
@@ -164,12 +164,12 @@ describe('etch.dom', () => {
             }
           }
 
-          let element = etch.createElement(parentComponent)
+          let element = etch.initialize(parentComponent)
           expect(element.textContent).to.equal('A')
           let initialChildElement = element.firstChild
 
           parentComponent.condition = false
-          await etch.updateElement(parentComponent)
+          await etch.update(parentComponent)
 
           expect(element.textContent).to.equal('B')
           expect(element.firstChild).not.to.equal(initialChildElement)
@@ -181,7 +181,7 @@ describe('etch.dom', () => {
           class ChildComponentA {
             constructor () {
               this.updateCalled = false
-              etch.createElement(this)
+              etch.initialize(this)
             }
 
             render () {
@@ -196,7 +196,7 @@ describe('etch.dom', () => {
           class ChildComponentB {
             constructor () {
               this.updateCalled = false
-              etch.createElement(this)
+              etch.initialize(this)
             }
 
             render () {
@@ -230,7 +230,7 @@ describe('etch.dom', () => {
             }
           }
 
-          let element = etch.createElement(parentComponent)
+          let element = etch.initialize(parentComponent)
           let childComponentA = parentComponent.refs.a
           let childComponentB = parentComponent.refs.b
           let childElementA = element.children[0]
@@ -239,7 +239,7 @@ describe('etch.dom', () => {
           expect(childComponentB.updateCalled).to.be.false
 
           parentComponent.condition = false
-          await etch.updateElement(parentComponent)
+          await etch.update(parentComponent)
 
           expect(element.children[0]).to.equal(childElementB)
           expect(element.children[1]).to.equal(childElementA)
@@ -258,7 +258,7 @@ describe('etch.dom', () => {
         class ChildComponentA {
           constructor (properties) {
             this.properties = properties
-            etch.createElement(this)
+            etch.initialize(this)
           }
 
           render () {
@@ -273,7 +273,7 @@ describe('etch.dom', () => {
         class ChildComponentB {
           constructor (properties) {
             this.properties = properties
-            etch.createElement(this)
+            etch.initialize(this)
           }
 
           render () {
@@ -294,14 +294,14 @@ describe('etch.dom', () => {
           }
         }
 
-        let element = etch.createElement(parentComponent)
+        let element = etch.initialize(parentComponent)
 
         expect(parentComponent.refs.child instanceof ChildComponentA).to.be.true
         expect(parentComponent.refs.child.properties.ref).to.equal('child')
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'kid'
-        await etch.updateElement(parentComponent)
+        await etch.update(parentComponent)
 
         expect(parentComponent.refs.child).to.be.undefined
         expect(parentComponent.refs.kid instanceof ChildComponentA).to.be.true
@@ -310,7 +310,7 @@ describe('etch.dom', () => {
 
         parentComponent.refName = 'child'
         parentComponent.condition = false
-        await etch.updateElement(parentComponent)
+        await etch.update(parentComponent)
 
         expect(parentComponent.refs.kid).to.be.undefined
         expect(parentComponent.refs.child instanceof ChildComponentB).to.be.true

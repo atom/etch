@@ -1,4 +1,4 @@
-import virtualDOMCreateElement from 'virtual-dom/create-element'
+import createElement from 'virtual-dom/create-element'
 import refsStack from './refs-stack'
 
 // This function associates a component object with a DOM element by calling
@@ -15,11 +15,11 @@ import refsStack from './refs-stack'
 // nodes of the `virtual-dom` tree. Before calling into `virtual-dom` to create
 // the DOM tree, it pushes this `refs` object to a shared stack so it can be
 // accessed by hooks during the creation of individual elements.
-export default function createElement(component) {
+export default function initialize(component) {
   component.refs = {}
   component.virtualElement = component.render()
   refsStack.push(component.refs)
-  component.element = virtualDOMCreateElement(component.virtualElement)
+  component.element = createElement(component.virtualElement)
   refsStack.pop()
   return component.element
 }

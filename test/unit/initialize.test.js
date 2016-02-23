@@ -2,14 +2,14 @@
 
 import etch from '../../src/index'
 
-describe('etch.createElement(component)', () => {
+describe('etch.initialize(component)', () => {
   it('returns an element with content based on the render method of the given component', () => {
     let component = {
       render () {
         return <div>Hello World</div>
       }
     }
-    let element = etch.createElement(component)
+    let element = etch.initialize(component)
 
     expect(element.textContent).to.equal('Hello World')
     expect(component.element).to.equal(element)
@@ -21,7 +21,7 @@ describe('etch.createElement(component)', () => {
         return <div><span ref='greeting'>Hello</span> <span ref='greeted'>World</span></div>
       }
     }
-    etch.createElement(component)
+    etch.initialize(component)
 
     expect(component.refs.greeting.textContent).to.equal('Hello')
     expect(component.refs.greeted.textContent).to.equal('World')
