@@ -13,10 +13,10 @@ import etch from 'etch'
 
 export default class TaskListComponent {
   // The constructor assigns initial state, then associates the component with
-  // an element via `etch.createElement`
+  // an element via `etch.initialize`
   constructor ({tasks}) {
     this.tasks = tasks
-    etch.createElement(this)
+    etch.initialize(this)
   }
 
   // When your component's element is created or updated, its content will be
@@ -38,15 +38,15 @@ export default class TaskListComponent {
   }
 
   // This method adds a task, then schedules a DOM update on the next animation
-  // frame via `etch.updateElement`
+  // frame via `etch.update`
   addTask (task) {
     this.tasks.push(task)
-    etch.updateElement(this)
+    etch.update(this)
   }
 }
 ```
 
-Etch favors composition over inheritance, meaning your components can be arbitrary objects that implement a `render` method. In the constructor, we call `etch.createElement` with the newly-created component. `etch.createElement` then calls our `render` method to create an element and assign it to the `element` property on the component. Later, when we update the data model in `addTask`, we call `etch.updateElement` with the component, which calls `render` again and updates the component's element via a diff with its previous content.
+Etch favors composition over inheritance, meaning your components can be arbitrary objects that implement a `render` method. In the constructor, we call `etch.initialize` with the newly-created component. `etch.initialize` then calls our `render` method to create an element and assign it to the `element` property on the component. Later, when we update the data model in `addTask`, we call `etch.update` with the component, which calls `render` again and updates the component's element via a diff with its previous content.
 
 Now let's use the component we just defined...
 
@@ -61,7 +61,7 @@ taskList.addTask({id: 3, description: 'Feed cats', completed: false})
 
 Note that when we want to *use* the component, we don't have to interact with any Etch APIs. The component is an ordinary object that can be constructed normally. After construction, its `element` property points at a DOM node that is ready to use and can be appended to the document using standard APIs. This enables straightforward *interoperability* between our component and any code that works with standard DOM elements.
 
-Also note that the decision to update the element's content in the `addTask` method is *explicit*. If you want to build a property store that calls `etch.updateElement` automatically when values change, that's easy to do, but no specific state management system is prescribed, and nothing happens automatically by default.
+Also note that the decision to update the element's content in the `addTask` method is *explicit*. If you want to build a property store that calls `etch.update` automatically when values change, that's easy to do, but no specific state management system is prescribed, and nothing happens automatically by default.
 
 ### Composition
 
@@ -75,12 +75,12 @@ import etch from 'etch'
 export default class TaskComponent {
   constructor ({task}) {
     this.task = task
-    etch.createElement(this)
+    etch.initialize(this)
   }
 
   update ({task}) {
     this.task = task
-    etch.updateElement(this)
+    etch.update(this)
   }
 
   render () {
@@ -106,7 +106,7 @@ export default class TaskListComponent {
   constructor ({tasks, featuredTask}) {
     this.tasks = tasks
     this.featuredTask = featuredTask
-    etch.createElement(this)
+    etch.initialize(this)
   }
 
   render () {
@@ -140,7 +140,7 @@ If any of your JSX expressions have a magic `ref` attribute, a reference will au
 export default class TaskListComponent {
   constructor ({tasks}) {
     this.tasks = tasks
-    etch.createElement(this)
+    etch.initialize(this)
     this.refs.newButton.addEventListener('click', this.newTask.bind(this))
   }
 
@@ -173,7 +173,7 @@ import DOMListener from 'dom-listener'
 class TaskList {
   constructor ({tasks}) {
     this.tasks = tasks
-    etch.createElement(this)
+    etch.initialize(this)
 
     // Handle events...
     let listener = new DOMListener(this.element)

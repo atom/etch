@@ -2,13 +2,13 @@
 
 import etch from '../../src/index'
 
-describe('etch.updateElementSync(component)', () => {
+describe('etch.updateSync(component)', () => {
   it('performs an update of the component\'s element and any resulting child updates synchronously', () => {
     class ParentComponent {
       constructor () {
         this.greeting = 'Hello'
         this.greeted = 'World'
-        etch.createElement(this)
+        etch.initialize(this)
       }
 
       render () {
@@ -23,7 +23,7 @@ describe('etch.updateElementSync(component)', () => {
     class ChildComponent {
       constructor ({greeting}) {
         this.greeting = greeting
-        etch.createElement(this)
+        etch.initialize(this)
       }
 
       render () {
@@ -32,7 +32,7 @@ describe('etch.updateElementSync(component)', () => {
 
       update ({greeting}) {
         this.greeting = greeting
-        etch.updateElement(this)
+        etch.update(this)
       }
     }
 
@@ -40,7 +40,7 @@ describe('etch.updateElementSync(component)', () => {
     expect(component.element.textContent).to.equal('Hello World')
     component.greeting = 'Goodnight'
     component.greeted = 'Moon'
-    etch.updateElementSync(component)
+    etch.updateSync(component)
     expect(component.element.textContent).to.equal('Goodnight Moon')
   });
 });
