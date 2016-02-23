@@ -30,8 +30,8 @@ describe('etch.dom', () => {
           }
         }
 
-        let element = etch.initialize(parentComponent)
-        expect(element.textContent).to.equal('Hello World')
+        etch.initialize(parentComponent)
+        expect(parentComponent.element.textContent).to.equal('Hello World')
       })
     })
 
@@ -71,16 +71,16 @@ describe('etch.dom', () => {
               }
             }
 
-            let element = etch.initialize(parentComponent)
-            expect(element.textContent).to.equal('Hello World')
-            let initialChildElement = element.firstChild
+            etch.initialize(parentComponent)
+            expect(parentComponent.element.textContent).to.equal('Hello World')
+            let initialChildElement = parentComponent.element.firstChild
 
             parentComponent.greeting = 'Goodnight'
             parentComponent.greeted = 'Moon'
             await etch.update(parentComponent)
 
-            expect(element.textContent).to.equal('Goodnight Moon')
-            expect(element.firstChild).to.equal(initialChildElement)
+            expect(parentComponent.element.textContent).to.equal('Goodnight Moon')
+            expect(parentComponent.element.firstChild).to.equal(initialChildElement)
           })
         })
 
@@ -112,16 +112,16 @@ describe('etch.dom', () => {
               }
             }
 
-            let element = etch.initialize(parentComponent)
-            expect(element.textContent).to.equal('Hello World')
-            let initialChildElement = element.firstChild
+            etch.initialize(parentComponent)
+            expect(parentComponent.element.textContent).to.equal('Hello World')
+            let initialChildElement = parentComponent.element.firstChild
 
             parentComponent.greeting = 'Goodnight'
             parentComponent.greeted = 'Moon'
             await etch.update(parentComponent)
 
-            expect(element.textContent).to.equal('Goodnight Moon')
-            expect(element.firstChild).not.to.equal(initialChildElement)
+            expect(parentComponent.element.textContent).to.equal('Goodnight Moon')
+            expect(parentComponent.element.firstChild).not.to.equal(initialChildElement)
           })
         })
       })
@@ -164,15 +164,15 @@ describe('etch.dom', () => {
             }
           }
 
-          let element = etch.initialize(parentComponent)
-          expect(element.textContent).to.equal('A')
-          let initialChildElement = element.firstChild
+          etch.initialize(parentComponent)
+          expect(parentComponent.element.textContent).to.equal('A')
+          let initialChildElement = parentComponent.element.firstChild
 
           parentComponent.condition = false
           await etch.update(parentComponent)
 
-          expect(element.textContent).to.equal('B')
-          expect(element.firstChild).not.to.equal(initialChildElement)
+          expect(parentComponent.element.textContent).to.equal('B')
+          expect(parentComponent.element.firstChild).not.to.equal(initialChildElement)
         })
       })
 
@@ -230,7 +230,8 @@ describe('etch.dom', () => {
             }
           }
 
-          let element = etch.initialize(parentComponent)
+          etch.initialize(parentComponent)
+          let element = parentComponent.element
           let childComponentA = parentComponent.refs.a
           let childComponentB = parentComponent.refs.b
           let childElementA = element.children[0]
@@ -294,7 +295,8 @@ describe('etch.dom', () => {
           }
         }
 
-        let element = etch.initialize(parentComponent)
+        etch.initialize(parentComponent)
+
 
         expect(parentComponent.refs.child instanceof ChildComponentA).to.be.true
         expect(parentComponent.refs.child.properties.ref).to.equal('child')

@@ -29,7 +29,6 @@ export function initialize(component) {
   refsStack.push(component.refs)
   component.element = createElement(component.virtualElement)
   refsStack.pop()
-  return component.element
 }
 
 // This function receives a component that has already been associated with an

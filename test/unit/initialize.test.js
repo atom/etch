@@ -9,10 +9,9 @@ describe('etch.initialize(component)', () => {
         return <div>Hello World</div>
       }
     }
-    let element = etch.initialize(component)
+    etch.initialize(component)
 
-    expect(element.textContent).to.equal('Hello World')
-    expect(component.element).to.equal(element)
+    expect(component.element.textContent).to.equal('Hello World')
   })
 
   it('creates references to DOM elements', () => {

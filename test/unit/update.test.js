@@ -12,14 +12,14 @@ describe('etch.update(component)', () => {
       }
     }
 
-    let element = etch.initialize(component)
-    expect(element.textContent).to.equal('Hello World')
+    etch.initialize(component)
+    expect(component.element.textContent).to.equal('Hello World')
 
     component.greeting = 'Goodbye'
 
     await etch.update(component)
 
-    expect(element.textContent).to.equal('Goodbye World')
+    expect(component.element.textContent).to.equal('Goodbye World')
   })
 
   it('updates individual compontents no more than once in a given update cycle', async () => {
