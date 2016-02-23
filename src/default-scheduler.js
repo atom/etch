@@ -9,6 +9,9 @@ export default class DefaultScheduler {
     this.performUpdates = this.performUpdates.bind(this)
   }
 
+  // Enqueues functions that write to the DOM to be performed on the next
+  // animation frame. Functions passed to this method should *never* read from
+  // the DOM, because that could cause synchronous reflows.
   updateDocument (fn) {
     this.updateRequests.push(fn)
     if (!this.pendingAnimationFrame) {
@@ -16,12 +19,17 @@ export default class DefaultScheduler {
     }
   }
 
+  // Enqueues a DOM writer, then runs all enqueued functions and cancels the
+  // pending animation frame.
   updateDocumentSync (fn) {
     if (this.pendingAnimationFrame) window.cancelAnimationFrame(this.pendingAnimationFrame)
     this.updateRequests.push(fn)
     this.performUpdates()
   }
 
+  // Returns a promise that will resolve at the end of the next update cycle,
+  // after all the functions passed to `updateDocument` and `updateDocumentSync`
+  // have been run.
   getNextUpdatePromise () {
     if (!this.nextUpdatePromise) {
       this.nextUpdatePromise = new Promise(resolve => {
@@ -31,11 +39,17 @@ export default class DefaultScheduler {
     return this.nextUpdatePromise
   }
 
+  // Performs all the pending document updates. If running these update
+  // functions causes *more* updates to be enqueued, they are run synchronously
+  // in this update cycle without waiting for another frame.
   performUpdates () {
     while (this.updateRequests.length > 0) {
       this.updateRequests.shift()()
     }
+
+    // We don't clear the pending frame until the request queue is fully
     this.pendingAnimationFrame = null
+
     if (this.nextUpdatePromise) {
       let resolveNextUpdatePromise = this.resolveNextUpdatePromise
       this.nextUpdatePromise = null
