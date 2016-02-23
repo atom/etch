@@ -1,7 +1,6 @@
 import {getScheduler} from './scheduler-assignment'
 import performElementUpdate from './perform-element-update'
-
-let componentsWithPendingUpdates = new WeakSet
+import componentsWithPendingUpdates from './components-with-pending-updates'
 
 export default function updateElement (component) {
   let scheduler = getScheduler()
