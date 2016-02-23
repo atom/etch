@@ -1,3 +1,7 @@
+// If the scheduler is not customized via `etch.setScheduler`, an instance of
+// this class will be used to schedule updates to the document. The
+// `updateDocument` method accepts functions to be run at some point in the
+// future, then runs them on the next animation frame.
 export default class DefaultScheduler {
   constructor () {
     this.updateRequests = []
