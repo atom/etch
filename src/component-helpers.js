@@ -102,6 +102,13 @@ export function updateSync (component) {
   syncUpdatesInProgressCounter--
 }
 
+// Removes the component's associated element and calls `destroy` on any child
+// components. Normally, this function is asynchronous and will perform the
+// destruction on the next animation frame. If called as the result of another
+// update or destruction, it calls `destroy` on child components synchronously.
+// If called as the result of destroying a component higher in the DOM, the
+// element is not removed to avoid redundant DOM manipulation. Returns a promise
+// that resolves when the destruction is completed.
 export function destroy (component) {
   if (syncUpdatesInProgressCounter > 0 || syncDestructionsInProgressCounter > 0) {
     destroySync(component)
@@ -115,6 +122,10 @@ export function destroy (component) {
   return scheduler.getNextUpdatePromise()
 }
 
+// A synchronous version of `destroy`.
+//
+// Note that we track whether `destroy` calls are in progress and only remove
+// the element if we are not a nested call.
 export function destroySync (component) {
   syncDestructionsInProgressCounter++
   destroyChildComponents(component.virtualElement)
