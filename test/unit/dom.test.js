@@ -85,7 +85,7 @@ describe('etch.dom', () => {
         })
 
         describe('if the child component does not define an update method', () => {
-          it('builds a new component instance and replaces the previous element with its element', async () => {
+          it('leaves the existing element alone', async () => {
             class ChildComponent {
               constructor (properties, children) {
                 this.properties = properties
@@ -120,8 +120,8 @@ describe('etch.dom', () => {
             parentComponent.greeted = 'Moon'
             await etch.update(parentComponent)
 
-            expect(parentComponent.element.textContent).to.equal('Goodnight Moon')
-            expect(parentComponent.element.firstChild).not.to.equal(initialChildElement)
+            expect(parentComponent.element.textContent).to.equal('Hello World')
+            expect(parentComponent.element.firstChild).to.equal(initialChildElement)
           })
         })
       })
