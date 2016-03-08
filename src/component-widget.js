@@ -50,7 +50,7 @@ export default class ComponentWidget {
       newRef = this.properties.ref
     }
 
-    if (this.componentConstructor === oldWidget.componentConstructor && typeof oldWidget.component.update === 'function') {
+    if (this.componentConstructor === oldWidget.componentConstructor) {
       this.component = oldWidget.component
 
       // If the ref properties have changed, delete the old reference and create
@@ -60,7 +60,9 @@ export default class ComponentWidget {
         refsStack[refsStack.length - 1][newRef] = this.component
       }
 
-      this.component.update(this.properties, this.children)
+      if (typeof this.component.update === 'function') {
+        this.component.update(this.properties, this.children)
+      }
     } else {
       // If `ref` properties are defined, delete the reference to the old
       // component. Only do this if the reference name changed because otherwise
