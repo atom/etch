@@ -16,6 +16,8 @@ describe('etch.dom', () => {
           render () {
             return <div>{this.properties.greeting} {this.children}</div>
           }
+
+          update () {}
         }
 
         let parentComponent = {
@@ -27,7 +29,9 @@ describe('etch.dom', () => {
                 </ChildComponent>
               </div>
             )
-          }
+          },
+
+          update () {}
         }
 
         etch.initialize(parentComponent)
@@ -68,7 +72,9 @@ describe('etch.dom', () => {
                     </ChildComponent>
                   </div>
                 )
-              }
+              },
+
+              update () {}
             }
 
             etch.initialize(parentComponent)
@@ -134,7 +140,9 @@ describe('etch.dom', () => {
               } else {
                 return <div><ChildComponentB></ChildComponentB></div>
               }
-            }
+            },
+
+            update () {}
           }
 
           etch.initialize(parentComponent)
@@ -200,7 +208,9 @@ describe('etch.dom', () => {
                   </div>
                 )
               }
-            }
+            },
+
+            update () {}
           }
 
           etch.initialize(parentComponent)
@@ -253,6 +263,8 @@ describe('etch.dom', () => {
           render () {
             return <div ref='self'>B</div>
           }
+
+          update () {}
         }
 
         let parentComponent = {
@@ -265,7 +277,9 @@ describe('etch.dom', () => {
             } else {
               return <div><ChildComponentB ref={this.refName}></ChildComponentB></div>
             }
-          }
+          },
+
+          update () {}
         }
 
         etch.initialize(parentComponent)

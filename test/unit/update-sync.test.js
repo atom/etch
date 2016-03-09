@@ -18,6 +18,8 @@ describe('etch.updateSync(component)', () => {
           </div>
         )
       }
+
+      update () {}
     }
 
     class ChildComponent {

@@ -20,6 +20,8 @@ describe('etch.destroy(component)', () => {
         )
       }
 
+      update () {}
+
       destroy () {
         etch.destroy(this)
         this.destroyCallCount++
@@ -35,6 +37,8 @@ describe('etch.destroy(component)', () => {
       render () {
         return <div>child</div>
       }
+
+      update () {}
 
       destroy () {
         etch.destroy(this)
