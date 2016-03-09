@@ -7,7 +7,9 @@ describe('etch.initialize(component)', () => {
     let component = {
       render () {
         return <div>Hello World</div>
-      }
+      },
+
+      update () {}
     }
     etch.initialize(component)
 
@@ -18,7 +20,9 @@ describe('etch.initialize(component)', () => {
     let component = {
       render () {
         return <div><span ref='greeting'>Hello</span> <span ref='greeted'>World</span></div>
-      }
+      },
+
+      update () {}
     }
     etch.initialize(component)
 

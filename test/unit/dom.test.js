@@ -16,6 +16,8 @@ describe('etch.dom', () => {
           render () {
             return <div>{this.properties.greeting} {this.children}</div>
           }
+
+          update () {}
         }
 
         let parentComponent = {
@@ -27,7 +29,9 @@ describe('etch.dom', () => {
                 </ChildComponent>
               </div>
             )
-          }
+          },
+
+          update () {}
         }
 
         etch.initialize(parentComponent)
@@ -68,7 +72,9 @@ describe('etch.dom', () => {
                     </ChildComponent>
                   </div>
                 )
-              }
+              },
+
+              update () {}
             }
 
             etch.initialize(parentComponent)
@@ -85,43 +91,16 @@ describe('etch.dom', () => {
         })
 
         describe('if the child component does not define an update method', () => {
-          it('builds a new component instance and replaces the previous element with its element', async () => {
-            class ChildComponent {
-              constructor (properties, children) {
-                this.properties = properties
-                this.children = children
-                etch.initialize(this)
-              }
-
-              render () {
-                return <div>{this.properties.greeting} {this.children}</div>
-              }
-            }
-
-            let parentComponent = {
-              greeting: 'Hello',
-              greeted: 'World',
+          it('throws an error', async () => {
+            let component = {
               render () {
                 return (
-                  <div>
-                    <ChildComponent greeting={this.greeting}>
-                      <span>{this.greeted}</span>
-                    </ChildComponent>
-                  </div>
+                  <div></div>
                 )
               }
             }
 
-            etch.initialize(parentComponent)
-            expect(parentComponent.element.textContent).to.equal('Hello World')
-            let initialChildElement = parentComponent.element.firstChild
-
-            parentComponent.greeting = 'Goodnight'
-            parentComponent.greeted = 'Moon'
-            await etch.update(parentComponent)
-
-            expect(parentComponent.element.textContent).to.equal('Goodnight Moon')
-            expect(parentComponent.element.firstChild).not.to.equal(initialChildElement)
+            expect(() => etch.initialize(component)).to.throw(Error)
           })
         })
       })
@@ -161,7 +140,9 @@ describe('etch.dom', () => {
               } else {
                 return <div><ChildComponentB></ChildComponentB></div>
               }
-            }
+            },
+
+            update () {}
           }
 
           etch.initialize(parentComponent)
@@ -227,7 +208,9 @@ describe('etch.dom', () => {
                   </div>
                 )
               }
-            }
+            },
+
+            update () {}
           }
 
           etch.initialize(parentComponent)
@@ -280,6 +263,8 @@ describe('etch.dom', () => {
           render () {
             return <div ref='self'>B</div>
           }
+
+          update () {}
         }
 
         let parentComponent = {
@@ -292,7 +277,9 @@ describe('etch.dom', () => {
             } else {
               return <div><ChildComponentB ref={this.refName}></ChildComponentB></div>
             }
-          }
+          },
+
+          update () {}
         }
 
         etch.initialize(parentComponent)

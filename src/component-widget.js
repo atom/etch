@@ -50,7 +50,7 @@ export default class ComponentWidget {
       newRef = this.properties.ref
     }
 
-    if (this.componentConstructor === oldWidget.componentConstructor && typeof oldWidget.component.update === 'function') {
+    if (this.componentConstructor === oldWidget.componentConstructor) {
       this.component = oldWidget.component
 
       // If the ref properties have changed, delete the old reference and create

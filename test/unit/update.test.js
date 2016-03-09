@@ -9,7 +9,9 @@ describe('etch.update(component)', () => {
 
       render () {
         return <div>{this.greeting} World</div>
-      }
+      },
+
+      update () {}
     }
 
     etch.initialize(component)
@@ -29,7 +31,9 @@ describe('etch.update(component)', () => {
       render () {
         this.renderCount++
         return <div></div>
-      }
+      },
+
+      update () {}
     }
 
     let componentB = {
@@ -38,7 +42,9 @@ describe('etch.update(component)', () => {
       render () {
         this.renderCount++
         return <div></div>
-      }
+      },
+
+      update () {}
     }
 
     etch.initialize(componentA)
@@ -63,7 +69,9 @@ describe('etch.update(component)', () => {
         } else {
           return <div><span ref='greeted'>World</span></div>
         }
-      }
+      },
+
+      update () {}
     }
     etch.initialize(component)
 
@@ -99,6 +107,8 @@ describe('etch.update(component)', () => {
         }
       }
 
+      update () {}
+
       // this method should not be called when we call etch.destroy with this component
       destroy () {
         etch.destroy(this)
@@ -115,6 +125,8 @@ describe('etch.update(component)', () => {
         return <div><GrandchildComponent ref='grandchild' /></div>
       }
 
+      update () {}
+
       destroy () {
         etch.destroy(this)
         destroyCalls.push(this)
@@ -130,6 +142,8 @@ describe('etch.update(component)', () => {
         return <div></div>
       }
 
+      update () {}
+
       destroy () {
         etch.destroy(this)
         destroyCalls.push(this)
@@ -140,6 +154,8 @@ describe('etch.update(component)', () => {
       constructor () {
         etch.initialize(this)
       }
+
+      update () {}
 
       render () {
         return <div></div>
@@ -172,6 +188,8 @@ describe('etch.update(component)', () => {
           return <span />
         }
       }
+
+      update () {}
     }
 
     let component = new Component()

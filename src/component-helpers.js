@@ -24,6 +24,10 @@ let syncDestructionsInProgressCounter = 0
 // the DOM tree, it pushes this `refs` object to a shared stack so it can be
 // accessed by hooks during the creation of individual elements.
 export function initialize(component) {
+  if (typeof component.update !== 'function') {
+    throw new Error('Etch components must implement `update(props, children)`.')
+  }
+
   component.refs = {}
   component.virtualElement = component.render()
   refsStack.push(component.refs)
