@@ -85,43 +85,16 @@ describe('etch.dom', () => {
         })
 
         describe('if the child component does not define an update method', () => {
-          it('leaves the existing element alone', async () => {
-            class ChildComponent {
-              constructor (properties, children) {
-                this.properties = properties
-                this.children = children
-                etch.initialize(this)
-              }
-
-              render () {
-                return <div>{this.properties.greeting} {this.children}</div>
-              }
-            }
-
-            let parentComponent = {
-              greeting: 'Hello',
-              greeted: 'World',
+          it('throws an error', async () => {
+            let component = {
               render () {
                 return (
-                  <div>
-                    <ChildComponent greeting={this.greeting}>
-                      <span>{this.greeted}</span>
-                    </ChildComponent>
-                  </div>
+                  <div></div>
                 )
               }
             }
 
-            etch.initialize(parentComponent)
-            expect(parentComponent.element.textContent).to.equal('Hello World')
-            let initialChildElement = parentComponent.element.firstChild
-
-            parentComponent.greeting = 'Goodnight'
-            parentComponent.greeted = 'Moon'
-            await etch.update(parentComponent)
-
-            expect(parentComponent.element.textContent).to.equal('Hello World')
-            expect(parentComponent.element.firstChild).to.equal(initialChildElement)
+            expect(() => etch.initialize(component)).to.throw(Error)
           })
         })
       })
