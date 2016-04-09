@@ -9,6 +9,11 @@ const componentsWithPendingUpdates = new WeakSet
 let syncUpdatesInProgressCounter = 0
 let syncDestructionsInProgressCounter = 0
 
+// Returns a DOM node constructed from a virtual DOM node.
+export function render (vnode) {
+  return createElement(vnode)
+}
+
 // This function associates a component object with a DOM element by calling
 // the components `render` method, assigning an `.element` property on the
 // object and also returning the element.
@@ -31,7 +36,7 @@ export function initialize(component) {
   component.refs = {}
   component.virtualElement = component.render()
   refsStack.push(component.refs)
-  component.element = createElement(component.virtualElement)
+  component.element = render(component.virtualElement)
   refsStack.pop()
 }
 
