@@ -151,7 +151,7 @@ function destroyChildComponents(virtualNode) {
   }
 }
 
-export function stateless (renderFn) {
+export function fromFunction (renderFn) {
   class EtchStateless {
     constructor (props, children) {
       this.props = props

@@ -333,4 +333,27 @@ describe('etch.dom', () => {
       })
     })
   })
+
+  describe('when a plain function is used as a tag name', () => {
+    it('uses the function to render the component', async () => {
+      let name = 'World'
+      let punctuation = '!'
+      let World = ({name}, children) => <span>{name}{children}</span>
+      let component = {
+        render () {
+          return <div>Hello <World name={name}>{punctuation}</World></div>
+        },
+
+        update () {}
+      }
+
+      etch.initialize(component)
+      expect(component.element.textContent).to.equal('Hello World!')
+
+      name = 'Earth'
+      punctuation = '!!'
+      await etch.update(component)
+      expect(component.element.textContent).to.equal('Hello Earth!!')
+    })
+  })
 })

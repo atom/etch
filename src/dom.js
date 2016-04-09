@@ -1,6 +1,7 @@
 import h from 'virtual-dom/h'
 import svg from 'virtual-dom/virtual-hyperscript/svg'
 import RefHook from './ref-hook'
+import {fromFunction} from './component-helpers'
 import ComponentWidget from './component-widget'
 import SVG_TAGS from './svg-tags'
 
@@ -18,6 +19,9 @@ import SVG_TAGS from './svg-tags'
 // particular library. For more information, see `./component-widget.js`.
 export default function dom (tag, properties, ...children) {
   if (typeof tag === 'function') {
+    if (!tag.prototype.render) {
+      tag = fromFunction(tag)
+    }
     return new ComponentWidget(tag, properties || {}, children)
   } else {
     // Etch allows for a special `ref` property, which will automatically create
