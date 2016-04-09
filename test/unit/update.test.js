@@ -200,7 +200,7 @@ describe('etch.update(component)', () => {
     }).to.throw(/root DOM node type/)
   })
 
-  it.only('treats multiple renders of a functional component as the same', async () => {
+  it('treats multiple renders of a functional component as the same', async () => {
     let Input = () => <input type="text" />
     let component = {
       render () {
