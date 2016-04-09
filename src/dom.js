@@ -5,6 +5,8 @@ import {fromFunction} from './component-helpers'
 import ComponentWidget from './component-widget'
 import SVG_TAGS from './svg-tags'
 
+let widgetsFromFunctions = new WeakMap()
+
 // This function is invoked by JSX expressions to construct `virtual-dom` trees.
 //
 // For normal HTML tags (when the `tag` parameter is a string), we call through
@@ -20,7 +22,13 @@ import SVG_TAGS from './svg-tags'
 export default function dom (tag, properties, ...children) {
   if (typeof tag === 'function') {
     if (!tag.prototype.render) {
-      tag = fromFunction(tag)
+      if (widgetsFromFunctions.has(tag)) {
+        tag = widgetsFromFunctions.get(tag)
+      } else {
+        let widget = fromFunction(tag)
+        widgetsFromFunctions.set(tag, widget)
+        tag = widget
+      }
     }
     return new ComponentWidget(tag, properties || {}, children)
   } else {
