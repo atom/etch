@@ -77,7 +77,7 @@ export default class ComponentWidget {
 
       // Finally, replace the old component's DOM element with the new
       // component's DOM element.
-      oldElement.parentNode.replaceChild(newElement, oldElement)
+      return newElement
     }
   }
 
