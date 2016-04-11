@@ -72,12 +72,9 @@ export default class ComponentWidget {
         }
       }
 
-      // Build a new component instance by calling `init`.
-      let newElement = this.init()
-
-      // Finally, replace the old component's DOM element with the new
-      // component's DOM element.
-      return newElement
+      // Build a new component instance by calling `init` and return it
+      // so that the old element is replaced with the new one.
+      return this.init()
     }
   }
 
