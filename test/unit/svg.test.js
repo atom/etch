@@ -2,7 +2,7 @@
 
 import etch from '../../src/index'
 
-describe.only('svg support', () => {
+describe('svg support', () => {
   it('sets the correct tag thingies', () => {
     let component = {
       render () {
