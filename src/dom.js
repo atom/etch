@@ -15,6 +15,7 @@ import ComponentWidget from './component-widget'
 // independent of the fact that its containing DOM tree is managed by this
 // particular library. For more information, see `./component-widget.js`.
 export default function dom (tag, properties, ...children) {
+  properties = properties || {}
   if (typeof tag === 'function') {
     return new ComponentWidget(tag, properties, children)
   } else {

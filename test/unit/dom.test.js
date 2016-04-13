@@ -3,6 +3,31 @@
 import etch from '../../src/index'
 
 describe('etch.dom', () => {
+  it('defaults properties to an empty object', () => {
+    let props = null
+
+    class MyComponent {
+      constructor (p) {
+        props = p
+      }
+
+      render () { return <span /> }
+
+      update () {}
+    }
+
+    let owner = {
+      render () {
+        return <MyComponent />
+      },
+
+      update () {}
+    }
+
+    etch.initialize(owner)
+    expect(props).to.eql({})
+  })
+
   describe('when a component constructor is used as a tag name', () => {
     describe('on initial render', () => {
       it('constructs the component with the specified properties and children, then appends its element to the DOM', () => {
