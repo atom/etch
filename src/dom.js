@@ -2,29 +2,7 @@ import h from 'virtual-dom/h'
 import svg from 'virtual-dom/virtual-hyperscript/svg'
 import RefHook from './ref-hook'
 import ComponentWidget from './component-widget'
-
-// taken from https://github.com/facebook/react/blob/67f8524e88abbf1ac0fd86d38a0477d11fbc7b3e/src/isomorphic/classic/element/ReactDOMFactories.js#L153
-const SVG_TAGS = [
-  'circle',
-  'clipPath',
-  'defs',
-  'ellipse',
-  'g',
-  'image',
-  'line',
-  'linearGradient',
-  'mask',
-  'path',
-  'pattern',
-  'polygon',
-  'polyline',
-  'radialGradient',
-  'rect',
-  'stop',
-  'svg',
-  'text',
-  'tspan'
-]
+import SVG_TAGS from './svg-tags'
 
 // This function is invoked by JSX expressions to construct `virtual-dom` trees.
 //
@@ -51,9 +29,9 @@ export default function dom (tag, properties, ...children) {
       properties.ref = new RefHook(properties.ref)
     }
 
-    if (SVG_TAGS.includes(tag)) {
+    if (SVG_TAGS.has(tag)) {
       if (properties && properties.className) {
-        properties['class'] = properties.className
+        properties.class = properties.className
         delete properties.className
       }
       return svg(tag, properties, children)
