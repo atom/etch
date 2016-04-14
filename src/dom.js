@@ -15,9 +15,8 @@ import ComponentWidget from './component-widget'
 // independent of the fact that its containing DOM tree is managed by this
 // particular library. For more information, see `./component-widget.js`.
 export default function dom (tag, properties, ...children) {
-  properties = properties || {}
   if (typeof tag === 'function') {
-    return new ComponentWidget(tag, properties, children)
+    return new ComponentWidget(tag, properties || {}, children)
   } else {
     // Etch allows for a special `ref` property, which will automatically create
     // named references to DOM elements containing the property. We implement
