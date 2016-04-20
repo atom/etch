@@ -50,9 +50,9 @@ export function initialize(component) {
 //
 // Returns a promise that will resolve when the requested update has been
 // completed.
-export function update (component) {
+export function update (component, replace=true) {
   if (syncUpdatesInProgressCounter > 0) {
-    updateSync(component)
+    updateSync(component, replace)
     return Promise.resolve()
   }
 
@@ -62,7 +62,7 @@ export function update (component) {
     componentsWithPendingUpdates.add(component)
     scheduler.updateDocument(function () {
       componentsWithPendingUpdates.delete(component)
-      updateSync(component)
+      updateSync(component, replace)
     })
   }
 
@@ -88,7 +88,7 @@ export function update (component) {
 // For now, etch does not allow the root tag of the `render` method to change
 // between invocations, because we want to preserve a one-to-one relationship
 // between component objects and DOM elements for simplicity.
-export function updateSync (component) {
+export function updateSync (component, replace=true) {
   syncUpdatesInProgressCounter++
 
   let oldVirtualElement = component.virtualElement
@@ -98,8 +98,10 @@ export function updateSync (component) {
   let newDomNode = patch(component.element, diff(oldVirtualElement, newVirtualElement))
   refsStack.pop()
   component.virtualElement = newVirtualElement
-  if (newDomNode !== oldDomNode) {
+  if (newDomNode !== oldDomNode && !replace) {
     throw new Error("etch does not support changing the root DOM node type of a component")
+  } else {
+    component.element = newDomNode
   }
 
   syncUpdatesInProgressCounter--
