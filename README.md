@@ -243,6 +243,23 @@ If the properties or children change during an update of the parent component, E
 
 Finally, if an update causes the child component to no longer appear in the DOM or the parent component itself is destroyed, Etch will call `destroy` on the child component if it is implemented.
 
+#### Functions as Etch Components
+
+If your component is very simple and doesn't need to track any state internally, it can be easier to describe it as a pure function of properties and children. Etch supports this case; simply use a function as a tag name:
+
+```javascript
+function FuncComponent(props, children) {
+  return <div className={props.someProp}>{children}</div>
+}
+
+class MyComponent {
+  // other methods omitted for brevity...
+  render () {
+    return <div><FuncComponent someProp={value}>With Children</FuncComponent>
+  }
+}
+```
+
 #### Nesting Non-Etch Components Within Etch Components
 
 Nothing about the component composition rules requires that the child component be implemented with Etch. So long as your constructor builds an object with an `.element` property, it can be nested within an Etch virtual DOM tree. Your component can implement `update` and `destroy` if you want to participate in the parent component's lifecycle, but these methods are not required.

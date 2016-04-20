@@ -227,4 +227,22 @@ describe('etch.update(component)', () => {
       }).to.throw(/root DOM node type/)
     })
   })
+
+  it('treats multiple renders of a functional component as the same', async () => {
+    let Input = () => <input type="text" />
+    let component = {
+      render () {
+        return <Input />
+      },
+
+      update () {}
+    }
+
+    etch.initialize(component)
+    document.body.appendChild(component.element)
+    component.element.focus()
+    expect(document.activeElement).to.equal(component.element)
+    await etch.update(component)
+    expect(document.activeElement).to.equal(component.element)
+  })
 })

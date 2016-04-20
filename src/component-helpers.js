@@ -147,3 +147,25 @@ function destroyChildComponents(virtualNode) {
     virtualNode.children.forEach(destroyChildComponents)
   }
 }
+
+export function fromFunction (renderFn) {
+  class EtchStateless {
+    constructor (props, children) {
+      this.props = props
+      this.children = children
+      initialize(this)
+    }
+
+    update (props, children) {
+      this.props = props
+      this.children = children
+      return update(this)
+    }
+
+    render () {
+      return renderFn(this.props, this.children)
+    }
+  }
+
+  return EtchStateless
+}

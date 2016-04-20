@@ -1,8 +1,11 @@
 import h from 'virtual-dom/h'
 import svg from 'virtual-dom/virtual-hyperscript/svg'
 import RefHook from './ref-hook'
+import {fromFunction} from './component-helpers'
 import ComponentWidget from './component-widget'
 import SVG_TAGS from './svg-tags'
+
+let widgetsFromFunctions = new WeakMap()
 
 // This function is invoked by JSX expressions to construct `virtual-dom` trees.
 //
@@ -18,6 +21,15 @@ import SVG_TAGS from './svg-tags'
 // particular library. For more information, see `./component-widget.js`.
 export default function dom (tag, properties, ...children) {
   if (typeof tag === 'function') {
+    if (!tag.prototype.render) {
+      if (widgetsFromFunctions.has(tag)) {
+        tag = widgetsFromFunctions.get(tag)
+      } else {
+        let widget = fromFunction(tag)
+        widgetsFromFunctions.set(tag, widget)
+        tag = widget
+      }
+    }
     return new ComponentWidget(tag, properties || {}, children)
   } else {
     // Etch allows for a special `ref` property, which will automatically create
