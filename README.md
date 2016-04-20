@@ -91,9 +91,9 @@ let component = new MyComponent({greeting: 'Hello'})
 console.log(component.element.outerHTML) // ==> <div>Hello World!</div>
 ```
 
-#### `etch.update(component)`
+#### `etch.update(component[, replaceNode])`
 
-This function takes a component that is already associated with an `.element` property and updates the component's DOM element based on the current return value of the component's `render` method.
+This function takes a component that is already associated with an `.element` property and updates the component's DOM element based on the current return value of the component's `render` method. If the return value of `render` specifies that the DOM element type has changed since the last `render`, Etch will switch out the previous DOM node for the new one unless `replaceNode` is `false`.
 
 `etch.update` is asynchronous, batching multiple DOM updates together in a single animation frame for efficiency. Even if it is called repeatedly with the same component in a given event-loop tick, it will only perform a single DOM update per component on the next animation frame. That means it is safe to call `etch.update` whenever your component's state changes, even if you're doing so redundantly. This function returns a promise that resolves when the DOM update has completed.
 
@@ -134,11 +134,9 @@ console.log(component.element.outerHTML) // ==> <div>Salutations World!</div>
 
 There is also a synchronous variant, `etch.updateSync`, which performs the DOM update immediately. It doesn't skip redundant updates or batch together with other component updates, so you shouldn't really use it unless you have a clear reason.
 
-One caveat is that it's not possible to update the root tag name of a component. This is because we want to maintain a 1:1 relationship between components and their elements, and changing the root tag name would require us to replace the component's element with a new one. While this is certainly doable, it comes with complexity trade-offs we're not currently willing to make. Instead of swapping root tags, implement subtrees of your DOM that change their root tag as method calls on another component rather than their own components.
+#### `etch.destroy(component[, removeNode])`
 
-#### `etch.destroy(component)`
-
-When you no longer need a component, pass it to `etch.destroy`. This function will remove the component from the document and call `destroy` on any child components (child components are covered later in this document). `etch.destroy` is also asynchronous so that it can combine the removal of DOM elements with other DOM updates, and it returns a promise that resolves when the removal has completed.
+When you no longer need a component, pass it to `etch.destroy`. This function will call `destroy` on any child components (child components are covered later in this document), and will additionally remove the component's DOM element from the document unless `removeNode` is `false`. `etch.destroy` is also asynchronous so that it can combine the removal of DOM elements with other DOM updates, and it returns a promise that resolves when the component destruction process has completed.
 
 `etch.destroy` is typically called in an async `destroy` method on the component:
 

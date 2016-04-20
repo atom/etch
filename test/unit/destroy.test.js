@@ -58,4 +58,28 @@ describe('etch.destroy(component)', () => {
     expect(parent.element.parentElement).to.be.null
     expect(child.element.parentElement).not.to.be.null // Only removes the root node to avoid unnecessary DOM writes
   })
+
+  it('does not remove the DOM node when passed false as a second argument', async () => {
+    class Component {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      render () {
+        return (
+          <div />
+        )
+      }
+
+      update () {}
+    }
+
+    let component = new Component()
+    let container = document.createElement('div')
+    container.appendChild(component.element)
+
+    await etch.destroy(component, false)
+
+    expect(component.element.parentElement).to.equal(container)
+  })
 })

@@ -2,7 +2,7 @@
 
 import etch from '../../src/index'
 
-describe('etch.destroy(component)', () => {
+describe('etch.destroySync(component)', () => {
   it('synchronously removes the component\'s element from the document and calls `destroy` on child components', () => {
     class ParentComponent {
       constructor () {
@@ -57,5 +57,29 @@ describe('etch.destroy(component)', () => {
     expect(child.destroyCallCount).to.equal(1) // But we do call it on child components
     expect(parent.element.parentElement).to.be.null
     expect(child.element.parentElement).not.to.be.null // Only removes the root node to avoid unnecessary DOM writes
+  })
+
+  it('does not remove the DOM node when passed false as a second argument', () => {
+    class Component {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      render () {
+        return (
+          <div />
+        )
+      }
+
+      update () {}
+    }
+
+    let component = new Component()
+    let container = document.createElement('div')
+    container.appendChild(component.element)
+
+    etch.destroySync(component, false)
+
+    expect(component.element.parentElement).to.equal(container)
   })
 })

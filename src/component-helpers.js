@@ -50,9 +50,9 @@ export function initialize(component) {
 //
 // Returns a promise that will resolve when the requested update has been
 // completed.
-export function update (component) {
+export function update (component, replaceNode=true) {
   if (syncUpdatesInProgressCounter > 0) {
-    updateSync(component)
+    updateSync(component, replaceNode)
     return Promise.resolve()
   }
 
@@ -62,7 +62,7 @@ export function update (component) {
     componentsWithPendingUpdates.add(component)
     scheduler.updateDocument(function () {
       componentsWithPendingUpdates.delete(component)
-      updateSync(component)
+      updateSync(component, replaceNode)
     })
   }
 
@@ -88,7 +88,7 @@ export function update (component) {
 // For now, etch does not allow the root tag of the `render` method to change
 // between invocations, because we want to preserve a one-to-one relationship
 // between component objects and DOM elements for simplicity.
-export function updateSync (component) {
+export function updateSync (component, replaceNode=true) {
   syncUpdatesInProgressCounter++
 
   let oldVirtualElement = component.virtualElement
@@ -98,8 +98,10 @@ export function updateSync (component) {
   let newDomNode = patch(component.element, diff(oldVirtualElement, newVirtualElement))
   refsStack.pop()
   component.virtualElement = newVirtualElement
-  if (newDomNode !== oldDomNode) {
+  if (newDomNode !== oldDomNode && !replaceNode) {
     throw new Error("etch does not support changing the root DOM node type of a component")
+  } else {
+    component.element = newDomNode
   }
 
   syncUpdatesInProgressCounter--
@@ -112,15 +114,15 @@ export function updateSync (component) {
 // If called as the result of destroying a component higher in the DOM, the
 // element is not removed to avoid redundant DOM manipulation. Returns a promise
 // that resolves when the destruction is completed.
-export function destroy (component) {
+export function destroy (component, removeNode=true) {
   if (syncUpdatesInProgressCounter > 0 || syncDestructionsInProgressCounter > 0) {
-    destroySync(component)
+    destroySync(component, removeNode)
     return Promise.resolve()
   }
 
   let scheduler = getScheduler()
   scheduler.updateDocument(function () {
-    destroySync(component)
+    destroySync(component, removeNode)
   })
   return scheduler.getNextUpdatePromise()
 }
@@ -129,10 +131,10 @@ export function destroy (component) {
 //
 // Note that we track whether `destroy` calls are in progress and only remove
 // the element if we are not a nested call.
-export function destroySync (component) {
+export function destroySync (component, removeNode=true) {
   syncDestructionsInProgressCounter++
   destroyChildComponents(component.virtualElement)
-  if (syncDestructionsInProgressCounter === 1) component.element.remove()
+  if (syncDestructionsInProgressCounter === 1 && removeNode) component.element.remove()
   syncDestructionsInProgressCounter--
 }
 
