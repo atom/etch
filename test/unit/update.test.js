@@ -174,7 +174,7 @@ describe('etch.update(component)', () => {
     expect(parent.element.innerHTML).to.equal('')
   })
 
-  it('replaces the node when the top-level node type changes', () => {
+  it('throws when attempting to change the top-level node type', () => {
     class Component {
       constructor () {
         this.renderDiv = true
@@ -193,10 +193,11 @@ describe('etch.update(component)', () => {
     }
 
     let component = new Component()
-    expect(component.element.tagName).to.equal('DIV')
     component.renderDiv = false
-    etch.updateSync(component)
-    expect(component.element.tagName).to.equal('SPAN')
+
+    expect(() => {
+      etch.updateSync(component)
+    }).to.throw(/root DOM node type/)
   })
 
   it('treats multiple renders of a functional component as the same', async () => {

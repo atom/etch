@@ -98,7 +98,9 @@ export function updateSync (component) {
   let newDomNode = patch(component.element, diff(oldVirtualElement, newVirtualElement))
   refsStack.pop()
   component.virtualElement = newVirtualElement
-  component.element = newDomNode
+  if (newDomNode !== oldDomNode) {
+    throw new Error("etch does not support changing the root DOM node type of a component")
+  }
 
   syncUpdatesInProgressCounter--
 }
