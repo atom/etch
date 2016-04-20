@@ -112,15 +112,15 @@ export function updateSync (component) {
 // If called as the result of destroying a component higher in the DOM, the
 // element is not removed to avoid redundant DOM manipulation. Returns a promise
 // that resolves when the destruction is completed.
-export function destroy (component) {
+export function destroy (component, remove=true) {
   if (syncUpdatesInProgressCounter > 0 || syncDestructionsInProgressCounter > 0) {
-    destroySync(component)
+    destroySync(component, remove)
     return Promise.resolve()
   }
 
   let scheduler = getScheduler()
   scheduler.updateDocument(function () {
-    destroySync(component)
+    destroySync(component, remove)
   })
   return scheduler.getNextUpdatePromise()
 }
@@ -129,10 +129,10 @@ export function destroy (component) {
 //
 // Note that we track whether `destroy` calls are in progress and only remove
 // the element if we are not a nested call.
-export function destroySync (component) {
+export function destroySync (component, remove=true) {
   syncDestructionsInProgressCounter++
   destroyChildComponents(component.virtualElement)
-  if (syncDestructionsInProgressCounter === 1) component.element.remove()
+  if (syncDestructionsInProgressCounter === 1 && remove) component.element.remove()
   syncDestructionsInProgressCounter--
 }
 
