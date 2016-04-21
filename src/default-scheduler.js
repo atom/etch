@@ -5,8 +5,10 @@
 export default class DefaultScheduler {
   constructor () {
     this.updateRequests = []
+    this.readRequests = []
     this.pendingAnimationFrame = null
     this.performUpdates = this.performUpdates.bind(this)
+    this.performingUpdates = false
   }
 
   // Enqueues functions that write to the DOM to be performed on the next
@@ -14,6 +16,13 @@ export default class DefaultScheduler {
   // the DOM, because that could cause synchronous reflows.
   updateDocument (fn) {
     this.updateRequests.push(fn)
+    if (!this.pendingAnimationFrame) {
+      this.pendingAnimationFrame = window.requestAnimationFrame(this.performUpdates)
+    }
+  }
+
+  readDocument (fn) {
+    this.readRequests.push(fn)
     if (!this.pendingAnimationFrame) {
       this.pendingAnimationFrame = window.requestAnimationFrame(this.performUpdates)
     }
@@ -39,8 +48,17 @@ export default class DefaultScheduler {
       this.updateRequests.shift()()
     }
 
-    // We don't clear the pending frame until the request queue is fully
+    // We don't clear the pending frame until all update requests are processed.
+    // This ensures updates requested within other updates are processed in the
+    // current frame.
     this.pendingAnimationFrame = null
+
+    // Now that updates are processed, we can perform all pending document reads
+    // without the risk of interleaving them with writes and causing layout
+    // thrashing.
+    while (this.readRequests.length > 0) {
+      this.readRequests.shift()()
+    }
 
     if (this.nextUpdatePromise) {
       let resolveNextUpdatePromise = this.resolveNextUpdatePromise
