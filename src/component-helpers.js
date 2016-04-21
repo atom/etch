@@ -104,6 +104,12 @@ export function updateSync (component, replaceNode=true) {
     component.element = newDomNode
   }
 
+  // We can safely perform additional writes after a DOM update synchronously,
+  // but any reads need to be deferred until all writes are completed to avoid
+  // DOM thrashing. Requested reads occur at the end of the the current frame
+  // if this method was invoked via the scheduler. Otherwise, if `updateSync`
+  // was invoked outside of the scheduler, the default scheduler will defer
+  // reads until the next animation frame.
   if (typeof component.writeAfterUpdate === 'function') {
     component.writeAfterUpdate()
   }
