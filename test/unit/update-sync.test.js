@@ -46,35 +46,67 @@ describe('etch.updateSync(component)', () => {
     expect(component.element.textContent).to.equal('Goodnight Moon')
   });
 
-  it('calls onUpdate hooks in most-recently-added order', () => {
+  it('calls writeAfterUpdate and readAfterUpdate hooks at the appropriate times', async () => {
     let events = []
-    let thisBinding = null
 
-    class MyComponent {
+    class ParentComponent {
       constructor () {
-        etch.onUpdate(this, this.onUpdateOne)
-        etch.onUpdate(this, this.onUpdateTwo)
         etch.initialize(this)
       }
 
-      onUpdateOne () {
-        events.push('update 1')
-        thisBinding = this
+      render () {
+        return (
+          <div>
+            <ChildComponent />
+          </div>
+        )
       }
 
-      onUpdateTwo () {
-        events.push('update 2')
+      update () {
+        etch.update(this)
       }
 
-      update () {}
+      writeAfterUpdate () {
+        events.push('parent-write')
+      }
 
-      render () { return <div /> }
+      readAfterUpdate () {
+        events.push('parent-read')
+      }
     }
 
-    let component = new MyComponent()
+    class ChildComponent {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      render () {
+        return <div/>
+      }
+
+      update () {
+        etch.update(this)
+      }
+
+      writeAfterUpdate () {
+        events.push('child-write')
+      }
+
+      readAfterUpdate () {
+        events.push('child-read')
+      }
+    }
+
+    let parent = new ParentComponent()
     expect(events).to.eql([])
-    etch.updateSync(component)
-    expect(events).to.eql(['update 1', 'update 2'])
-    expect(thisBinding).to.equal(component)
+
+    etch.updateSync(parent)
+
+    expect(events).to.eql(['child-write', 'parent-write'])
+
+    // reads are deferred until the next frame to avoid DOM thrash
+    await new Promise(requestAnimationFrame)
+
+    expect(events).to.eql(['child-write', 'parent-write', 'child-read', 'parent-read'])
   })
 });
