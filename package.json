@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "npm run standard && npm run mocha",
-    "mocha": "devtool --quit --console node_modules/.bin/_mocha --renderer --recursive ./test/helpers/register-babel  test",
+    "mocha": "devtool --quit --console node_modules/.bin/_mocha --colors --recursive ./test/helpers/register-babel  test",
     "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/register-babel  test",
     "prepublish": "npm run standard && npm run clean && npm run build",
     "standard": "node_modules/.bin/standard --recursive src test && echo Linting passed",
