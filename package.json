@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nathansobo/etch.git"
+    "url": "https://github.com/atom/etch.git"
   },
   "keywords": [
     "virtual-dom dom view element custom-elements dom-diff atom electron"
@@ -22,9 +22,9 @@
   "author": "Nathan Sobo <nathan@github.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nathansobo/etch/issues"
+    "url": "https://github.com/atom/etch/issues"
   },
-  "homepage": "https://github.com/nathansobo/etch",
+  "homepage": "https://github.com/atom/etch",
   "devDependencies": {
     "babel": "^5.0.0",
     "babel-eslint": "^4.0.5",
