@@ -227,4 +227,40 @@ describe('etch.update(component)', () => {
       }).to.throw(/root DOM node type/)
     })
   })
+
+  it('calls onUpdate hooks in most-recently-added order', async () => {
+    let events = []
+    let thisBinding = null
+
+    class MyComponent {
+      constructor () {
+        etch.onUpdate(this, this.onUpdateOne)
+        etch.onUpdate(this, this.onUpdateTwo)
+        etch.initialize(this)
+      }
+
+      async update () {
+        events.push('pre update')
+        await etch.update(this)
+        events.push('post update')
+      }
+
+      onUpdateOne () {
+        events.push('update 1')
+        thisBinding = this
+      }
+
+      onUpdateTwo () {
+        events.push('update 2')
+      }
+
+      render () { return <div /> }
+    }
+
+    let component = new MyComponent()
+    expect(events).to.eql([])
+    await component.update()
+    expect(events).to.eql(['pre update', 'update 1', 'update 2', 'post update'])
+    expect(thisBinding).to.equal(component)
+  })
 })

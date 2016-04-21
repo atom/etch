@@ -134,6 +134,10 @@ console.log(component.element.outerHTML) // ==> <div>Salutations World!</div>
 
 There is also a synchronous variant, `etch.updateSync`, which performs the DOM update immediately. It doesn't skip redundant updates or batch together with other component updates, so you shouldn't really use it unless you have a clear reason.
 
+##### `etch.onUpdate(component, callback)`
+
+If you need to be notified when a component has been updated via `etch.update` or `etch.updateSync`, you can use `etch.onUpdate` to register a function to be called in those scenarios. Multiple functions can be registered per component, and the functions will be run in the same order that they are registered.
+
 #### `etch.destroy(component[, removeNode])`
 
 When you no longer need a component, pass it to `etch.destroy`. This function will call `destroy` on any child components (child components are covered later in this document), and will additionally remove the component's DOM element from the document unless `removeNode` is `false`. `etch.destroy` is also asynchronous so that it can combine the removal of DOM elements with other DOM updates, and it returns a promise that resolves when the component destruction process has completed.
