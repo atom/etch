@@ -1,3 +1,6 @@
 language: node_js
 node_js:
   - "node"
+script:
+  - npm run standard
+  - ./node_modules/.bin/devtool --quit --console node_modules/.bin/_mocha --colors --renderer --recursive ./test/helpers/register-babel  test
