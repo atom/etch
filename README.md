@@ -134,9 +134,15 @@ console.log(component.element.outerHTML) // ==> <div>Salutations World!</div>
 
 There is also a synchronous variant, `etch.updateSync`, which performs the DOM update immediately. It doesn't skip redundant updates or batch together with other component updates, so you shouldn't really use it unless you have a clear reason.
 
-##### `etch.onUpdate(component, callback)`
+##### Update Hooks
 
-If you need to be notified when a component has been updated via `etch.update` or `etch.updateSync`, you can use `etch.onUpdate` to register a function to be called in those scenarios. Multiple functions can be registered per component, and the functions will be run in the same order that they are registered.
+If you need to perform imperative DOM interactions in addition to the declarative updates provided by etch, you can integrate your imperative code via update hooks on the component. To ensure good performance, it's important that you segregate DOM reads and writes in the appropriate hook.
+
+* `writeAfterUpdate` If you need to *write* to any part of the document as a result of updating your component, you should perform these writes in an optional `writeAfterUpdate` method defined on your component. Be warned: If you read from the DOM inside this method, it could potentially lead to layout thrashing by interleaving your reads with DOM writes associated with other components.
+
+* `readAfterUpdate` If you need to *read* any part of the document as a result of updating your component, you should perform these writes in an optional `readAfterUpdate` method defined on your component. You should avoid writing to the DOM in these methods, because writes could interleave with reads performed in `readAfterUpdate` hooks defined on other components. If you need to update the DOM as a result of your reads, store state on your component and request an additional update via `etch.update`.
+
+These hooks exist to support DOM reads and writes in response to Etch updating your component's DOM. If you want your hook to run code based on changes to the component's *logical* state, you can make those calls directly or via other mechanisms. For example, if you simply want to call an external API when a property on your component changes, you should move that logic into the `update` method.
 
 #### `etch.destroy(component[, removeNode])`
 

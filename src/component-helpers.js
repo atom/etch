@@ -6,7 +6,6 @@ import refsStack from './refs-stack'
 import {getScheduler} from './scheduler-assignment'
 
 const componentsWithPendingUpdates = new WeakSet
-const updateHooks = new WeakMap
 let syncUpdatesInProgressCounter = 0
 let syncDestructionsInProgressCounter = 0
 
@@ -105,7 +104,20 @@ export function updateSync (component, replaceNode=true) {
     component.element = newDomNode
   }
 
-  callUpdateHooks(component)
+  // We can safely perform additional writes after a DOM update synchronously,
+  // but any reads need to be deferred until all writes are completed to avoid
+  // DOM thrashing. Requested reads occur at the end of the the current frame
+  // if this method was invoked via the scheduler. Otherwise, if `updateSync`
+  // was invoked outside of the scheduler, the default scheduler will defer
+  // reads until the next animation frame.
+  if (typeof component.writeAfterUpdate === 'function') {
+    component.writeAfterUpdate()
+  }
+  if (typeof component.readAfterUpdate === 'function') {
+    getScheduler().readDocument(function () {
+      component.readAfterUpdate()
+    })
+  }
 
   syncUpdatesInProgressCounter--
 }
@@ -135,7 +147,6 @@ export function destroy (component, removeNode=true) {
 // Note that we track whether `destroy` calls are in progress and only remove
 // the element if we are not a nested call.
 export function destroySync (component, removeNode=true) {
-  updateHooks.delete(component)
   syncDestructionsInProgressCounter++
   destroyChildComponents(component.virtualElement)
   if (syncDestructionsInProgressCounter === 1 && removeNode) component.element.remove()
@@ -149,24 +160,5 @@ function destroyChildComponents(virtualNode) {
     }
   } else if (virtualNode.children) {
     virtualNode.children.forEach(destroyChildComponents)
-  }
-}
-
-// Registers a function to run after a component has been updated with
-// `update` or `updateSync`. Multiple functions can be registered per
-// component, and they will be called in insertion order.
-export function onUpdate (component, callback) {
-  let hooks = updateHooks.get(component)
-  if (!hooks) {
-    hooks = new Set()
-    updateHooks.set(component, hooks)
-  }
-  hooks.add(callback)
-}
-
-function callUpdateHooks (component) {
-  let hooks = updateHooks.get(component)
-  if (hooks) {
-    hooks.forEach(h => h.call(component))
   }
 }
