@@ -142,6 +142,8 @@ If you need to perform imperative DOM interactions in addition to the declarativ
 
 * `readAfterUpdate` If you need to *read* any part of the document as a result of updating your component, you should perform these writes in an optional `readAfterUpdate` method defined on your component. You should avoid writing to the DOM in these methods, because writes could interleave with reads performed in `readAfterUpdate` hooks defined on other components. If you need to update the DOM as a result of your reads, store state on your component and request an additional update via `etch.update`.
 
+These hooks exist to support DOM reads and writes in response to Etch updating your component's DOM. If you want your hook to run code based on changes to the component's *logical* state, you can make those calls directly or via other mechanisms. For example, if you simply want to call an external API when a property on your component changes, you should move that logic into the `update` method.
+
 #### `etch.destroy(component[, removeNode])`
 
 When you no longer need a component, pass it to `etch.destroy`. This function will call `destroy` on any child components (child components are covered later in this document), and will additionally remove the component's DOM element from the document unless `removeNode` is `false`. `etch.destroy` is also asynchronous so that it can combine the removal of DOM elements with other DOM updates, and it returns a promise that resolves when the component destruction process has completed.
