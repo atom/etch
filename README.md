@@ -1,6 +1,6 @@
 # etch
 
-![Logo](http://i.imgur.com/6FdWsnl.gif)
+![Logo](http://i.imgur.com/Tcp6Vyt.gif)
 
 Etch is a library for writing HTML-based user interface components that provides the convenience of a **virtual DOM**, while at the same time striving to be **minimal**, **interoperable**, and **explicit**. Etch can be used anywhere, but it was specifically designed with **Atom packages** and **Electron applications** in mind.
 
