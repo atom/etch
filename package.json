@@ -4,10 +4,11 @@
   "description": "Perform virtual DOM updates based on changes to a data model.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm run standard && node_modules/.bin/electron-mocha --renderer --recursive ./test/helpers/register-babel  test",
+    "test": "npm run standard && npm run mocha",
+    "mocha": "env && devtool --quit --console node_modules/.bin/_mocha --colors --recursive ./test/helpers/register-babel test",
     "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/register-babel  test",
     "prepublish": "npm run standard && npm run clean && npm run build",
-    "standard": "node_modules/.bin/standard --recursive src test",
+    "standard": "node_modules/.bin/standard --recursive src test && echo Linting passed",
     "build": "node_modules/.bin/babel src --out-dir dist",
     "clean": "rm -rf dist"
   },
@@ -28,6 +29,7 @@
     "babel": "^5.0.0",
     "babel-eslint": "^4.0.5",
     "chai": "^2.0.0",
+    "devtool": "^1.9.1",
     "electron-mocha": "git://github.com/nathansobo/electron-mocha.git#interactive-option",
     "electron-prebuilt": "^0.30.1",
     "mocha": "^2.1.0",
