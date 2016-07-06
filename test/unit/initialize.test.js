@@ -29,4 +29,16 @@ describe('etch.initialize(component)', () => {
     expect(component.refs.greeting.textContent).to.equal('Hello')
     expect(component.refs.greeted.textContent).to.equal('World')
   })
+
+  it('throws an exception if undefined is returned from render', () => {
+    let component = {
+      render () {},
+
+      update () {}
+    }
+
+    expect(function() {
+      etch.initialize(component)
+    }).to.throw(/invalid falsy value/)
+  })
 })

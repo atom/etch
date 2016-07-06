@@ -44,7 +44,7 @@ describe('etch.updateSync(component)', () => {
     component.greeted = 'Moon'
     etch.updateSync(component)
     expect(component.element.textContent).to.equal('Goodnight Moon')
-  });
+  })
 
   it('calls writeAfterUpdate and readAfterUpdate hooks at the appropriate times', async () => {
     let events = []
@@ -186,4 +186,39 @@ describe('etch.updateSync(component)', () => {
     component.update({childNodeType: 'span'})
     expect(component.element.firstChild.tagName).to.equal('SPAN')
   })
-});
+
+  it('throws a generic exception if undefined is returned from render in an anonymous component', () => {
+    let renderItem = true
+    let component = {
+      render () {
+        return renderItem && <div/>
+      },
+
+      update () {}
+    }
+
+    etch.initialize(component)
+    renderItem = false
+    expect(function() {
+      etch.updateSync(component)
+    }).to.throw(/invalid falsy value/)
+  })
+
+  it('throws a class-specific exception if undefined is returned from render in a named component', () => {
+    let renderItem = true
+    class MyComponent {
+      render () {
+        return renderItem && <div/>
+      }
+
+      update () {}
+    }
+
+    let component = new MyComponent()
+    etch.initialize(component)
+    renderItem = false
+    expect(function() {
+      etch.updateSync(component)
+    }).to.throw(/invalid falsy value.*in MyComponent/)
+  })
+})

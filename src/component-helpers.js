@@ -9,6 +9,10 @@ const componentsWithPendingUpdates = new WeakSet
 let syncUpdatesInProgressCounter = 0
 let syncDestructionsInProgressCounter = 0
 
+function validVirtualElement (virtualElement) {
+  return virtualElement != null && virtualElement !== false
+}
+
 // This function associates a component object with a DOM element by calling
 // the components `render` method, assigning an `.element` property on the
 // object and also returning the element.
@@ -28,8 +32,13 @@ export function initialize(component) {
     throw new Error('Etch components must implement `update(props, children)`.')
   }
 
+  let virtualElement = component.render()
+  if (!validVirtualElement(virtualElement)) {
+    let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
+    throw new Error('invalid falsy value ' + virtualElement + ' returned from render()' + namePart)
+  }
   component.refs = {}
-  component.virtualElement = component.render()
+  component.virtualElement = virtualElement
   refsStack.push(component.refs)
   component.element = createElement(component.virtualElement)
   refsStack.pop()
@@ -89,11 +98,15 @@ export function update (component, replaceNode=true) {
 // between invocations, because we want to preserve a one-to-one relationship
 // between component objects and DOM elements for simplicity.
 export function updateSync (component, replaceNode=true) {
-  syncUpdatesInProgressCounter++
+  let newVirtualElement = component.render()
+  if (!validVirtualElement(newVirtualElement)) {
+    let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
+    throw new Error('invalid falsy value ' + newVirtualElement + ' returned from render()' + namePart)
+  }
 
+  syncUpdatesInProgressCounter++
   let oldVirtualElement = component.virtualElement
   let oldDomNode = component.element
-  let newVirtualElement = component.render()
   refsStack.push(component.refs)
   let newDomNode = patch(component.element, diff(oldVirtualElement, newVirtualElement))
   refsStack.pop()
