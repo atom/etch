@@ -187,7 +187,7 @@ describe('etch.updateSync(component)', () => {
     expect(component.element.firstChild.tagName).to.equal('SPAN')
   })
 
-  it('throws a generic exception if undefined is returned from render in an anonymous component', () => {
+  it('throws a generic exception if undefined is returned from render in a component that is not a class instance', () => {
     let renderItem = true
     let component = {
       render () {
@@ -204,7 +204,7 @@ describe('etch.updateSync(component)', () => {
     }).to.throw(/invalid falsy value/)
   })
 
-  it('throws a class-specific exception if undefined is returned from render in a named component', () => {
+  it('throws a class-specific exception if undefined is returned from render in a component that is a class instance', () => {
     let renderItem = true
     class MyComponent {
       render () {
