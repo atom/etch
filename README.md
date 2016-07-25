@@ -255,7 +255,7 @@ Finally, if an update causes the child component to no longer appear in the DOM 
 
 #### Nesting Non-Etch Components Within Etch Components
 
-Nothing about the component composition rules requires that the child component be implemented with Etch. So long as your constructor builds an object with an `.element` property, it can be nested within an Etch virtual DOM tree. Your component can implement `update` and `destroy` if you want to participate in the parent component's lifecycle, but these methods are not required.
+Nothing about the component composition rules requires that the child component be implemented with Etch. So long as your constructor builds an object with an `.element` property and an `update` method, it can be nested within an Etch virtual DOM tree. Your component can also implement `destroy` if you want to perform teardown logic when it is removed from the parent component.
 
 This feature makes it easy to mix components written in different versions of Etch or wrap components written in other technologies for integration into an Etch component. You can even just use raw DOM APIs for simple or performance critical components and use them straightforwardly within Etch.
 
