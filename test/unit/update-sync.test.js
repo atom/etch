@@ -109,4 +109,43 @@ describe('etch.updateSync(component)', () => {
 
     expect(events).to.eql(['child-write', 'parent-write', 'child-read', 'parent-read'])
   })
+
+  it('relays updates to non-etch child components', function () {
+    class ParentComponent {
+      constructor ({greeting}) {
+        this.greeting = greeting
+        etch.initialize(this)
+      }
+
+      render () {
+        return (
+          <div>
+            <ChildComponent greeting={this.greeting} />
+          </div>
+        )
+      }
+
+      update ({greeting}) {
+        this.greeting = greeting
+        etch.updateSync(this)
+      }
+    }
+
+    class ChildComponent {
+      constructor ({greeting}) {
+        this.element = document.createElement('div')
+        this.element.textContent = greeting
+      }
+
+      update ({greeting}) {
+        this.element.textContent = greeting
+      }
+    }
+
+    let component = new ParentComponent({greeting: 'Hello'})
+    expect(component.element.textContent).to.equal('Hello')
+
+    component.update({greeting: 'Goodbye'})
+    expect(component.element.textContent).to.equal('Goodbye')
+  })
 });
