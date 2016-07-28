@@ -312,7 +312,7 @@ Compared to React, control is inverted. Instead of implementing `shouldComponent
 
 #### Stateful Components
 
-If your `render` method's output is based on state managed within the component itself, call `etch.update` whenever this state is update. You could store all state in a sub-object called `state` like React does, or you could just use instance variables.
+If your `render` method's output is based on state managed within the component itself, call `etch.update` whenever this state is updated. You could store all state in a sub-object called `state` like React does, or you could just use instance variables.
 
 ```js
 class StatefulComponent {
