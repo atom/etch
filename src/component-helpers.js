@@ -99,7 +99,7 @@ export function updateSync (component, replaceNode=true) {
   refsStack.pop()
   component.virtualElement = newVirtualElement
   if (newDomNode !== oldDomNode && !replaceNode) {
-    throw new Error("etch does not support changing the root DOM node type of a component")
+    throw new Error('The root node type changed on update, but the update was performed with the replaceNode option set to false')
   } else {
     component.element = newDomNode
   }

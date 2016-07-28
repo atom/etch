@@ -224,7 +224,7 @@ describe('etch.update(component)', () => {
 
       expect(() => {
         etch.updateSync(component, false)
-      }).to.throw(/root DOM node type/)
+      }).to.throw(/root node type/)
     })
   })
 
