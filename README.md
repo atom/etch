@@ -283,23 +283,64 @@ Note that `ref` properties on normal HTML elements create references to raw DOM 
 
 ### Organizing Component State
 
-Other frameworks combine the virtual-DOM-based updating facilities enabled by this library with a more prescriptive approach to organizing component state. For example, React components tie their update lifecycle to changes in `props` and `state` objects that are baked into all components.
+To keep the API surface area minimal, Etch is deliberately focused only on updating the DOM, leaving management of component state to component authors.
 
-Etch deliberately avoids prescribing a specific approach to component state, and instead gives you the tools to make your own decisions about when the component should update. Etch never touches the DOM without you explicitly requesting it via `etch.update`. This keeps the surface area of the library smaller and gives you the flexibility to approach updates in a manner appropriate to your use case. That said, here are some patterns you can use:
+#### Controlled Components
 
-#### View Models
+If your component's HTML is based solely on properties passed in from the outside, you just need to implement a simple `update` method.
 
-For interface elements of even moderate complexity, the best approach is to separate logic from presentation by creating a *view model*. The view model should be implemented as a straightforward JS object model and implement all the logic for the component. In this pattern, the component plays a limited role: It should call `etch.update` when the model changes and implement `render` by querying the model. It should also translate DOM events to method calls on the model.
+```js
+class ControlledComponent {
+  constructor (props) {
+    this.props = props
+    etch.initialize(this)
+  }
 
-A model-oriented approach is much easier to test and offers better separation of concerns, at the cost of slightly more code due to maintaining a separate component and model. It's easier and more performant to test as much behavior as possible without involving the DOM, then write a lighter set of integration tests against the component. While the virtual DOM radically reduces the complexity of view-related logic, it's still helpful to keep code in the component focused solely on managing the DOM.
+  render () {
+    // read from this.props here
+  }
 
-#### Everything In The Component
+  update (props) {
+    // you could avoid redundant updates by comparing this.props with props...
+    this.props = props
+    return etch.update(this)
+  }
+}
+```
 
-If you want to maintain all state and behavior directly in the component, similar to a vanilla React application, that's also possible. You can deal with this in as simple or a complex a way as you want. At the simple end, just assign state on your component in instance variables that you read in `render` and call `etch.update` when you change it. At the more complex end, you could implement properties and state containers that call various hooks on your component and invoke `etch.update` automatically.
+Compared to React, control is inverted. Instead of implementing `shouldComponentUpdate` to control whether or not the framework updates your element, you always explicitly call `etch.update` when an update is needed.
 
-#### Fancy View Pattern Of The Month
+#### Stateful Components
 
-Implementing UI in Etch boils down to the following: Read from some source of state in `render`, call `etch.update` when that state changes, and translate events into the appropriate changes to that state. Beyond this, nothing is prescribed, and you should be pretty free to experiment with interesting patterns. Implement your ideas as a library that wraps Etch to season more behavior into components, and chart your path to glory. Just please don't assign any globals.
+If your `render` method's output is based on state managed within the component itself, call `etch.update` whenever this state is update. You could store all state in a sub-object called `state` like React does, or you could just use instance variables.
+
+```js
+class StatefulComponent {
+  constructor () {
+    this.counter = 0
+    etch.initialize(this)
+  }
+
+  render () {
+    <div>
+      <span>{this.counter}</span>
+      <button onclick={() => this.incrementCounter()}>
+        Increment Counter
+      </button>
+    </div>
+  }
+
+  incrementCounter () {
+    this.counter++
+    // since we updated state we use in render, call etch.update
+    return etch.update(this)
+  }
+}
+```
+
+#### What About A Component Superclass?
+
+To keep this library small and explicit, we're favoring composition over inheritance. Etch gives you a small set of tools for updating the DOM, and with these you can accomplish your objectives with some simple patterns. You *could* write a simple component superclass in your application to remove a bit of boilerplate, or even publish one on npm. For now, however, we're going to avoid taking on the complexity of such a superclass into this library. We may change our mind in the future.
 
 ### Customizing The Scheduler
 
