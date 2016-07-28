@@ -73,12 +73,11 @@ export default class ComponentWidget {
       }
 
       // Build a new component instance by calling `init`.
-      let newElement = this.init()
-
-      // Finally, replace the old component's DOM element with the new
-      // component's DOM element.
-      oldElement.parentNode.replaceChild(newElement, oldElement)
+      this.init()
     }
+
+    // Return the element so virtual-dom will replace the element if it changed
+    return this.component.element
   }
 
   destroy () {

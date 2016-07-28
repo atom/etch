@@ -148,4 +148,42 @@ describe('etch.updateSync(component)', () => {
     component.update({greeting: 'Goodbye'})
     expect(component.element.textContent).to.equal('Goodbye')
   })
+
+  it('allows non-etch child components to change their element during updates', function () {
+    class ParentComponent {
+      constructor ({childNodeType}) {
+        this.childNodeType = childNodeType
+        etch.initialize(this)
+      }
+
+      render () {
+        return (
+          <div>
+            <ChildComponent nodeType={this.childNodeType} />
+          </div>
+        )
+      }
+
+      update ({childNodeType}) {
+        this.childNodeType = childNodeType
+        etch.updateSync(this)
+      }
+    }
+
+    class ChildComponent {
+      constructor ({nodeType}) {
+        this.element = document.createElement(nodeType)
+      }
+
+      update ({nodeType}) {
+        this.element = document.createElement(nodeType)
+      }
+    }
+
+    let component = new ParentComponent({childNodeType: 'div'})
+    expect(component.element.firstChild.tagName).to.equal('DIV')
+
+    component.update({childNodeType: 'span'})
+    expect(component.element.firstChild.tagName).to.equal('SPAN')
+  })
 });
