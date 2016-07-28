@@ -9,7 +9,7 @@ const componentsWithPendingUpdates = new WeakSet
 let syncUpdatesInProgressCounter = 0
 let syncDestructionsInProgressCounter = 0
 
-function validVirtualElement (virtualElement) {
+function isValidVirtualElement (virtualElement) {
   return virtualElement != null && virtualElement !== false
 }
 
@@ -33,7 +33,7 @@ export function initialize(component) {
   }
 
   let virtualElement = component.render()
-  if (!validVirtualElement(virtualElement)) {
+  if (!isValidVirtualElement(virtualElement)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
     throw new Error('invalid falsy value ' + virtualElement + ' returned from render()' + namePart)
   }
@@ -99,7 +99,7 @@ export function update (component, replaceNode=true) {
 // between component objects and DOM elements for simplicity.
 export function updateSync (component, replaceNode=true) {
   let newVirtualElement = component.render()
-  if (!validVirtualElement(newVirtualElement)) {
+  if (!isValidVirtualElement(newVirtualElement)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
     throw new Error('invalid falsy value ' + newVirtualElement + ' returned from render()' + namePart)
   }
