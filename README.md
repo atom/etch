@@ -249,9 +249,7 @@ class ParentComponent {
 }
 ```
 
-If the properties or children change during an update of the parent component, Etch calls `update` on the child component with the new values. If `update` is not implemented on the child, the component is destroyed and replaced with a new component that is constructed with the new values.
-
-Finally, if an update causes the child component to no longer appear in the DOM or the parent component itself is destroyed, Etch will call `destroy` on the child component if it is implemented.
+If the properties or children change during an update of the parent component, Etch calls `update` on the child component with the new values. Finally, if an update causes the child component to no longer appear in the DOM or the parent component itself is destroyed, Etch will call `destroy` on the child component if it is implemented.
 
 #### Nesting Non-Etch Components Within Etch Components
 
