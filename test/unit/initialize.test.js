@@ -30,6 +30,30 @@ describe('etch.initialize(component)', () => {
     expect(component.refs.greeted.textContent).to.equal('World')
   })
 
+  it('updates references to DOM elements', async () => {
+    let componentIndexWithRef = 1
+    let component = {
+      render () {
+        let firstElementProperties = componentIndexWithRef === 0 ? {ref: 'selected'} : {}
+        let secondElementProperties = componentIndexWithRef === 1 ? {ref: 'selected'} : {}
+        return (
+          <ul>
+            <li {...firstElementProperties}>one</li>
+            <li {...secondElementProperties}>two</li>
+          </ul>
+        )
+      },
+
+      update () {}
+    }
+    etch.initialize(component)
+    expect(component.refs.selected.textContent).to.equal('two')
+
+    componentIndexWithRef = 0
+    await etch.update(component)
+    expect(component.refs.selected.textContent).to.equal('one')
+  })
+
   it('throws an exception if undefined is returned from render', () => {
     let component = {
       render () {},

@@ -17,16 +17,13 @@ export default class RefHook {
   }
 
   hook (node) {
-    if (refsStack.length > 0) {
-      refsStack[refsStack.length - 1][this.refName] = node
-    } else {
-      debugger
-    }
+    refsStack[refsStack.length - 1][this.refName] = node
   }
 
   unhook (node) {
-    if (refsStack.length > 0) {
-      delete refsStack[refsStack.length - 1][this.refName]
+    const currentRefs = refsStack[refsStack.length - 1]
+    if (refsStack.length > 0 && currentRefs[this.refName] === node) {
+      delete currentRefs[this.refName]
     }
   }
 }
