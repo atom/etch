@@ -30,7 +30,7 @@ describe('etch.dom', () => {
 
   describe('when a component constructor is used as a tag name', () => {
     describe('on initial render', () => {
-      it('constructs the component with the specified properties and children, then appends its element to the DOM', () => {
+      it.only('constructs the component with the specified properties and children, then appends its element to the DOM', () => {
         class ChildComponent {
           constructor (properties, children) {
             this.properties = properties

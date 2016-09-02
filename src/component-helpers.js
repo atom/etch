@@ -2,6 +2,14 @@ import createElement from 'virtual-dom/create-element'
 import diff from 'virtual-dom/diff'
 import patch from 'virtual-dom/patch'
 
+import h from 'virtual-dom/h'
+import svg from 'virtual-dom/virtual-hyperscript/svg'
+import RefHook from './ref-hook'
+import ComponentWidget from './component-widget'
+import SVG_TAGS from './svg-tags'
+
+
+
 import refsStack from './refs-stack'
 import {getScheduler} from './scheduler-assignment'
 
@@ -11,6 +19,43 @@ let syncDestructionsInProgressCounter = 0
 
 function isValidVirtualElement (virtualElement) {
   return virtualElement != null && virtualElement !== false
+}
+
+function createVirtualNodes (descriptor) {
+  if (typeof descriptor === 'string') {
+    return h(descriptor)
+  } else if (Array.isArray(descriptor)) {
+    return descriptor.map(createVirtualNodes)
+  }
+
+  let {tag, properties, children} = descriptor
+  console.log("chillens", children)
+  children = children.map(createVirtualNodes)
+  console.log('tag', tag, 'properties', properties, 'children', children)
+
+  if (typeof tag === 'function') {
+    return new ComponentWidget(tag, properties || {}, children)
+  } else {
+    // Etch allows for a special `ref` property, which will automatically create
+    // named references to DOM elements containing the property. We implement
+    // this with virtual-dom's [hook system](https://github.com/Matt-Esch/virtual-dom/blob/master/docs/hooks.md),
+    // which allows a particular property to be associated with behavior when
+    // the element is created or destroyed.
+    if (properties && properties.ref) {
+      properties.ref = new RefHook(properties.ref)
+    }
+
+    if (SVG_TAGS.has(tag)) {
+      if (properties && properties.className) {
+        properties.class = properties.className
+        delete properties.className
+      }
+      return svg(tag, properties, children)
+    } else {
+      console.log("CALLING H WITH", tag, typeof tag)
+      return h(tag, properties, children)
+    }
+  }
 }
 
 // This function associates a component object with a DOM element by calling
@@ -32,7 +77,7 @@ export function initialize(component) {
     throw new Error('Etch components must implement `update(props, children)`.')
   }
 
-  let virtualElement = component.render()
+  let virtualElement = createVirtualNodes(component.render())
   if (!isValidVirtualElement(virtualElement)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
     throw new Error('invalid falsy value ' + virtualElement + ' returned from render()' + namePart)
@@ -98,7 +143,7 @@ export function update (component, replaceNode=true) {
 // between invocations, because we want to preserve a one-to-one relationship
 // between component objects and DOM elements for simplicity.
 export function updateSync (component, replaceNode=true) {
-  let newVirtualElement = component.render()
+  let newVirtualElement = createVirtualNodes(component.render())
   if (!isValidVirtualElement(newVirtualElement)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
     throw new Error('invalid falsy value ' + newVirtualElement + ' returned from render()' + namePart)

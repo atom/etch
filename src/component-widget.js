@@ -9,7 +9,7 @@ export default class ComponentWidget {
     this.type = 'Widget'
     this.componentConstructor = componentConstructor
     this.properties = properties
-    this.children = children
+    this.children = children || []
 
     if (this.properties && this.properties.key) {
       this.key = this.properties.key
