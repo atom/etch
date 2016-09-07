@@ -72,6 +72,8 @@ export default class ComponentWidget {
         }
       }
 
+      // Clean up the old component
+      oldWidget.destroy()
       // Build a new component instance by calling `init`.
       this.init()
     }

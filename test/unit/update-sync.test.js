@@ -221,4 +221,49 @@ describe('etch.updateSync(component)', () => {
       etch.updateSync(component)
     }).to.throw(/invalid falsy value.*in MyComponent/)
   })
+
+  it('calls destroy on a replaced component', () => {
+    let updated = false
+    let destroyed = false
+    class ComponentA {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      update () {}
+
+      render () { return <div>A</div> }
+
+      destroy () {
+        destroyed = true
+        etch.destroy(this)
+      }
+    }
+
+    class ComponentB {
+      constructor () {
+        etch.initialize(this)
+      }
+
+      update () {}
+
+      render () { return <div>B</div> }
+    }
+
+    let component = {
+      render () {
+        if (updated) { return <ComponentB /> } else { return <ComponentA /> }
+      },
+
+      update () {}
+    }
+
+    etch.initialize(component)
+    expect(component.element.textContent).to.equal('A')
+    expect(destroyed).to.equal(false)
+    updated = true
+    etch.updateSync(component)
+    expect(component.element.textContent).to.equal('B')
+    expect(destroyed).to.equal(true)
+  })
 })
