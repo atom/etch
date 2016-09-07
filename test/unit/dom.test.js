@@ -28,6 +28,18 @@ describe('etch.dom', () => {
     expect(props).to.eql({})
   })
 
+  it('normalizes camel-cased property names to dash-seperated attributes for SVG tags', function () {
+    let component = {
+      render () {
+        return <circle colorProfile='foo' colorRendering='bar'></circle>
+      },
+      update () {}
+    }
+
+    etch.initialize(component)
+    expect(component.element.outerHTML).to.equal('<circle color-profile="foo" color-rendering="bar"></circle>')
+  })
+
   describe('when a component constructor is used as a tag name', () => {
     describe('on initial render', () => {
       it('constructs the component with the specified properties and children, then appends its element to the DOM', () => {

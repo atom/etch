@@ -3,6 +3,7 @@ import svg from 'virtual-dom/virtual-hyperscript/svg'
 import RefHook from './ref-hook'
 import ComponentWidget from './component-widget'
 import SVG_TAGS from './svg-tags'
+import SVG_ATTRIBUTE_TRANSLATIONS from './svg-attribute-translations'
 
 // This function is invoked by JSX expressions to construct `virtual-dom` trees.
 //
@@ -30,9 +31,13 @@ export default function dom (tag, properties, ...children) {
     }
 
     if (SVG_TAGS.has(tag)) {
-      if (properties && properties.className) {
-        properties.class = properties.className
-        delete properties.className
+      if (properties) {
+        for (let property of Object.keys(properties)) {
+          if (SVG_ATTRIBUTE_TRANSLATIONS.hasOwnProperty(property)) {
+            properties[SVG_ATTRIBUTE_TRANSLATIONS[property]] = properties[property]
+            delete properties[property]
+          }
+        }
       }
       return svg(tag, properties, children)
     } else {
