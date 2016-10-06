@@ -305,14 +305,16 @@ describe('etch.dom', () => {
         }
 
         let parentComponent = {
-          condition: true,
+          renderA: true,
           refName: 'child',
 
           render () {
-            if (this.condition) {
+            if (this.renderA) {
               return <div><ChildComponentA ref={this.refName}></ChildComponentA></div>
-            } else {
+            } else if (this.renderB) {
               return <div><ChildComponentB ref={this.refName}></ChildComponentB></div>
+            } else {
+              return <div />
             }
           },
 
@@ -320,7 +322,6 @@ describe('etch.dom', () => {
         }
 
         etch.initialize(parentComponent)
-
 
         expect(parentComponent.refs.child instanceof ChildComponentA).to.be.true
         expect(parentComponent.refs.child.properties.ref).to.equal('child')
@@ -335,13 +336,73 @@ describe('etch.dom', () => {
         expect(parentComponent.refs.kid.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'child'
-        parentComponent.condition = false
+        parentComponent.renderA = false
+        parentComponent.renderB = true
         await etch.update(parentComponent)
 
         expect(parentComponent.refs.kid).to.be.undefined
         expect(parentComponent.refs.child instanceof ChildComponentB).to.be.true
         expect(parentComponent.refs.child.properties.ref).to.equal('child')
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('B')
+
+        parentComponent.renderB = false
+        await etch.update(parentComponent)
+        expect('child' in parentComponent.refs).to.be.false
+      })
+
+      it('does not delete a reference to a different component when a component is destroyed', async function () {
+        class ChildComponentA {
+          constructor () {
+            etch.initialize(this)
+          }
+
+          render () {
+            return <div>A</div>
+          }
+
+          update (properties) {}
+        }
+
+        class ChildComponentB {
+          constructor () {
+            etch.initialize(this)
+          }
+
+          render () {
+            return <div>B</div>
+          }
+
+          update () {}
+        }
+
+        let parentComponent = {
+          condition: true,
+
+          render () {
+            if (this.condition) {
+              return (
+                <div>
+                  <div />
+                  <ChildComponentA ref='child' />
+                </div>
+              )
+            } else {
+              return (
+                <div>
+                  <ChildComponentB ref='child' />
+                </div>
+              )
+            }
+          },
+
+          update () {}
+        }
+
+        etch.initialize(parentComponent)
+        parentComponent.condition = false
+        await etch.update(parentComponent)
+        expect(parentComponent.refs.child).to.not.be.undefined
+        expect(parentComponent.refs.child.constructor).to.equal(ChildComponentB)
       })
     })
   })

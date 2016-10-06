@@ -83,6 +83,15 @@ export default class ComponentWidget {
   }
 
   destroy () {
+    // Clean up the reference to this component if it is not now referencing a
+    // different component.
+    if (this.properties && this.properties.ref && refsStack.length > 0) {
+      const refs = refsStack[refsStack.length - 1]
+      if (refs[this.properties.ref] === this.component) {
+        delete refs[this.properties.ref]
+      }
+    }
+
     if (typeof this.component.destroy === 'function') {
       this.component.destroy()
     }
