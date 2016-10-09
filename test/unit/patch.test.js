@@ -179,6 +179,53 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
     assert.equal(newNode.outerHTML, '<span>Goodbye</span>')
     assert.deepEqual(Array.from(parent.children), [newNode])
   })
+
+  describe('child components', function () {
+    it('can insert a component', function () {
+      class Component {
+        constructor (props, children) {
+          this.element = render(<div class={props.class}>{children}</div>)
+        }
+      }
+
+      assertValidPatch(
+        <div></div>,
+        <div>
+          <Component class='child-component'>
+            <div />
+            <span />
+          </Component>
+        </div>
+      )
+    })
+
+    it('can remove a component and call destroy', function () {
+      const createdInstances = []
+      const destroyedInstances = []
+
+      class Component {
+        constructor () {
+          this.element = render(<div class='component' />)
+          createdInstances.push(this)
+        }
+
+        destroy () {
+          destroyedInstances.push(this)
+        }
+      }
+
+      assertValidPatch(
+        <div><Component /></div>,
+        <div />
+      )
+
+      assert.equal(destroyedInstances.length, 1)
+      assert.deepEqual(destroyedInstances, [createdInstances[0]])
+    })
+
+    it('can update an existing component', function () {
+    })
+  })
 })
 
 function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {

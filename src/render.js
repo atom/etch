@@ -7,6 +7,7 @@ export default function render (virtualNode) {
 
     if (typeof tag === 'function') {
       const component = new tag(props, children)
+      virtualNode.component = component
       domNode = component.element
     } else {
       domNode = document.createElement(tag)

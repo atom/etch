@@ -14,7 +14,7 @@ export default function patch (oldVirtualNode, newVirtualNode) {
   } else {
     const parentNode = oldElement.parentNode
     const nextSibling = oldElement.nextSibling
-    if (parentNode) oldElement.remove()
+    removeVirtualNode(oldVirtualNode)
     const newElement = render(newVirtualNode)
     if (parentNode) parentNode.insertBefore(newElement, nextSibling)
     newVirtualNode.domNode = newElement
@@ -93,9 +93,14 @@ function patchChildren (parentElement, oldChildren, newChildren) {
   } else if (newStartIndex > newEndIndex) {
     for (let i = oldStartIndex; i <= oldEndIndex; i++) {
       const child = oldChildren[i]
-      if (child) child.domNode.remove()
+      if (child) removeVirtualNode(child)
     }
   }
+}
+
+function removeVirtualNode (virtualNode) {
+  if (virtualNode.component) virtualNode.component.destroy()
+  virtualNode.domNode.remove()
 }
 
 function virtualNodesAreEqual (oldVirtualNode, newVirtualNode) {
