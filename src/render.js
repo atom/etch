@@ -1,26 +1,26 @@
 export default function render (virtualNode) {
-  let element
+  let domNode
   if (virtualNode.text) {
-    element = document.createTextNode(virtualNode.text)
+    domNode = document.createTextNode(virtualNode.text)
   } else {
     const {tag, props, children} = virtualNode
 
     if (typeof tag === 'function') {
       const component = new tag(props, children)
-      element = component.element
+      domNode = component.element
     } else {
-      element = document.createElement(tag)
-      if (props) setAttributes(element, props)
-      if (children) addChildren(element, children)
+      domNode = document.createElement(tag)
+      if (props) setAttributes(domNode, props)
+      if (children) addChildren(domNode, children)
     }
   }
-  virtualNode.element = element
-  return element
+  virtualNode.domNode = domNode
+  return domNode
 }
 
-function setAttributes (element, props) {
+function setAttributes (domNode, props) {
   for (let name in props) {
-    element.setAttribute(name, props[name])
+    domNode.setAttribute(name, props[name])
   }
 }
 

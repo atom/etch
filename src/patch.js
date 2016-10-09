@@ -1,7 +1,7 @@
 import render from './render'
 
 export default function patch (oldVirtualNode, newVirtualNode) {
-  const oldElement = oldVirtualNode.element
+  const oldElement = oldVirtualNode.domNode
   if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
     if (newVirtualNode.text) {
       oldElement.nodeValue = newVirtualNode.text
@@ -9,7 +9,7 @@ export default function patch (oldVirtualNode, newVirtualNode) {
       patchChildren(oldElement, oldVirtualNode.children, newVirtualNode.children)
       patchAttributes(oldElement, oldVirtualNode.props, newVirtualNode.props)
     }
-    newVirtualNode.element = oldElement
+    newVirtualNode.domNode = oldElement
     return oldElement
   } else {
     const parentNode = oldElement.parentNode
@@ -17,18 +17,18 @@ export default function patch (oldVirtualNode, newVirtualNode) {
     if (parentNode) oldElement.remove()
     const newElement = render(newVirtualNode)
     if (parentNode) parentNode.insertBefore(newElement, nextSibling)
-    newVirtualNode.element = newElement
+    newVirtualNode.domNode = newElement
     return newElement
   }
 }
 
-function patchAttributes(element, oldProps, newProps) {
+function patchAttributes(domNode, oldProps, newProps) {
   for (let prop in oldProps) {
-    if (!(prop in newProps)) element.removeAttribute(prop)
+    if (!(prop in newProps)) domNode.removeAttribute(prop)
   }
   for (let prop in newProps) {
     const newValue = newProps[prop]
-    if (newValue !== oldProps[prop]) element.setAttribute(prop, newValue)
+    if (newValue !== oldProps[prop]) domNode.setAttribute(prop, newValue)
   }
 }
 
@@ -60,12 +60,12 @@ function patchChildren (parentElement, oldChildren, newChildren) {
       newEndChild = newChildren[--newEndIndex]
     } else if (virtualNodesAreEqual(oldStartChild, newEndChild)) {
       patch(oldStartChild, newEndChild)
-      parentElement.insertBefore(oldStartChild.element, oldEndChild.element.nextSibling)
+      parentElement.insertBefore(oldStartChild.domNode, oldEndChild.domNode.nextSibling)
       oldStartChild = oldChildren[++oldStartIndex]
       newEndChild = newChildren[--newEndIndex]
     } else if (virtualNodesAreEqual(oldEndChild, newStartChild)) {
       patch(oldEndChild, newStartChild)
-      parentElement.insertBefore(oldEndChild.element, oldStartChild.element);
+      parentElement.insertBefore(oldEndChild.domNode, oldStartChild.domNode);
       oldEndChild = oldChildren[--oldEndIndex]
       newStartChild = newChildren[++newStartIndex]
     } else {
@@ -73,27 +73,27 @@ function patchChildren (parentElement, oldChildren, newChildren) {
       const key = getKey(newStartChild)
       const oldIndex = key ? oldIndicesByKey[key] : null
       if (oldIndex == null) {
-        parentElement.insertBefore(render(newStartChild), oldStartChild.element)
+        parentElement.insertBefore(render(newStartChild), oldStartChild.domNode)
         newStartChild = newChildren[++newStartIndex]
       } else {
         const oldChildToMove = oldChildren[oldIndex]
         patch(oldChildToMove, newStartChild)
         oldChildren[oldIndex] = undefined
-        parentElement.insertBefore(oldChildToMove.element, oldStartChild.element)
+        parentElement.insertBefore(oldChildToMove.domNode, oldStartChild.domNode)
         newStartChild = newChildren[++newStartIndex]
       }
     }
   }
 
   if (oldStartIndex > oldEndIndex) {
-    const subsequentElement = newChildren[newEndIndex + 1] ? newChildren[newEndIndex + 1].element : null
+    const subsequentElement = newChildren[newEndIndex + 1] ? newChildren[newEndIndex + 1].domNode : null
     for (let i = newStartIndex; i <= newEndIndex; i++) {
       parentElement.insertBefore(render(newChildren[i]), subsequentElement)
     }
   } else if (newStartIndex > newEndIndex) {
     for (let i = oldStartIndex; i <= oldEndIndex; i++) {
       const child = oldChildren[i]
-      if (child) child.element.remove()
+      if (child) child.domNode.remove()
     }
   }
 }

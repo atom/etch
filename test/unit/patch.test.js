@@ -7,7 +7,7 @@ import dom from '../../src/dom'
 import render from '../../src/render'
 import patch from '../../src/patch'
 
-describe('patch', () => {
+describe('patch (oldVirtualNode, newVirtualNode)', () => {
   describe('attributes', function () {
     it('can add, remove, and update attributes', function () {
       assertValidPatch(<div a='1' b='2' />, <div b='3' c='4' />)
@@ -113,7 +113,7 @@ describe('patch', () => {
   })
 
   describe('unkeyed children', function () {
-    it('can append elements', function () {
+    it('can append nodes', function () {
       assertValidPatch(
         <div><span>Hello</span></div>,
         <div><span>Hello</span><span>World</span></div>
@@ -124,7 +124,7 @@ describe('patch', () => {
       )
     })
 
-    it('can prepend elements', function () {
+    it('can prepend nodes', function () {
       assertValidPatch(
         <div><span>World</span></div>,
         <div><span>Hello</span><span>World</span></div>
@@ -142,7 +142,7 @@ describe('patch', () => {
       )
     })
 
-    it('can replace an element child with a text child and vice versa', function () {
+    it('can replace an node child with a text child and vice versa', function () {
       assertValidPatch(
         <div><span>Hello</span><span>World</span></div>,
         <div>Goodnight<span>World</span></div>
@@ -173,19 +173,19 @@ describe('patch', () => {
   it('can replace a node with a node of a different type', function () {
     const parent = render(<div />)
     const oldVirtualNode = <div>Hello</div>
-    const element = render(oldVirtualNode)
-    parent.appendChild(element)
-    const newElement = patch(oldVirtualNode, <span>Goodbye</span>)
-    assert.equal(newElement.outerHTML, '<span>Goodbye</span>')
-    assert.deepEqual(Array.from(parent.children), [newElement])
+    const oldNode = render(oldVirtualNode)
+    parent.appendChild(oldNode)
+    const newNode = patch(oldVirtualNode, <span>Goodbye</span>)
+    assert.equal(newNode.outerHTML, '<span>Goodbye</span>')
+    assert.deepEqual(Array.from(parent.children), [newNode])
   })
 })
 
 function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {
-  const element = render(oldVirtualNode)
+  const node = render(oldVirtualNode)
   patch(oldVirtualNode, newVirtualNode)
   const message = seed != null ? `Invalid patch for seed ${seed}` : undefined
-  assert.equal(element.outerHTML, render(newVirtualNode).outerHTML, message)
+  assert.equal(node.outerHTML, render(newVirtualNode).outerHTML, message)
 }
 
 function spans (...elements) {
