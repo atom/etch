@@ -1,19 +1,23 @@
+import virtualNodesByElement from './virtual-nodes-by-element'
+
 export default function render (virtualNode) {
+  let element
   if (typeof virtualNode === 'string') {
-    return document.createTextNode(virtualNode)
+    element = document.createTextNode(virtualNode)
   } else {
     const {tag, props, children} = virtualNode
 
     if (typeof tag === 'function') {
       const component = new tag(props, children)
-      return component.element
+      element = component.element
     } else {
-      const element = document.createElement(tag)
+      element = document.createElement(tag)
       if (props) setAttributes(element, props)
       if (children) addChildren(element, children)
-      return element
     }
   }
+  virtualNodesByElement.set(element, virtualNode)
+  return element
 }
 
 function setAttributes (element, props) {
