@@ -175,7 +175,7 @@ function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {
   const element = render(oldVirtualNode)
   patch(oldVirtualNode, newVirtualNode)
   const message = seed != null ? `Invalid patch for seed ${seed}` : undefined
-  assert.deepEqual(element, render(newVirtualNode), message)
+  assert.equal(element.outerHTML, render(newVirtualNode).outerHTML, message)
 }
 
 function spans (...elements) {
