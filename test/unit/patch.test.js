@@ -111,6 +111,64 @@ describe('patch', () => {
       }
     })
   })
+
+  describe('unkeyed children', function () {
+    it('can append elements', function () {
+      assertValidPatch(
+        <div><span>Hello</span></div>,
+        <div><span>Hello</span><span>World</span></div>
+      )
+      assertValidPatch(
+        <div><span>Hello</span></div>,
+        <div><span>Hello</span><div>World</div></div>
+      )
+    })
+
+    it('can prepend elements', function () {
+      assertValidPatch(
+        <div><span>World</span></div>,
+        <div><span>Hello</span><span>World</span></div>
+      )
+      assertValidPatch(
+        <div><div>World</div></div>,
+        <div><span>Hello</span><div>World</div></div>
+      )
+    })
+
+    it('can change text children', function () {
+      assertValidPatch(
+        <div><span>Hello</span><span>World</span></div>,
+        <div><span>Goodnight</span><span>Moon</span></div>
+      )
+    })
+
+    it('can replace an element child with a text child and vice versa', function () {
+      assertValidPatch(
+        <div><span>Hello</span><span>World</span></div>,
+        <div>Goodnight<span>World</span></div>
+      )
+      assertValidPatch(
+        <div>Goodnight<span>World</span></div>,
+        <div><span>Hello</span><span>World</span></div>
+      )
+      assertValidPatch(
+        <div><span>Hello</span>World</div>,
+        <div>Goodnight<span>Moon</span></div>
+      )
+    })
+
+    it('can update to randomized reorderings of children', function () {
+      for (let i = 0; i < 20; i++) {
+        const seed = Date.now()
+        const randomGenerator = Random(seed)
+        assertValidPatch(
+          <div>{spans(...randomLetters(randomGenerator))}</div>,
+          <div>{spans(...randomLetters(randomGenerator))}</div>,
+          seed
+        )
+      }
+    })
+  })
 })
 
 function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {
@@ -118,6 +176,10 @@ function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {
   patch(element, newVirtualNode)
   const message = seed != null ? `Invalid patch for seed ${seed}` : undefined
   assert.deepEqual(element, render(newVirtualNode), message)
+}
+
+function spans (...elements) {
+  return elements.map(element => <span>{element}</span>)
 }
 
 function keyedSpans (...elements) {

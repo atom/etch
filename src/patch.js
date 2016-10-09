@@ -8,10 +8,16 @@ export default function patch (element, newVirtualNode) {
 }
 
 function patchVirtualNode (oldVirtualNode, newVirtualNode) {
-  const element = oldVirtualNode.element
-  patchAttributes(element, oldVirtualNode.props, newVirtualNode.props)
-  patchChildren(element, oldVirtualNode.children, newVirtualNode.children)
-  newVirtualNode.element = element
+  const oldElement = oldVirtualNode.element
+
+  if (newVirtualNode.text) {
+    oldElement.nodeValue = newVirtualNode.text
+  } else {
+    patchChildren(oldElement, oldVirtualNode.children, newVirtualNode.children)
+    patchAttributes(oldElement, oldVirtualNode.props, newVirtualNode.props)
+  }
+
+  newVirtualNode.element = oldElement
 }
 
 function patchAttributes(element, oldProps, newProps) {
