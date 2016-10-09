@@ -2,15 +2,24 @@ import render from './render'
 
 export default function patch (oldVirtualNode, newVirtualNode) {
   const oldElement = oldVirtualNode.element
-
-  if (newVirtualNode.text) {
-    oldElement.nodeValue = newVirtualNode.text
+  if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
+    if (newVirtualNode.text) {
+      oldElement.nodeValue = newVirtualNode.text
+    } else {
+      patchChildren(oldElement, oldVirtualNode.children, newVirtualNode.children)
+      patchAttributes(oldElement, oldVirtualNode.props, newVirtualNode.props)
+    }
+    newVirtualNode.element = oldElement
+    return oldElement
   } else {
-    patchChildren(oldElement, oldVirtualNode.children, newVirtualNode.children)
-    patchAttributes(oldElement, oldVirtualNode.props, newVirtualNode.props)
+    const parentNode = oldElement.parentNode
+    const nextSibling = oldElement.nextSibling
+    if (parentNode) oldElement.remove()
+    const newElement = render(newVirtualNode)
+    if (parentNode) parentNode.insertBefore(newElement, nextSibling)
+    newVirtualNode.element = newElement
+    return newElement
   }
-
-  newVirtualNode.element = oldElement
 }
 
 function patchAttributes(element, oldProps, newProps) {
@@ -41,20 +50,20 @@ function patchChildren (parentElement, oldChildren, newChildren) {
       oldStartChild = oldChildren[++oldStartIndex]
     } else if (!oldEndChild) {
       oldEndChild = oldChildren[--oldEndIndex]
-    } else if (isEqual(oldStartChild, newStartChild)) {
+    } else if (virtualNodesAreEqual(oldStartChild, newStartChild)) {
       patch(oldStartChild, newStartChild)
       oldStartChild = oldChildren[++oldStartIndex]
       newStartChild = newChildren[++newStartIndex]
-    } else if (isEqual(oldEndChild, newEndChild)) {
+    } else if (virtualNodesAreEqual(oldEndChild, newEndChild)) {
       patch(oldEndChild, newEndChild)
       oldEndChild = oldChildren[--oldEndIndex]
       newEndChild = newChildren[--newEndIndex]
-    } else if (isEqual(oldStartChild, newEndChild)) {
+    } else if (virtualNodesAreEqual(oldStartChild, newEndChild)) {
       patch(oldStartChild, newEndChild)
       parentElement.insertBefore(oldStartChild.element, oldEndChild.element.nextSibling)
       oldStartChild = oldChildren[++oldStartIndex]
       newEndChild = newChildren[--newEndIndex]
-    } else if (isEqual(oldEndChild, newStartChild)) {
+    } else if (virtualNodesAreEqual(oldEndChild, newStartChild)) {
       patch(oldEndChild, newStartChild)
       parentElement.insertBefore(oldEndChild.element, oldStartChild.element);
       oldEndChild = oldChildren[--oldEndIndex]
@@ -89,7 +98,7 @@ function patchChildren (parentElement, oldChildren, newChildren) {
   }
 }
 
-function isEqual (oldVirtualNode, newVirtualNode) {
+function virtualNodesAreEqual (oldVirtualNode, newVirtualNode) {
   return (
     getKey(oldVirtualNode) === getKey(newVirtualNode)
       && oldVirtualNode.tag === newVirtualNode.tag

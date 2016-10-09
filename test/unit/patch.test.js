@@ -169,6 +169,16 @@ describe('patch', () => {
       }
     })
   })
+
+  it('can replace a node with a node of a different type', function () {
+    const parent = render(<div />)
+    const oldVirtualNode = <div>Hello</div>
+    const element = render(oldVirtualNode)
+    parent.appendChild(element)
+    const newElement = patch(oldVirtualNode, <span>Goodbye</span>)
+    assert.equal(newElement.outerHTML, '<span>Goodbye</span>')
+    assert.deepEqual(Array.from(parent.children), [newElement])
+  })
 })
 
 function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {
