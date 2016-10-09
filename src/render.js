@@ -1,5 +1,3 @@
-import virtualNodesByElement from './virtual-nodes-by-element'
-
 export default function render (virtualNode) {
   let element
   if (virtualNode.text) {
@@ -17,7 +15,6 @@ export default function render (virtualNode) {
     }
   }
   virtualNode.element = element
-  virtualNodesByElement.set(element, virtualNode)
   return element
 }
 

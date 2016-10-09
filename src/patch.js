@@ -1,13 +1,6 @@
 import render from './render'
-import virtualNodesByElement from './virtual-nodes-by-element'
 
-export default function patch (element, newVirtualNode) {
-  const oldVirtualNode = virtualNodesByElement.get(element)
-  if (!oldVirtualNode) throw new Error('No virtual node found for element. You can currently only patch elements produced via the render or patch functions.')
-  patchVirtualNode(oldVirtualNode, newVirtualNode)
-}
-
-function patchVirtualNode (oldVirtualNode, newVirtualNode) {
+export default function patch (oldVirtualNode, newVirtualNode) {
   const oldElement = oldVirtualNode.element
 
   if (newVirtualNode.text) {
@@ -49,20 +42,20 @@ function patchChildren (parentElement, oldChildren, newChildren) {
     } else if (!oldEndChild) {
       oldEndChild = oldChildren[--oldEndIndex]
     } else if (isEqual(oldStartChild, newStartChild)) {
-      patchVirtualNode(oldStartChild, newStartChild)
+      patch(oldStartChild, newStartChild)
       oldStartChild = oldChildren[++oldStartIndex]
       newStartChild = newChildren[++newStartIndex]
     } else if (isEqual(oldEndChild, newEndChild)) {
-      patchVirtualNode(oldEndChild, newEndChild)
+      patch(oldEndChild, newEndChild)
       oldEndChild = oldChildren[--oldEndIndex]
       newEndChild = newChildren[--newEndIndex]
     } else if (isEqual(oldStartChild, newEndChild)) {
-      patchVirtualNode(oldStartChild, newEndChild)
+      patch(oldStartChild, newEndChild)
       parentElement.insertBefore(oldStartChild.element, oldEndChild.element.nextSibling)
       oldStartChild = oldChildren[++oldStartIndex]
       newEndChild = newChildren[--newEndIndex]
     } else if (isEqual(oldEndChild, newStartChild)) {
-      patchVirtualNode(oldEndChild, newStartChild)
+      patch(oldEndChild, newStartChild)
       parentElement.insertBefore(oldEndChild.element, oldStartChild.element);
       oldEndChild = oldChildren[--oldEndIndex]
       newStartChild = newChildren[++newStartIndex]
@@ -75,7 +68,7 @@ function patchChildren (parentElement, oldChildren, newChildren) {
         newStartChild = newChildren[++newStartIndex]
       } else {
         const oldChildToMove = oldChildren[oldIndex]
-        patchVirtualNode(oldChildToMove, newStartChild)
+        patch(oldChildToMove, newStartChild)
         oldChildren[oldIndex] = undefined
         parentElement.insertBefore(oldChildToMove.element, oldStartChild.element)
         newStartChild = newChildren[++newStartIndex]
