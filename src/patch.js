@@ -42,27 +42,28 @@ function patchChildren (parentElement, oldChildren, newChildren) {
       oldStartChild = oldChildren[++oldStartIndex]
     } else if (!oldEndChild) {
       oldEndChild = oldChildren[--oldEndIndex]
-    } else if (keysEqual(oldStartChild, newStartChild)) {
+    } else if (isEqual(oldStartChild, newStartChild)) {
       patchVirtualNode(oldStartChild, newStartChild)
       oldStartChild = oldChildren[++oldStartIndex]
       newStartChild = newChildren[++newStartIndex]
-    } else if (keysEqual(oldEndChild, newEndChild)) {
+    } else if (isEqual(oldEndChild, newEndChild)) {
       patchVirtualNode(oldEndChild, newEndChild)
       oldEndChild = oldChildren[--oldEndIndex]
       newEndChild = newChildren[--newEndIndex]
-    } else if (keysEqual(oldStartChild, newEndChild)) {
+    } else if (isEqual(oldStartChild, newEndChild)) {
       patchVirtualNode(oldStartChild, newEndChild)
       parentElement.insertBefore(oldStartChild.element, oldEndChild.element.nextSibling)
       oldStartChild = oldChildren[++oldStartIndex]
       newEndChild = newChildren[--newEndIndex]
-    } else if (keysEqual(oldEndChild, newStartChild)) {
+    } else if (isEqual(oldEndChild, newStartChild)) {
       patchVirtualNode(oldEndChild, newStartChild)
       parentElement.insertBefore(oldEndChild.element, oldStartChild.element);
       oldEndChild = oldChildren[--oldEndIndex]
       newStartChild = newChildren[++newStartIndex]
     } else {
       if (!oldIndicesByKey) oldIndicesByKey = mapOldKeysToIndices(oldChildren, oldStartIndex, oldEndIndex)
-      const oldIndex = oldIndicesByKey[newStartChild.key]
+      const key = getKey(newStartChild)
+      const oldIndex = key ? oldIndicesByKey[key] : null
       if (oldIndex == null) {
         parentElement.insertBefore(render(newStartChild), oldStartChild.element)
         newStartChild = newChildren[++newStartIndex]
@@ -83,23 +84,27 @@ function patchChildren (parentElement, oldChildren, newChildren) {
     }
   } else if (newStartIndex > newEndIndex) {
     for (let i = oldStartIndex; i <= oldEndIndex; i++) {
-      oldChildren[i].element.remove()
+      const child = oldChildren[i]
+      if (child) child.element.remove()
     }
   }
 }
 
-function keysEqual (oldVirtualNode, newVirtualNode) {
+function isEqual (oldVirtualNode, newVirtualNode) {
   return (
-    oldVirtualNode.props
-      && newVirtualNode.props
-      && oldVirtualNode.props.key === newVirtualNode.props.key
+    getKey(oldVirtualNode) === getKey(newVirtualNode)
+      && oldVirtualNode.tag === newVirtualNode.tag
   )
+}
+
+function getKey (virtualNode) {
+  return virtualNode.props ? virtualNode.props.key : null
 }
 
 function mapOldKeysToIndices (children, startIndex, endIndex) {
   let oldIndicesByKey = {}
   for (let i = startIndex; i <= endIndex; i++) {
-    const key = children[i].key
+    const key = getKey(children[i])
     if (key) oldIndicesByKey[key] = i
   }
   return oldIndicesByKey;
