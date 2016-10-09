@@ -2,8 +2,8 @@ import virtualNodesByElement from './virtual-nodes-by-element'
 
 export default function render (virtualNode) {
   let element
-  if (typeof virtualNode === 'string') {
-    element = document.createTextNode(virtualNode)
+  if (virtualNode.text) {
+    element = document.createTextNode(virtualNode.text)
   } else {
     const {tag, props, children} = virtualNode
 
@@ -16,6 +16,7 @@ export default function render (virtualNode) {
       if (children) addChildren(element, children)
     }
   }
+  virtualNode.element = element
   virtualNodesByElement.set(element, virtualNode)
   return element
 }
@@ -28,10 +29,6 @@ function setAttributes (element, props) {
 
 function addChildren (parent, children) {
   for (let child of children) {
-    if (Array.isArray(child)) {
-      addChildren(parent, child)
-    } else {
-      parent.appendChild(render(child))
-    }
+    parent.appendChild(render(child))
   }
 }
