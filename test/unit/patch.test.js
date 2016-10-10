@@ -142,7 +142,7 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       )
     })
 
-    it('can replace an node child with a text child and vice versa', function () {
+    it('can replace a child with a text child and vice versa', function () {
       assertValidPatch(
         <div><span>Hello</span><span>World</span></div>,
         <div>Goodnight<span>World</span></div>
