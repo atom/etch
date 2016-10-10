@@ -1,24 +1,24 @@
 import render from './render'
 
 export default function patch (oldVirtualNode, newVirtualNode) {
-  const oldElement = oldVirtualNode.domNode
+  const oldNode = oldVirtualNode.domNode
   if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
     if (newVirtualNode.text) {
-      oldElement.nodeValue = newVirtualNode.text
+      oldNode.nodeValue = newVirtualNode.text
     } else {
-      patchChildren(oldElement, oldVirtualNode.children, newVirtualNode.children)
-      patchAttributes(oldElement, oldVirtualNode.props, newVirtualNode.props)
+      patchChildren(oldNode, oldVirtualNode.children, newVirtualNode.children)
+      patchAttributes(oldNode, oldVirtualNode.props, newVirtualNode.props)
     }
-    newVirtualNode.domNode = oldElement
-    return oldElement
+    newVirtualNode.domNode = oldNode
+    return oldNode
   } else {
-    const parentNode = oldElement.parentNode
-    const nextSibling = oldElement.nextSibling
+    const parentNode = oldNode.parentNode
+    const nextSibling = oldNode.nextSibling
     removeVirtualNode(oldVirtualNode)
-    const newElement = render(newVirtualNode)
-    if (parentNode) parentNode.insertBefore(newElement, nextSibling)
-    newVirtualNode.domNode = newElement
-    return newElement
+    const newNode = render(newVirtualNode)
+    if (parentNode) parentNode.insertBefore(newNode, nextSibling)
+    newVirtualNode.domNode = newNode
+    return newNode
   }
 }
 
