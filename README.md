@@ -27,7 +27,7 @@ class MyComponent {
     return <div></div>
   }
 
-  // Optional: Update the component with new properties and children
+  // Required: Update the component with new properties and children.
   update (props, children) {
     // perform custom update logic here...
     // then call `etch.update`, which is async and returns a promise
