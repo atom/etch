@@ -29,7 +29,7 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
 
 function updateProps(domNode, oldProps, newProps, refs) {
   for (const name in oldProps) {
-    if (!(name in newProps)) {
+    if (!(newProps && name in newProps)) {
       if (name === 'ref') {
         const oldValue = oldProps[name]
         if (refs && refs[oldValue] === domNode) delete refs[oldValue]
@@ -39,12 +39,12 @@ function updateProps(domNode, oldProps, newProps, refs) {
     }
   }
   for (let name in newProps) {
-    const oldValue = oldProps[name]
+    const oldValue = oldProps && oldProps[name]
     const newValue = newProps[name]
     if (newValue !== oldValue) {
       if (name === 'ref') {
         if (refs) {
-          if (refs[oldValue] === domNode) delete refs[oldValue]
+          if (oldValue && refs[oldValue] === domNode) delete refs[oldValue]
           refs[newValue] = domNode
         }
       } else {
@@ -147,7 +147,7 @@ function virtualNodesAreEqual (oldVirtualNode, newVirtualNode) {
 }
 
 function getKey (virtualNode) {
-  return virtualNode.props ? virtualNode.props.key : null
+  return virtualNode.props ? virtualNode.props.key : undefined
 }
 
 function mapOldKeysToIndices (children, startIndex, endIndex) {

@@ -12,6 +12,11 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
     it('can add, remove, and update attributes', function () {
       assertValidPatch(<div a='1' b='2' />, <div b='3' c='4' />)
     })
+
+    it('can update from no attributes to some attributes and vice versa', function () {
+      assertValidPatch(<div />, <div a='1' />)
+      assertValidPatch(<div a='1' />, <div />)
+    })
   })
 
   describe('keyed children', function () {
