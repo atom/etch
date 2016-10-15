@@ -1,4 +1,4 @@
-export default function render (virtualNode) {
+export default function render (virtualNode, options) {
   let domNode
   if (virtualNode.text) {
     domNode = document.createTextNode(virtualNode.text)
@@ -11,22 +11,27 @@ export default function render (virtualNode) {
       domNode = component.element
     } else {
       domNode = document.createElement(tag)
-      if (props) setAttributes(domNode, props)
-      if (children) addChildren(domNode, children)
+      if (children) addChildren(domNode, children, options)
+      if (props) addProps(domNode, props, options && options.refs)
     }
   }
   virtualNode.domNode = domNode
   return domNode
 }
 
-function setAttributes (domNode, props) {
-  for (let name in props) {
-    domNode.setAttribute(name, props[name])
+function addChildren (parent, children, options) {
+  for (let child of children) {
+    parent.appendChild(render(child, options))
   }
 }
 
-function addChildren (parent, children) {
-  for (let child of children) {
-    parent.appendChild(render(child))
+function addProps (domNode, props, refs) {
+  for (const name in props) {
+    const value = props[name]
+    if (name === 'ref') {
+      if (refs) refs[value] = domNode
+    } else {
+      domNode.setAttribute(name, value)
+    }
   }
 }

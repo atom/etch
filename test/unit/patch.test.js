@@ -180,6 +180,53 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
     assert.deepEqual(Array.from(parent.children), [newNode])
   })
 
+  describe('ref properties', function () {
+    it('maintains references to child elements based on their `ref` property', function () {
+      const refs = {}
+
+      const virtualNode1 = (
+        <div ref='a' class='a'>
+          <div ref='b' class='b' />
+          <div ref='c' class='c'>
+            <div ref='d' class='d' />
+          </div>
+          <div ref='e' class='e' />
+        </div>
+      )
+      let element1 = render(virtualNode1, {refs})
+
+      assert.equal(refs.a, element1)
+      assert.equal(refs.b, element1.querySelector('.b'))
+      assert.equal(refs.c, element1.querySelector('.c'))
+      assert.equal(refs.d, element1.querySelector('.d'))
+      assert.equal(refs.e, element1.querySelector('.e'))
+
+      const virtualNode2 = (
+        <div class='a'>
+          <div ref='e' class='b' />
+          <span ref='f' class='e' />
+          <p ref='g' class='g' />
+        </div>
+      )
+      patch(virtualNode1, virtualNode2, {refs})
+
+      assert(!refs.hasOwnProperty('a'))
+      assert(!refs.hasOwnProperty('b'))
+      assert(!refs.hasOwnProperty('c'))
+      assert(!refs.hasOwnProperty('d'))
+      assert.equal(refs.e, element1.querySelector('.b'))
+      assert.equal(refs.f, element1.querySelector('.e'))
+      assert.equal(refs.g, element1.querySelector('.g'))
+
+      const virtualNode3 = <span ref='h' />
+      const element2 = patch(virtualNode2, virtualNode3, {refs})
+      assert(!refs.hasOwnProperty('e'))
+      assert(!refs.hasOwnProperty('f'))
+      assert(!refs.hasOwnProperty('g'))
+      assert.equal(refs.h, element2)
+    })
+  })
+
   describe('child components', function () {
     it('can insert a component', function () {
       class Component {

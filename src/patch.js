@@ -1,38 +1,55 @@
 import render from './render'
 
-export default function patch (oldVirtualNode, newVirtualNode) {
+export default function patch (oldVirtualNode, newVirtualNode, options) {
   const oldNode = oldVirtualNode.domNode
   if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
     if (newVirtualNode.text) {
       oldNode.nodeValue = newVirtualNode.text
     } else {
-      patchChildren(oldNode, oldVirtualNode.children, newVirtualNode.children)
-      patchAttributes(oldNode, oldVirtualNode.props, newVirtualNode.props)
+      updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
+      updateProps(oldNode, oldVirtualNode.props, newVirtualNode.props, options && options.refs)
     }
     newVirtualNode.domNode = oldNode
     return oldNode
   } else {
     const parentNode = oldNode.parentNode
     const nextSibling = oldNode.nextSibling
-    removeVirtualNode(oldVirtualNode)
-    const newNode = render(newVirtualNode)
+    removeVirtualNode(oldVirtualNode, options && options.refs)
+    const newNode = render(newVirtualNode, options)
     if (parentNode) parentNode.insertBefore(newNode, nextSibling)
     newVirtualNode.domNode = newNode
     return newNode
   }
 }
 
-function patchAttributes(domNode, oldProps, newProps) {
-  for (let prop in oldProps) {
-    if (!(prop in newProps)) domNode.removeAttribute(prop)
+function updateProps(domNode, oldProps, newProps, refs) {
+  for (const name in oldProps) {
+    if (!(name in newProps)) {
+      if (name === 'ref') {
+        const oldValue = oldProps[name]
+        if (refs && refs[oldValue] === domNode) delete refs[oldValue]
+      } else {
+        domNode.removeAttribute(name)
+      }
+    }
   }
-  for (let prop in newProps) {
-    const newValue = newProps[prop]
-    if (newValue !== oldProps[prop]) domNode.setAttribute(prop, newValue)
+  for (let name in newProps) {
+    const oldValue = oldProps[name]
+    const newValue = newProps[name]
+    if (newValue !== oldValue) {
+      if (name === 'ref') {
+        if (refs) {
+          if (refs[oldValue] === domNode) delete refs[oldValue]
+          refs[newValue] = domNode
+        }
+      } else {
+         domNode.setAttribute(name, newValue)
+      }
+    }
   }
 }
 
-function patchChildren (parentElement, oldChildren, newChildren) {
+function updateChildren (parentElement, oldChildren, newChildren, options) {
   let oldStartIndex = 0
   let oldEndIndex = oldChildren.length - 1
   let oldStartChild = oldChildren[0]
@@ -51,20 +68,20 @@ function patchChildren (parentElement, oldChildren, newChildren) {
     } else if (!oldEndChild) {
       oldEndChild = oldChildren[--oldEndIndex]
     } else if (virtualNodesAreEqual(oldStartChild, newStartChild)) {
-      patch(oldStartChild, newStartChild)
+      patch(oldStartChild, newStartChild, options)
       oldStartChild = oldChildren[++oldStartIndex]
       newStartChild = newChildren[++newStartIndex]
     } else if (virtualNodesAreEqual(oldEndChild, newEndChild)) {
-      patch(oldEndChild, newEndChild)
+      patch(oldEndChild, newEndChild, options)
       oldEndChild = oldChildren[--oldEndIndex]
       newEndChild = newChildren[--newEndIndex]
     } else if (virtualNodesAreEqual(oldStartChild, newEndChild)) {
-      patch(oldStartChild, newEndChild)
+      patch(oldStartChild, newEndChild, options)
       parentElement.insertBefore(oldStartChild.domNode, oldEndChild.domNode.nextSibling)
       oldStartChild = oldChildren[++oldStartIndex]
       newEndChild = newChildren[--newEndIndex]
     } else if (virtualNodesAreEqual(oldEndChild, newStartChild)) {
-      patch(oldEndChild, newStartChild)
+      patch(oldEndChild, newStartChild, options)
       parentElement.insertBefore(oldEndChild.domNode, oldStartChild.domNode);
       oldEndChild = oldChildren[--oldEndIndex]
       newStartChild = newChildren[++newStartIndex]
@@ -73,11 +90,11 @@ function patchChildren (parentElement, oldChildren, newChildren) {
       const key = getKey(newStartChild)
       const oldIndex = key ? oldIndicesByKey[key] : null
       if (oldIndex == null) {
-        parentElement.insertBefore(render(newStartChild), oldStartChild.domNode)
+        parentElement.insertBefore(render(newStartChild, options), oldStartChild.domNode)
         newStartChild = newChildren[++newStartIndex]
       } else {
         const oldChildToMove = oldChildren[oldIndex]
-        patch(oldChildToMove, newStartChild)
+        patch(oldChildToMove, newStartChild, options)
         oldChildren[oldIndex] = undefined
         parentElement.insertBefore(oldChildToMove.domNode, oldStartChild.domNode)
         newStartChild = newChildren[++newStartIndex]
@@ -88,19 +105,29 @@ function patchChildren (parentElement, oldChildren, newChildren) {
   if (oldStartIndex > oldEndIndex) {
     const subsequentElement = newChildren[newEndIndex + 1] ? newChildren[newEndIndex + 1].domNode : null
     for (let i = newStartIndex; i <= newEndIndex; i++) {
-      parentElement.insertBefore(render(newChildren[i]), subsequentElement)
+      parentElement.insertBefore(render(newChildren[i], options), subsequentElement)
     }
   } else if (newStartIndex > newEndIndex) {
     for (let i = oldStartIndex; i <= oldEndIndex; i++) {
       const child = oldChildren[i]
-      if (child) removeVirtualNode(child)
+      if (child) removeVirtualNode(child, options && options.refs)
     }
   }
 }
 
-function removeVirtualNode (virtualNode) {
+function removeVirtualNode (virtualNode, refs) {
+  if (refs) removeRefs(virtualNode, refs)
   if (virtualNode.component) virtualNode.component.destroy()
   virtualNode.domNode.remove()
+}
+
+function removeRefs (virtualNode, refs) {
+  const {domNode, props, children} = virtualNode
+  const refName = props.ref
+  if (refName && refs[refName] === domNode) delete refs[refName]
+  for (const child of children) {
+    removeRefs(child, refs)
+  }
 }
 
 function virtualNodesAreEqual (oldVirtualNode, newVirtualNode) {
