@@ -228,49 +228,81 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
   })
 
   describe('child components', function () {
-    it('can insert a component', function () {
+    it('can insert, update, and remove components', function () {
       class Component {
         constructor (props, children) {
-          this.element = render(<div class={props.class}>{children}</div>)
+          this.props = props
+          this.children = children
+          this.updateCount = 0
+          this.destroyCount = 0
+          this.virtualNode = this.render()
+          this.element = render(this.virtualNode)
+        }
+
+        update (props, children) {
+          this.props = props
+          this.children = children
+          this.updateCount++
+          const oldVirtualNode = this.virtualNode
+          this.virtualNode = this.render()
+          patch(oldVirtualNode, this.virtualNode)
+        }
+
+        destroy () {
+          this.destroyCount++
+        }
+
+        render () {
+          return <div class={this.props.class}>{this.children}</div>
         }
       }
 
-      assertValidPatch(
-        <div></div>,
+      const refs = {}
+      const virtualNode1 = <div />
+      const element = render(virtualNode1, {refs})
+      const virtualNode2 = (
         <div>
-          <Component class='child-component'>
+          <Component ref='component' class='child-component'>
             <div />
             <span />
           </Component>
         </div>
       )
-    })
+      patch(virtualNode1, virtualNode2, {refs})
+      const component = refs.component
+      assert.equal(element.firstChild, component.element)
+      assert.equal(element.outerHTML, render(
+        <div>
+          <div class='child-component'>
+            <div />
+            <span />
+          </div>
+        </div>
+      ).outerHTML)
 
-    it('can remove a component and call destroy', function () {
-      const createdInstances = []
-      const destroyedInstances = []
-
-      class Component {
-        constructor () {
-          this.element = render(<div class='component' />)
-          createdInstances.push(this)
-        }
-
-        destroy () {
-          destroyedInstances.push(this)
-        }
-      }
-
-      assertValidPatch(
-        <div><Component /></div>,
-        <div />
+      const virtualNode3 = (
+        <div>
+          <Component ref='component' class='kid-component'>
+            <p />
+          </Component>
+        </div>
       )
+      patch(virtualNode2, virtualNode3, {refs})
+      assert.equal(component.updateCount, 1)
+      assert.equal(element.outerHTML, render(
+        <div>
+          <div class='kid-component'>
+            <p />
+          </div>
+        </div>
+      ).outerHTML)
 
-      assert.equal(destroyedInstances.length, 1)
-      assert.deepEqual(destroyedInstances, [createdInstances[0]])
-    })
-
-    it('can update an existing component', function () {
+      global.debug = true
+      const virtualNode4 = <div />
+      patch(virtualNode3, virtualNode4, {refs})
+      assert.equal(component.updateCount, 1)
+      assert.equal(component.destroyCount, 1)
+      assert.equal(element.outerHTML, render(<div/>).outerHTML)
     })
   })
 })

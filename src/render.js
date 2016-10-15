@@ -9,6 +9,9 @@ export default function render (virtualNode, options) {
       const component = new tag(props, children)
       virtualNode.component = component
       domNode = component.element
+      if (options && options.refs && props.ref) {
+        options.refs[props.ref] = component
+      }
     } else {
       domNode = document.createElement(tag)
       if (children) addChildren(domNode, children, options)

@@ -6,8 +6,13 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
     if (newVirtualNode.text) {
       oldNode.nodeValue = newVirtualNode.text
     } else {
-      updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
-      updateProps(oldNode, oldVirtualNode.props, newVirtualNode.props, options && options.refs)
+      if (typeof newVirtualNode.tag === 'function') {
+        newVirtualNode.component = oldVirtualNode.component
+        newVirtualNode.component.update(newVirtualNode.props, newVirtualNode.children)
+      } else {
+        updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
+        updateProps(oldNode, oldVirtualNode.props, newVirtualNode.props, options && options.refs)
+      }
     }
     newVirtualNode.domNode = oldNode
     return oldNode
@@ -115,16 +120,20 @@ function updateChildren (parentElement, oldChildren, newChildren, options) {
   }
 }
 
-function removeVirtualNode (virtualNode, refs) {
-  if (refs) removeRefs(virtualNode, refs)
-  if (virtualNode.component) virtualNode.component.destroy()
-  virtualNode.domNode.remove()
+function removeVirtualNode (virtualNode, refs, removeDOMNode = true) {
+  const {domNode, props, children, component} = virtualNode
+  if (component) {
+    component.destroy()
+  } else if (children) {
+    for (const child of children) {
+      removeVirtualNode(child, refs, false)
+    }
+  }
+  if (refs && props && props.ref && refs[props.ref] === domNode) delete refs[props.ref]
+  if (removeDOMNode) domNode.remove()
 }
 
 function removeRefs (virtualNode, refs) {
-  const {domNode, props, children} = virtualNode
-  const refName = props.ref
-  if (refName && refs[refName] === domNode) delete refs[refName]
   for (const child of children) {
     removeRefs(child, refs)
   }
