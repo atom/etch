@@ -42,41 +42,41 @@ function updateEventListeners (domNode, oldVirtualNode, newVirtualNode, listener
   const oldListeners = oldVirtualNode && oldVirtualNode.props && oldVirtualNode.props.on
   const newListeners = newVirtualNode.props && newVirtualNode.props.on
 
-  for (const name in oldListeners) {
-    if (!(newListeners && name in newListeners)) {
+  for (const eventName in oldListeners) {
+    if (!(newListeners && eventName in newListeners)) {
       let listenerToRemove
-      if (oldVirtualNode && oldVirtualNode.boundListeners && oldVirtualNode.boundListeners[name]) {
-        listenerToRemove = oldVirtualNode.boundListeners[name]
+      if (oldVirtualNode && oldVirtualNode.boundListeners && oldVirtualNode.boundListeners[eventName]) {
+        listenerToRemove = oldVirtualNode.boundListeners[eventName]
       } else {
-        listenerToRemove =oldListeners[name]
+        listenerToRemove =oldListeners[eventName]
       }
-      domNode.removeEventListener(name, listenerToRemove)
+      domNode.removeEventListener(eventName, listenerToRemove)
     }
   }
 
-  for (const name in newListeners) {
-    const oldListener = oldListeners && oldListeners[name]
-    const newListener = newListeners[name]
+  for (const eventName in newListeners) {
+    const oldListener = oldListeners && oldListeners[eventName]
+    const newListener = newListeners[eventName]
 
     if (newListener !== oldListener) {
       if (oldListener) {
         let listenerToRemove
-        if (oldVirtualNode && oldVirtualNode.boundListeners && oldVirtualNode.boundListeners[name]) {
-          listenerToRemove = oldVirtualNode.boundListeners[name]
+        if (oldVirtualNode && oldVirtualNode.boundListeners && oldVirtualNode.boundListeners[eventName]) {
+          listenerToRemove = oldVirtualNode.boundListeners[eventName]
         } else {
           listenerToRemove = oldListener
         }
-        domNode.removeEventListener(name, listenerToRemove)
+        domNode.removeEventListener(eventName, listenerToRemove)
       }
       let listenerToAdd
       if (listenerContext) {
         listenerToAdd = newListener.bind(listenerContext)
         if (!newVirtualNode.boundListeners) newVirtualNode.boundListeners = {}
-        newVirtualNode.boundListeners[name] = listenerToAdd
+        newVirtualNode.boundListeners[eventName] = listenerToAdd
       } else {
         listenerToAdd = newListener
       }
-      domNode.addEventListener(name, listenerToAdd)
+      domNode.addEventListener(eventName, listenerToAdd)
     }
   }
 }
