@@ -1,4 +1,4 @@
-const RESERVED_PROPS = new Set(['on', 'ref'])
+import EVENT_LISTENER_PROPS from './event-listener-props'
 
 export default function updateProps(domNode, oldVirtualNode, newVirtualNode, options) {
   const oldProps = oldVirtualNode && oldVirtualNode.props
@@ -16,13 +16,15 @@ export default function updateProps(domNode, oldVirtualNode, newVirtualNode, opt
 
 function updateAttributes (domNode, oldProps, newProps) {
   for (const name in oldProps) {
-    if (RESERVED_PROPS.has(name)) continue
+    if (name === 'ref' || name === 'on') continue
+    if (name in EVENT_LISTENER_PROPS) continue
     if (!newProps || !(name in newProps)) {
       domNode.removeAttribute(name)
     }
   }
   for (let name in newProps) {
-    if (RESERVED_PROPS.has(name)) continue
+    if (name === 'ref' || name === 'on') continue
+    if (name in EVENT_LISTENER_PROPS) continue
     const oldValue = oldProps && oldProps[name]
     const newValue = newProps[name]
     if (newValue !== oldValue) {

@@ -303,6 +303,20 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert.equal(listenerCalls[0].context, listenerContext)
       assert.equal(listenerCalls[0].event.type, 'b')
     })
+
+    it('allows standard event listeners to be specified as props like onClick or onMouseDown', function () {
+      let listenerCalls = []
+      function recordEvent (event) {
+        listenerCalls.push(event)
+      }
+      const element = render(<div onClick={recordEvent} onMouseDown={recordEvent} />)
+
+      element.dispatchEvent(new MouseEvent('click'))
+      element.dispatchEvent(new MouseEvent('mousedown'))
+      assert.equal(listenerCalls.length, 2)
+      assert.equal(listenerCalls[0].type, 'click')
+      assert.equal(listenerCalls[1].type, 'mousedown')
+    })
   })
 
   describe('child components', function () {

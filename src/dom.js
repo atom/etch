@@ -1,5 +1,6 @@
-export default function dom (tag, props, ...children) {
+import EVENT_LISTENER_PROPS from './event-listener-props'
 
+export default function dom (tag, props, ...children) {
   for (let i = 0; i < children.length;) {
     const child = children[i]
     if (Array.isArray(child)) {
@@ -9,6 +10,16 @@ export default function dom (tag, props, ...children) {
       i++
     } else {
       i++
+    }
+  }
+
+  if (props) {
+    for (const propName in props) {
+      const eventName = EVENT_LISTENER_PROPS[propName]
+      if (eventName) {
+        if (!props.on) props.on = {}
+        props.on[eventName] = props[propName]
+      }
     }
   }
 
