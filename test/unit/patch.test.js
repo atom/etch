@@ -253,13 +253,13 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert.equal(listenerCalls[1].context, element)
       assert.equal(listenerCalls[1].event.type, 'b')
 
-      listenerCalls = []
       const virtualNode2 = <div on={{
         'b': recordEvent,
         'c': recordEvent
       }} />
       patch(virtualNode1, virtualNode2)
 
+      listenerCalls = []
       element.dispatchEvent(new CustomEvent('a'))
       element.dispatchEvent(new CustomEvent('b'))
       element.dispatchEvent(new CustomEvent('c'))
@@ -268,6 +268,40 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert.equal(listenerCalls[0].event.type, 'b')
       assert.equal(listenerCalls[1].context, element)
       assert.equal(listenerCalls[1].event.type, 'c')
+
+      const virtualNode3 = <div />
+      patch(virtualNode2, virtualNode3)
+      listenerCalls = []
+      element.dispatchEvent(new CustomEvent('a'))
+      element.dispatchEvent(new CustomEvent('b'))
+      element.dispatchEvent(new CustomEvent('c'))
+      assert.equal(listenerCalls.length, 0)
+    })
+
+    it('binds event listeners with the specified `listenerContext` value, if provided', function () {
+      const listenerContext = {}
+      let listenerCalls = []
+      function recordEvent (event) {
+        listenerCalls.push({context: this, event})
+      }
+
+      const virtualNode1 = <div on={{'a': recordEvent}} />
+      const element = render(virtualNode1, {listenerContext})
+
+      element.dispatchEvent(new CustomEvent('a'))
+      assert.equal(listenerCalls.length, 1)
+      assert.equal(listenerCalls[0].context, listenerContext)
+      assert.equal(listenerCalls[0].event.type, 'a')
+
+      const virtualNode2 = <div on={{'b': recordEvent}} />
+      patch(virtualNode1, virtualNode2, {listenerContext})
+
+      listenerCalls = []
+      element.dispatchEvent(new CustomEvent('a'))
+      element.dispatchEvent(new CustomEvent('b'))
+      assert.equal(listenerCalls.length, 1)
+      assert.equal(listenerCalls[0].context, listenerContext)
+      assert.equal(listenerCalls[0].event.type, 'b')
     })
   })
 

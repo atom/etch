@@ -17,7 +17,7 @@ export default function render (virtualNode, options) {
     } else {
       domNode = document.createElement(tag)
       if (children) addChildren(domNode, children, options)
-      if (props) updateProps(domNode, null, props, options)
+      if (props) updateProps(domNode, null, virtualNode, options)
     }
   }
   virtualNode.domNode = domNode

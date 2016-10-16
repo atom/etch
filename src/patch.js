@@ -12,7 +12,7 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
         newVirtualNode.component.update(newVirtualNode.props, newVirtualNode.children)
       } else {
         updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
-        updateProps(oldNode, oldVirtualNode.props, newVirtualNode.props, options)
+        updateProps(oldNode, oldVirtualNode, newVirtualNode, options)
       }
     }
     newVirtualNode.domNode = oldNode
