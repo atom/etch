@@ -232,6 +232,45 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
     })
   })
 
+  describe('event handlers', function () {
+    it('registers event handlers from the `on` property', function () {
+      let listenerCalls = []
+      function recordEvent (event) {
+        listenerCalls.push({context: this, event})
+      }
+
+      const virtualNode1 = <div on={{
+        'a': recordEvent,
+        'b': recordEvent
+      }} />
+      const element = render(virtualNode1)
+
+      element.dispatchEvent(new CustomEvent('a'))
+      element.dispatchEvent(new CustomEvent('b'))
+      assert.equal(listenerCalls.length, 2)
+      assert.equal(listenerCalls[0].context, element)
+      assert.equal(listenerCalls[0].event.type, 'a')
+      assert.equal(listenerCalls[1].context, element)
+      assert.equal(listenerCalls[1].event.type, 'b')
+
+      listenerCalls = []
+      const virtualNode2 = <div on={{
+        'b': recordEvent,
+        'c': recordEvent
+      }} />
+      patch(virtualNode1, virtualNode2)
+
+      element.dispatchEvent(new CustomEvent('a'))
+      element.dispatchEvent(new CustomEvent('b'))
+      element.dispatchEvent(new CustomEvent('c'))
+      assert.equal(listenerCalls.length, 2)
+      assert.equal(listenerCalls[0].context, element)
+      assert.equal(listenerCalls[0].event.type, 'b')
+      assert.equal(listenerCalls[1].context, element)
+      assert.equal(listenerCalls[1].event.type, 'c')
+    })
+  })
+
   describe('child components', function () {
     it('can insert, update, and remove components', function () {
       class Component {

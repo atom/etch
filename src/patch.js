@@ -1,4 +1,5 @@
 import render from './render'
+import updateProps from './update-props'
 
 export default function patch (oldVirtualNode, newVirtualNode, options) {
   const oldNode = oldVirtualNode.domNode
@@ -11,7 +12,7 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
         newVirtualNode.component.update(newVirtualNode.props, newVirtualNode.children)
       } else {
         updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
-        updateProps(oldNode, oldVirtualNode.props, newVirtualNode.props, options && options.refs)
+        updateProps(oldNode, oldVirtualNode.props, newVirtualNode.props, options)
       }
     }
     newVirtualNode.domNode = oldNode
@@ -24,33 +25,6 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
     if (parentNode) parentNode.insertBefore(newNode, nextSibling)
     newVirtualNode.domNode = newNode
     return newNode
-  }
-}
-
-function updateProps(domNode, oldProps, newProps, refs) {
-  for (const name in oldProps) {
-    if (!(newProps && name in newProps)) {
-      if (name === 'ref') {
-        const oldValue = oldProps[name]
-        if (refs && refs[oldValue] === domNode) delete refs[oldValue]
-      } else {
-        domNode.removeAttribute(name)
-      }
-    }
-  }
-  for (let name in newProps) {
-    const oldValue = oldProps && oldProps[name]
-    const newValue = newProps[name]
-    if (newValue !== oldValue) {
-      if (name === 'ref') {
-        if (refs) {
-          if (oldValue && refs[oldValue] === domNode) delete refs[oldValue]
-          refs[newValue] = domNode
-        }
-      } else {
-         domNode.setAttribute(name, newValue)
-      }
-    }
   }
 }
 

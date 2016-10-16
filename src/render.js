@@ -1,3 +1,5 @@
+import updateProps from './update-props'
+
 export default function render (virtualNode, options) {
   let domNode
   if (virtualNode.text) {
@@ -15,7 +17,7 @@ export default function render (virtualNode, options) {
     } else {
       domNode = document.createElement(tag)
       if (children) addChildren(domNode, children, options)
-      if (props) addProps(domNode, props, options && options.refs)
+      if (props) updateProps(domNode, null, props, options)
     }
   }
   virtualNode.domNode = domNode
@@ -25,16 +27,5 @@ export default function render (virtualNode, options) {
 function addChildren (parent, children, options) {
   for (let child of children) {
     parent.appendChild(render(child, options))
-  }
-}
-
-function addProps (domNode, props, refs) {
-  for (const name in props) {
-    const value = props[name]
-    if (name === 'ref') {
-      if (refs) refs[value] = domNode
-    } else {
-      domNode.setAttribute(name, value)
-    }
   }
 }
