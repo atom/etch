@@ -405,5 +405,38 @@ describe('etch.dom', () => {
         expect(parentComponent.refs.child.constructor).to.equal(ChildComponentB)
       })
     })
+
+    describe('when the child component constructor tag has a key property', () => {
+      it('does not pass the key to the child component', async function () {
+        class ChildComponentA {
+          constructor (properties) {
+            this.properties = properties
+            etch.initialize(this)
+          }
+
+          render () {
+            return <div>A</div>
+          }
+
+          update (properties) {
+            this.properties = properties
+          }
+        }
+
+        let parentComponent = {
+          render () {
+             return <div><ChildComponentA key='A' ref='child'></ChildComponentA></div>
+          },
+
+          update () {}
+        }
+
+        etch.initialize(parentComponent)
+
+        expect(parentComponent.refs.child.properties.key).to.be.undefined
+        await etch.update(parentComponent)
+        expect(parentComponent.refs.child.properties.key).to.be.undefined
+      })
+    })
   })
 })

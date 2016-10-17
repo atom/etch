@@ -11,15 +11,21 @@ export default class ComponentWidget {
     this.properties = properties
     this.children = children
 
+    let sanitizedProperties
+
     if (this.properties && this.properties.ref) {
-      this.ref = this.properties.ref
-      this.properties = Object.assign({}, this.properties)
-      delete this.properties.ref
+      if (!sanitizedProperties) sanitizedProperties = Object.assign({}, this.properties)
+      this.ref = sanitizedProperties.ref
+      delete sanitizedProperties.ref
     }
 
     if (this.properties && this.properties.key) {
-      this.key = this.properties.key
+      if (!sanitizedProperties) sanitizedProperties = Object.assign({}, this.properties)
+      this.key = sanitizedProperties.key
+      delete sanitizedProperties.key
     }
+
+    if (sanitizedProperties) this.properties = sanitizedProperties
   }
 
   // The `virtual-dom` library expects this method to return a DOM node. It
