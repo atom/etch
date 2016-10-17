@@ -275,7 +275,7 @@ describe('etch.dom', () => {
     })
 
     describe('when the child component constructor tag has a ref property', () => {
-      it('creates a reference to the child component object on the parent component', async () => {
+      it('creates a reference to the child component object on the parent component and does not pass the ref as a prop to the child component', async () => {
         class ChildComponentA {
           constructor (properties) {
             this.properties = properties
@@ -324,7 +324,7 @@ describe('etch.dom', () => {
         etch.initialize(parentComponent)
 
         expect(parentComponent.refs.child instanceof ChildComponentA).to.be.true
-        expect(parentComponent.refs.child.properties.ref).to.equal('child')
+        expect(parentComponent.refs.child.properties.ref).to.be.undefined
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'kid'
@@ -332,7 +332,7 @@ describe('etch.dom', () => {
 
         expect(parentComponent.refs.child).to.be.undefined
         expect(parentComponent.refs.kid instanceof ChildComponentA).to.be.true
-        expect(parentComponent.refs.kid.properties.ref).to.equal('kid')
+        expect(parentComponent.refs.kid.properties.ref).to.be.undefined
         expect(parentComponent.refs.kid.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'child'
@@ -342,7 +342,7 @@ describe('etch.dom', () => {
 
         expect(parentComponent.refs.kid).to.be.undefined
         expect(parentComponent.refs.child instanceof ChildComponentB).to.be.true
-        expect(parentComponent.refs.child.properties.ref).to.equal('child')
+        expect(parentComponent.refs.child.properties.ref).to.be.undefined
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('B')
 
         parentComponent.renderB = false
@@ -403,6 +403,39 @@ describe('etch.dom', () => {
         await etch.update(parentComponent)
         expect(parentComponent.refs.child).to.not.be.undefined
         expect(parentComponent.refs.child.constructor).to.equal(ChildComponentB)
+      })
+    })
+
+    describe('when the child component constructor tag has a key property', () => {
+      it('does not pass the key to the child component', async function () {
+        class ChildComponentA {
+          constructor (properties) {
+            this.properties = properties
+            etch.initialize(this)
+          }
+
+          render () {
+            return <div>A</div>
+          }
+
+          update (properties) {
+            this.properties = properties
+          }
+        }
+
+        let parentComponent = {
+          render () {
+             return <div><ChildComponentA key='A' ref='child'></ChildComponentA></div>
+          },
+
+          update () {}
+        }
+
+        etch.initialize(parentComponent)
+
+        expect(parentComponent.refs.child.properties.key).to.be.undefined
+        await etch.update(parentComponent)
+        expect(parentComponent.refs.child.properties.key).to.be.undefined
       })
     })
   })
