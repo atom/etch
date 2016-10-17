@@ -11,6 +11,12 @@ export default class ComponentWidget {
     this.properties = properties
     this.children = children
 
+    if (this.properties && this.properties.ref) {
+      this.ref = this.properties.ref
+      this.properties = Object.assign({}, this.properties)
+      delete this.properties.ref
+    }
+
     if (this.properties && this.properties.key) {
       this.key = this.properties.key
     }
@@ -24,8 +30,8 @@ export default class ComponentWidget {
   // element.
   init () {
     this.component = new this.componentConstructor(this.properties, this.children)
-    if (this.properties && this.properties.ref && refsStack.length > 0) {
-      refsStack[refsStack.length - 1][this.properties.ref] = this.component
+    if (this.ref && refsStack.length > 0) {
+      refsStack[refsStack.length - 1][this.ref] = this.component
     }
     return this.component.element
   }
@@ -40,15 +46,8 @@ export default class ComponentWidget {
   // widgets have *different* component constructors, we destroy the old
   // component and build a new one in its place.
   update (oldWidget, oldElement) {
-    let oldRef, newRef
-
-    if (oldWidget.properties && oldWidget.properties.ref) {
-      oldRef = oldWidget.properties.ref
-    }
-
-    if (this.properties && this.properties.ref) {
-      newRef = this.properties.ref
-    }
+    const oldRef = oldWidget.ref
+    const newRef = this.ref
 
     if (this.componentConstructor === oldWidget.componentConstructor) {
       this.component = oldWidget.component
@@ -85,10 +84,10 @@ export default class ComponentWidget {
   destroy () {
     // Clean up the reference to this component if it is not now referencing a
     // different component.
-    if (this.properties && this.properties.ref && refsStack.length > 0) {
+    if (this.ref && refsStack.length > 0) {
       const refs = refsStack[refsStack.length - 1]
-      if (refs[this.properties.ref] === this.component) {
-        delete refs[this.properties.ref]
+      if (refs[this.ref] === this.component) {
+        delete refs[this.ref]
       }
     }
 
