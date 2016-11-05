@@ -31,7 +31,7 @@ describe('etch.dom', () => {
   it('normalizes camel-cased property names to dash-seperated attributes for SVG tags', function () {
     let component = {
       render () {
-        return <circle colorProfile='foo' colorRendering='bar'></circle>
+        return <circle colorProfile='foo' colorRendering='bar' />
       },
       update () {}
     }
@@ -132,7 +132,7 @@ describe('etch.dom', () => {
             let component = {
               render () {
                 return (
-                  <div></div>
+                  <div />
                 )
               }
             }
@@ -173,9 +173,9 @@ describe('etch.dom', () => {
 
             render () {
               if (this.condition) {
-                return <div><ChildComponentA></ChildComponentA></div>
+                return <div><ChildComponentA /></div>
               } else {
-                return <div><ChildComponentB></ChildComponentB></div>
+                return <div><ChildComponentB /></div>
               }
             },
 
@@ -233,15 +233,15 @@ describe('etch.dom', () => {
               if (this.condition) {
                 return (
                   <div>
-                    <ChildComponentA key='a' ref='a'></ChildComponentA>
-                    <ChildComponentB key='b' ref='b'></ChildComponentB>
+                    <ChildComponentA key='a' ref='a' />
+                    <ChildComponentB key='b' ref='b' />
                   </div>
                 )
               } else {
                 return (
                   <div>
-                    <ChildComponentB key='b' ref='b'></ChildComponentB>
-                    <ChildComponentA key='a' ref='a'></ChildComponentA>
+                    <ChildComponentB key='b' ref='b' />
+                    <ChildComponentA key='a' ref='a' />
                   </div>
                 )
               }
@@ -310,9 +310,9 @@ describe('etch.dom', () => {
 
           render () {
             if (this.renderA) {
-              return <div><ChildComponentA ref={this.refName}></ChildComponentA></div>
+              return <div><ChildComponentA ref={this.refName} /></div>
             } else if (this.renderB) {
-              return <div><ChildComponentB ref={this.refName}></ChildComponentB></div>
+              return <div><ChildComponentB ref={this.refName} /></div>
             } else {
               return <div />
             }
@@ -425,7 +425,7 @@ describe('etch.dom', () => {
 
         let parentComponent = {
           render () {
-             return <div><ChildComponentA key='A' ref='child'></ChildComponentA></div>
+            return <div><ChildComponentA key='A' ref='child' /></div>
           },
 
           update () {}

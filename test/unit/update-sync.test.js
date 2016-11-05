@@ -14,7 +14,7 @@ describe('etch.updateSync(component)', () => {
       render () {
         return (
           <div>
-            <ChildComponent greeting={this.greeting}></ChildComponent> <span>{this.greeted}</span>
+            <ChildComponent greeting={this.greeting} /> <span>{this.greeted}</span>
           </div>
         )
       }
@@ -81,7 +81,7 @@ describe('etch.updateSync(component)', () => {
       }
 
       render () {
-        return <div/>
+        return <div />
       }
 
       update () {
@@ -232,7 +232,7 @@ describe('etch.updateSync(component)', () => {
     let renderItem = true
     let component = {
       render () {
-        return renderItem && <div/>
+        return renderItem && <div />
       },
 
       update () {}
@@ -240,7 +240,7 @@ describe('etch.updateSync(component)', () => {
 
     etch.initialize(component)
     renderItem = false
-    expect(function() {
+    expect(function () {
       etch.updateSync(component)
     }).to.throw(/invalid falsy value/)
   })
@@ -249,7 +249,7 @@ describe('etch.updateSync(component)', () => {
     let renderItem = true
     class MyComponent {
       render () {
-        return renderItem && <div/>
+        return renderItem && <div />
       }
 
       update () {}
@@ -258,7 +258,7 @@ describe('etch.updateSync(component)', () => {
     let component = new MyComponent()
     etch.initialize(component)
     renderItem = false
-    expect(function() {
+    expect(function () {
       etch.updateSync(component)
     }).to.throw(/invalid falsy value.*in MyComponent/)
   })

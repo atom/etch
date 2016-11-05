@@ -35,7 +35,7 @@ export default class ComponentWidget {
   // `ref` property if it is present, then return the component's associated DOM
   // element.
   init () {
-    this.component = new this.componentConstructor(this.properties, this.children)
+    this.component = new this.componentConstructor(this.properties, this.children) // eslint-disable-line new-cap
     if (this.ref && refsStack.length > 0) {
       refsStack[refsStack.length - 1][this.ref] = this.component
     }

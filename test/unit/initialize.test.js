@@ -61,7 +61,7 @@ describe('etch.initialize(component)', () => {
       update () {}
     }
 
-    expect(function() {
+    expect(function () {
       etch.initialize(component)
     }).to.throw(/invalid falsy value/)
   })

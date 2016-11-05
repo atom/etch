@@ -4,8 +4,14 @@ import {setScheduler, getScheduler} from './scheduler-assignment'
 
 let etch = {
   dom,
-  initialize, update, updateSync, destroy, destroySync, onUpdate,
-  setScheduler, getScheduler
+  initialize,
+  update,
+  updateSync,
+  destroy,
+  destroySync,
+  onUpdate,
+  setScheduler,
+  getScheduler
 }
 
 export default etch

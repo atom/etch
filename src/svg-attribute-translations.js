@@ -70,5 +70,5 @@ export default {
   vertOriginY: 'vert-origin-y',
   wordSpacing: 'word-spacing',
   writingMode: 'writing-mode',
-  xHeight: 'x-height',
+  xHeight: 'x-height'
 }
