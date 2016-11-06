@@ -110,47 +110,6 @@ describe('etch.updateSync(component)', () => {
     expect(events).to.eql(['child-write', 'parent-write', 'child-read', 'parent-read'])
   })
 
-  it('updates elements with a dynamic constructor', () => {
-    class ChildA {
-      constructor () {
-        etch.initialize(this)
-      }
-
-      update () {}
-
-      render () {
-        return <div>ChildA</div>
-      }
-    }
-
-    class ChildB {
-      constructor () {
-        etch.initialize(this)
-      }
-
-      update () {}
-
-      render () {
-        return <div>ChildB</div>
-      }
-    }
-
-    let ActiveChild = ChildA
-    const component = {
-      update () {},
-      render () {
-        return <div><ActiveChild /></div>
-      }
-    }
-
-    etch.initialize(component)
-    expect(component.element.textContent).to.equal('ChildA')
-
-    ActiveChild = ChildB
-    etch.updateSync(component)
-    expect(component.element.textContent).to.equal('ChildB')
-  })
-
   it('relays updates to non-etch child components', function () {
     class ParentComponent {
       constructor ({greeting}) {
