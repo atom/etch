@@ -116,16 +116,10 @@ describe('etch.updateSync(component)', () => {
         etch.initialize(this)
       }
 
-      update () {
-        etch.update(this)
-      }
+      update () {}
 
       render () {
         return <div>ChildA</div>
-      }
-
-      destroy () {
-        etch.destroy(this)
       }
     }
 
@@ -134,16 +128,10 @@ describe('etch.updateSync(component)', () => {
         etch.initialize(this)
       }
 
-      update () {
-        etch.update(this)
-      }
+      update () {}
 
       render () {
         return <div>ChildB</div>
-      }
-
-      destroy () {
-        etch.destroy(this)
       }
     }
 
