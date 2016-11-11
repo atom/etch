@@ -324,7 +324,6 @@ describe('etch.dom', () => {
         etch.initialize(parentComponent)
 
         expect(parentComponent.refs.child instanceof ChildComponentA).to.be.true
-        expect(parentComponent.refs.child.properties.ref).to.equal('child')
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'kid'
@@ -332,7 +331,6 @@ describe('etch.dom', () => {
 
         expect(parentComponent.refs.child).to.be.undefined
         expect(parentComponent.refs.kid instanceof ChildComponentA).to.be.true
-        expect(parentComponent.refs.kid.properties.ref).to.equal('kid')
         expect(parentComponent.refs.kid.refs.self.textContent).to.equal('A')
 
         parentComponent.refName = 'child'
@@ -342,7 +340,6 @@ describe('etch.dom', () => {
 
         expect(parentComponent.refs.kid).to.be.undefined
         expect(parentComponent.refs.child instanceof ChildComponentB).to.be.true
-        expect(parentComponent.refs.child.properties.ref).to.equal('child')
         expect(parentComponent.refs.child.refs.self.textContent).to.equal('B')
 
         parentComponent.renderB = false

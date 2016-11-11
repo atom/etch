@@ -4,19 +4,24 @@ import updateProps from './update-props'
 export default function patch (oldVirtualNode, newVirtualNode, options) {
   const oldNode = oldVirtualNode.domNode
   if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
+    let newNode
     if (newVirtualNode.text) {
       oldNode.nodeValue = newVirtualNode.text
+      newNode = oldNode
     } else {
       if (typeof newVirtualNode.tag === 'function') {
-        newVirtualNode.component = oldVirtualNode.component
-        newVirtualNode.component.update(newVirtualNode.props, newVirtualNode.children)
+        newNode = updateComponent(oldVirtualNode, newVirtualNode, options)
       } else {
         updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
         updateProps(oldNode, oldVirtualNode, newVirtualNode, options)
+        newNode = oldNode
       }
     }
     newVirtualNode.domNode = oldNode
-    return oldNode
+    if (newNode !== oldNode && oldNode.parentNode) {
+      oldNode.parentNode.replaceChild(newNode, oldNode)
+    }
+    return newNode
   } else {
     const parentNode = oldNode.parentNode
     const nextSibling = oldNode.nextSibling
@@ -26,6 +31,27 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
     newVirtualNode.domNode = newNode
     return newNode
   }
+}
+
+function updateComponent (oldVirtualNode, newVirtualNode, options) {
+  const {component, props: oldProps} = oldVirtualNode
+  let {props: newProps, children: newChildren} = newVirtualNode
+  newVirtualNode.component = component
+  if (options && options.refs) {
+    const refs = options.refs
+    const oldRefName = oldProps && oldProps.ref
+    const newRefName = newProps && newProps.ref
+    if (newRefName !== oldRefName) {
+      if (oldRefName && refs[oldRefName] === component) delete refs[oldRefName]
+      if (newRefName) refs[newRefName] = component
+    }
+    if (newRefName) {
+      newProps = {...newProps}
+      delete newProps.ref
+    }
+  }
+  component.update(newProps || {}, newChildren)
+  return component.element
 }
 
 function updateChildren (parentElement, oldChildren, newChildren, options) {
@@ -96,14 +122,19 @@ function updateChildren (parentElement, oldChildren, newChildren, options) {
 
 function removeVirtualNode (virtualNode, refs, removeDOMNode = true) {
   const {domNode, props, children, component} = virtualNode
+  const ref = props && props.ref
   if (component) {
-    component.destroy()
-  } else if (children) {
-    for (const child of children) {
-      removeVirtualNode(child, refs, false)
+    if (refs && ref && refs[ref] === component) delete refs[ref]
+    if (typeof component.destroy === 'function') component.destroy()
+  } else {
+    if (refs && ref && refs[ref] === domNode) delete refs[ref]
+    if (children) {
+      for (const child of children) {
+        removeVirtualNode(child, refs, false)
+      }
     }
   }
-  if (refs && props && props.ref && refs[props.ref] === domNode) delete refs[props.ref]
+
   if (removeDOMNode) domNode.remove()
 }
 

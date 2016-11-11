@@ -1,23 +1,20 @@
-import createElement from 'virtual-dom/create-element'
-import diff from 'virtual-dom/diff'
-import patch from 'virtual-dom/patch'
-
-import refsStack from './refs-stack'
+import render from './render'
+import patch from './patch'
 import {getScheduler} from './scheduler-assignment'
 
 const componentsWithPendingUpdates = new WeakSet
 let syncUpdatesInProgressCounter = 0
 let syncDestructionsInProgressCounter = 0
 
-function isValidVirtualElement (virtualElement) {
-  return virtualElement != null && virtualElement !== false
+function isValidVirtualNode (virtualNode) {
+  return virtualNode != null && virtualNode !== false
 }
 
 // This function associates a component object with a DOM element by calling
 // the components `render` method, assigning an `.element` property on the
 // object and also returning the element.
 //
-// It also assigns a `virtualElement` property based on the return value of the
+// It also assigns a `virtualNode` property based on the return value of the
 // `render` method. This will be used later by `performElementUpdate` to diff
 // the new results of `render` with the previous results when updating the
 // component's element.
@@ -32,16 +29,17 @@ export function initialize(component) {
     throw new Error('Etch components must implement `update(props, children)`.')
   }
 
-  let virtualElement = component.render()
-  if (!isValidVirtualElement(virtualElement)) {
+  let virtualNode = component.render()
+  if (!isValidVirtualNode(virtualNode)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
-    throw new Error('invalid falsy value ' + virtualElement + ' returned from render()' + namePart)
+    throw new Error('invalid falsy value ' + virtualNode + ' returned from render()' + namePart)
   }
+
   component.refs = {}
-  component.virtualElement = virtualElement
-  refsStack.push(component.refs)
-  component.element = createElement(component.virtualElement)
-  refsStack.pop()
+  component.virtualNode = virtualNode
+  component.element = render(component.virtualNode, {
+    refs: component.refs, listenerContext: component
+  })
 }
 
 // This function receives a component that has already been associated with an
@@ -79,7 +77,7 @@ export function update (component, replaceNode=true) {
 }
 
 // Synchronsly updates the DOM element associated with a component object. .
-// This method assumes the presence of `.element` and `.virtualElement`
+// This method assumes the presence of `.element` and `.virtualNode`
 // properties on the component, which are assigned in the `initialize`
 // function.
 //
@@ -98,19 +96,20 @@ export function update (component, replaceNode=true) {
 // between invocations, because we want to preserve a one-to-one relationship
 // between component objects and DOM elements for simplicity.
 export function updateSync (component, replaceNode=true) {
-  let newVirtualElement = component.render()
-  if (!isValidVirtualElement(newVirtualElement)) {
+  let newVirtualNode = component.render()
+  if (!isValidVirtualNode(newVirtualNode)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
-    throw new Error('invalid falsy value ' + newVirtualElement + ' returned from render()' + namePart)
+    throw new Error('invalid falsy value ' + newVirtualNode + ' returned from render()' + namePart)
   }
 
   syncUpdatesInProgressCounter++
-  let oldVirtualElement = component.virtualElement
+  let oldVirtualNode = component.virtualNode
   let oldDomNode = component.element
-  refsStack.push(component.refs)
-  let newDomNode = patch(component.element, diff(oldVirtualElement, newVirtualElement))
-  refsStack.pop()
-  component.virtualElement = newVirtualElement
+  let newDomNode = patch(oldVirtualNode, newVirtualNode, {
+    refs: component.refs,
+    listenerContext: component
+  })
+  component.virtualNode = newVirtualNode
   if (newDomNode !== oldDomNode && !replaceNode) {
     throw new Error('The root node type changed on update, but the update was performed with the replaceNode option set to false')
   } else {
@@ -161,16 +160,14 @@ export function destroy (component, removeNode=true) {
 // the element if we are not a nested call.
 export function destroySync (component, removeNode=true) {
   syncDestructionsInProgressCounter++
-  destroyChildComponents(component.virtualElement)
+  destroyChildComponents(component.virtualNode)
   if (syncDestructionsInProgressCounter === 1 && removeNode) component.element.remove()
   syncDestructionsInProgressCounter--
 }
 
 function destroyChildComponents(virtualNode) {
-  if (virtualNode.type === 'Widget') {
-    if (virtualNode.component && typeof virtualNode.component.destroy === 'function') {
-      virtualNode.component.destroy()
-    }
+  if (virtualNode.component && typeof virtualNode.component.destroy === 'function') {
+    virtualNode.component.destroy()
   } else if (virtualNode.children) {
     virtualNode.children.forEach(destroyChildComponents)
   }

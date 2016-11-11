@@ -53,4 +53,17 @@ describe('render (virtualNode)', () => {
       </div>
     `.replace(/\n\s*/g, ''))
   })
+
+  it('passes an empty props object to child components by default', function () {
+    class Component {
+      constructor (props, children) {
+        this.element = document.createElement('div')
+        assert.deepEqual(props, {})
+        assert.deepEqual(children, [])
+      }
+    }
+
+    const domNode = render(<div><Component /></div>)
+    assert.equal(domNode.outerHTML, `<div><div></div></div>`)
+  })
 })

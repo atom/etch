@@ -230,6 +230,49 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert(!refs.hasOwnProperty('g'))
       assert.equal(refs.h, element2)
     })
+
+    it('maintains references to child component instances based on their `ref` property', function () {
+      class ChildComponentA {
+        constructor (props) {
+          assert(!props.ref, 'Ref property not passed through to component constructor')
+          this.element = document.createElement('div')
+        }
+
+        update (props) {
+          assert(!props.ref, 'Ref property not passed through to component update')
+        }
+      }
+
+      class ChildComponentB {
+        constructor (props) {
+          assert(!props.ref, 'Ref property not passed through to component constructor')
+          this.element = document.createElement('div')
+        }
+
+        update (props) {
+          assert(!props.ref, 'Ref property not passed through to component update')
+        }
+      }
+
+      const refs = {}
+      const virtualNode1 = <div><ChildComponentA ref='child' /></div>
+      render(virtualNode1, {refs})
+      assert(refs.child instanceof ChildComponentA)
+
+      const virtualNode2 = <div><ChildComponentA ref='kid' /></div>
+      patch(virtualNode1, virtualNode2, {refs})
+      assert(!refs.child, 'Old ref was deleted')
+      assert(refs.kid instanceof ChildComponentA)
+
+      const virtualNode3 = <div><ChildComponentB ref='child' /></div>
+      patch(virtualNode2, virtualNode3, {refs})
+      assert(!refs.kid, 'Old ref was deleted')
+      assert(refs.child instanceof ChildComponentB)
+
+      const virtualNode4 = <div><ChildComponentA ref='child' /></div>
+      patch(virtualNode3, virtualNode4, {refs})
+      assert(refs.child instanceof ChildComponentA)
+    })
   })
 
   describe('event handlers', function () {
