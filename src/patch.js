@@ -129,8 +129,8 @@ function removeVirtualNode (virtualNode, refs, removeDOMNode = true) {
   } else {
     if (refs && ref && refs[ref] === domNode) delete refs[ref]
     if (children) {
-      for (const child of children) {
-        removeVirtualNode(child, refs, false)
+      for (let i = 0; i < children.length; i++) {
+        removeVirtualNode(children[i], refs, false)
       }
     }
   }
@@ -139,8 +139,8 @@ function removeVirtualNode (virtualNode, refs, removeDOMNode = true) {
 }
 
 function removeRefs (virtualNode, refs) {
-  for (const child of children) {
-    removeRefs(child, refs)
+  for (let i = 0; i < children.length; i++) {
+    removeRefs(children[i], refs)
   }
 }
 

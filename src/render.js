@@ -30,7 +30,7 @@ export default function render (virtualNode, options) {
 }
 
 function addChildren (parent, children, options) {
-  for (let child of children) {
-    parent.appendChild(render(child, options))
+  for (let i = 0; i < children.length; i++) {
+    parent.appendChild(render(children[i], options))
   }
 }
