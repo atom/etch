@@ -2,7 +2,7 @@ import updateProps from './update-props'
 
 export default function render (virtualNode, options) {
   let domNode
-  if (virtualNode.text) {
+  if (virtualNode.text != null) {
     domNode = document.createTextNode(virtualNode.text)
   } else {
     const {tag, children} = virtualNode

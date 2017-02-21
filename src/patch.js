@@ -5,7 +5,7 @@ export default function patch (oldVirtualNode, newVirtualNode, options) {
   const oldNode = oldVirtualNode.domNode
   if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
     let newNode
-    if (newVirtualNode.text) {
+    if (newVirtualNode.text != null) {
       oldNode.nodeValue = newVirtualNode.text
       newNode = oldNode
     } else {
