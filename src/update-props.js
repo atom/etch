@@ -1,6 +1,6 @@
 import EVENT_LISTENER_PROPS from './event-listener-props'
 
-export default function updateProps(domNode, oldVirtualNode, newVirtualNode, options) {
+export default function (domNode, oldVirtualNode, newVirtualNode, options) {
   const oldProps = oldVirtualNode && oldVirtualNode.props
   const newProps = newVirtualNode.props
 
@@ -9,26 +9,47 @@ export default function updateProps(domNode, oldVirtualNode, newVirtualNode, opt
     refs = options.refs
     listenerContext = options.listenerContext
   }
-  updateAttributes(domNode, oldProps, newProps)
+  updateProps(domNode, oldProps, newProps)
   if (refs) updateRef(domNode, oldProps && oldProps.ref, newProps && newProps.ref, refs)
   updateEventListeners(domNode, oldVirtualNode, newVirtualNode, listenerContext)
 }
 
-function updateAttributes (domNode, oldProps, newProps) {
-  for (const name in oldProps) {
-    if (name === 'ref' || name === 'on') continue
-    if (name in EVENT_LISTENER_PROPS) continue
-    if (!newProps || !(name in newProps)) {
-      domNode.removeAttribute(name)
+function updateProps (domNode, oldProps, newProps) {
+  if (oldProps) {
+    const oldPropsNames = Object.keys(oldProps)
+    for (let i = 0; i < oldPropsNames.length; i++) {
+      const name = oldPropsNames[i]
+      if (name === 'ref' || name === 'on') continue
+      if (name in EVENT_LISTENER_PROPS) continue
+      if (!newProps || !(name in newProps)) {
+        if (name === 'dataset') {
+          updateProps(domNode.dataset, oldProps ? oldProps.dataset : null, null)
+        } else if (name === 'style') {
+          updateProps(domNode.style, oldProps ? oldProps.style : null, null)
+        } else {
+          delete domNode[name]
+        }
+      }
     }
   }
-  for (let name in newProps) {
-    if (name === 'ref' || name === 'on') continue
-    if (name in EVENT_LISTENER_PROPS) continue
-    const oldValue = oldProps && oldProps[name]
-    const newValue = newProps[name]
-    if (newValue !== oldValue) {
-      domNode.setAttribute(name, newValue)
+
+  if (newProps) {
+    const newPropsNames = Object.keys(newProps)
+    for (let i = 0; i < newPropsNames.length; i++) {
+      const name = newPropsNames[i]
+      if (name === 'ref' || name === 'on') continue
+      if (name in EVENT_LISTENER_PROPS) continue
+      const oldValue = oldProps && oldProps[name]
+      const newValue = newProps[name]
+      if (name === 'dataset') {
+        updateProps(domNode.dataset, oldProps ? oldProps.dataset : null, newProps.dataset)
+      } else if (name === 'style') {
+        updateProps(domNode.style, oldProps ? oldProps.style : null, newProps.style)
+      } else {
+        if (newValue !== oldValue) {
+          domNode[name] = newValue
+        }
+      }
     }
   }
 }
