@@ -1,4 +1,5 @@
 const EVENT_LISTENER_PROPS = require('./event-listener-props')
+const SVG_TAGS = require('./svg-tags')
 
 function dom (tag, props, ...children) {
   for (let i = 0; i < children.length;) {
@@ -30,7 +31,7 @@ function dom (tag, props, ...children) {
   return {tag, props, children}
 }
 
-const TAG_NAMES = [
+const HTML_TAGS = [
   'a', 'abbr', 'address', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo',
   'blockquote', 'body', 'button', 'canvas', 'caption', 'cite', 'code',
   'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl',
@@ -39,17 +40,24 @@ const TAG_NAMES = [
   'label', 'legend', 'li', 'main', 'map', 'mark', 'menu', 'meter', 'nav',
   'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'pre',
   'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section',
-  'select', 'small', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'svg',
+  'select', 'small', 'span', 'strong', 'style', 'sub', 'summary', 'sup',
   'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title',
   'tr', 'u', 'ul', 'var', 'video', 'area', 'base', 'br', 'col', 'command',
   'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source',
   'track', 'wbr'
 ]
 
-for (const tagName of TAG_NAMES) {
+for (const tagName of HTML_TAGS) {
   dom[tagName] = (props, ...children) => {
     return dom(tagName, props, ...children)
   }
 }
+
+for (const tagName of SVG_TAGS) {
+  dom[tagName] = (props, ...children) => {
+    return dom(tagName, props, ...children)
+  }
+}
+
 
 module.exports = dom
