@@ -1,4 +1,6 @@
 import EVENT_LISTENER_PROPS from './event-listener-props'
+import SVG_TAGS from './svg-tags'
+import SVG_ATTRIBUTE_TRANSLATIONS from './svg-attribute-translations'
 
 export default function (domNode, oldVirtualNode, newVirtualNode, options) {
   const oldProps = oldVirtualNode && oldVirtualNode.props
@@ -9,12 +11,12 @@ export default function (domNode, oldVirtualNode, newVirtualNode, options) {
     refs = options.refs
     listenerContext = options.listenerContext
   }
-  updateProps(domNode, oldProps, newProps)
+  updateProps(domNode, oldVirtualNode, oldProps, newVirtualNode, newProps)
   if (refs) updateRef(domNode, oldProps && oldProps.ref, newProps && newProps.ref, refs)
   updateEventListeners(domNode, oldVirtualNode, newVirtualNode, listenerContext)
 }
 
-function updateProps (domNode, oldProps, newProps) {
+function updateProps (domNode, oldVirtualNode, oldProps, newVirtualNode, newProps) {
   if (oldProps) {
     const oldPropsNames = Object.keys(oldProps)
     for (let i = 0; i < oldPropsNames.length; i++) {
@@ -23,9 +25,11 @@ function updateProps (domNode, oldProps, newProps) {
       if (name in EVENT_LISTENER_PROPS) continue
       if (!newProps || !(name in newProps)) {
         if (name === 'dataset') {
-          updateProps(domNode.dataset, oldProps ? oldProps.dataset : null, null)
+          updateProps(domNode.dataset, null, oldProps && oldProps.dataset, null, null)
         } else if (name === 'style') {
-          updateProps(domNode.style, oldProps ? oldProps.style : null, null)
+          updateProps(domNode.style, null, oldProps && oldProps.style, null, null)
+        } else if (oldVirtualNode && SVG_TAGS.has(oldVirtualNode.tag)) {
+          domNode.removeAttribute(SVG_ATTRIBUTE_TRANSLATIONS.get(name) || name)
         } else {
           delete domNode[name]
         }
@@ -42,12 +46,16 @@ function updateProps (domNode, oldProps, newProps) {
       const oldValue = oldProps && oldProps[name]
       const newValue = newProps[name]
       if (name === 'dataset') {
-        updateProps(domNode.dataset, oldProps ? oldProps.dataset : null, newProps.dataset)
+        updateProps(domNode.dataset, null, oldProps && oldProps.dataset, null, newProps.dataset)
       } else if (name === 'style') {
-        updateProps(domNode.style, oldProps ? oldProps.style : null, newProps.style)
+        updateProps(domNode.style, null, oldProps && oldProps.style, null, newProps.style)
       } else {
         if (newValue !== oldValue) {
-          domNode[name] = newValue
+          if (newVirtualNode && SVG_TAGS.has(newVirtualNode.tag)) {
+            domNode.setAttribute(SVG_ATTRIBUTE_TRANSLATIONS.get(name) || name, newValue)
+          } else {
+            domNode[name] = newValue
+          }
         }
       }
     }

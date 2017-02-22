@@ -451,6 +451,26 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert.equal(element.outerHTML, render(<div/>).outerHTML)
     })
   })
+
+  describe('svg elements', function () {
+    it('can insert, delete, update and move nodes', function () {
+      assertValidPatch(
+        <svg>
+          <text>Hello, world</text>
+          <circle strokeWidth='3' />
+          <ellipse cx='2' />
+        </svg>,
+        <svg>
+          <text>Goodbye, moon</text>
+          <path cx='1' />
+          <circle strokeWidth='5' />
+          <g fill='none'>
+            <path stroke='red' />
+          </g>
+        </svg>
+      )
+    })
+  })
 })
 
 function assertValidPatch (oldVirtualNode, newVirtualNode, seed) {

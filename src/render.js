@@ -1,4 +1,5 @@
 import updateProps from './update-props'
+import SVG_TAGS from './svg-tags'
 
 export default function render (virtualNode, options) {
   let domNode
@@ -19,6 +20,10 @@ export default function render (virtualNode, options) {
       if (options && options.refs && ref) {
         options.refs[ref] = component
       }
+    } else if (SVG_TAGS.has(tag)) {
+      domNode = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      if (children) addChildren(domNode, children, options)
+      if (props) updateProps(domNode, null, virtualNode, options)
     } else {
       domNode = document.createElement(tag)
       if (children) addChildren(domNode, children, options)
