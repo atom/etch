@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-import etch from '../../src/index'
+const etch = require('../../src/index')
 
 describe('etch.update(component)', () => {
   it('schedules an update of the element associated with the component', async () => {

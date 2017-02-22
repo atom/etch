@@ -1,9 +1,9 @@
 /** @jsx dom */
 
-import {assert} from 'chai'
+const {assert} = require('chai')
 
-import dom from '../../src/dom'
-import render from '../../src/render'
+const dom = require('../../src/dom')
+const render = require('../../src/render')
 
 describe('render (virtualNode)', () => {
   it('constructs DOM nodes from virtual DOM trees', function () {

@@ -1,8 +1,8 @@
-import EVENT_LISTENER_PROPS from './event-listener-props'
-import SVG_TAGS from './svg-tags'
-import SVG_ATTRIBUTE_TRANSLATIONS from './svg-attribute-translations'
+const EVENT_LISTENER_PROPS = require('./event-listener-props')
+const SVG_TAGS = require('./svg-tags')
+const SVG_ATTRIBUTE_TRANSLATIONS = require('./svg-attribute-translations')
 
-export default function (domNode, oldVirtualNode, newVirtualNode, options) {
+module.exports = function (domNode, oldVirtualNode, newVirtualNode, options) {
   const oldProps = oldVirtualNode && oldVirtualNode.props
   const newProps = newVirtualNode.props
 

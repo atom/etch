@@ -1,5 +1,5 @@
 // Based on https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute
-export default new Map([
+module.exports = new Map([
   ['accentHeight', 'accent-height'],
   ['alignmentBaseline', 'alignment-baseline'],
   ['arabicForm', 'arabic-form'],

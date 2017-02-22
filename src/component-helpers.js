@@ -1,6 +1,6 @@
-import render from './render'
-import patch from './patch'
-import {getScheduler} from './scheduler-assignment'
+const render = require('./render')
+const patch = require('./patch')
+const {getScheduler} = require('./scheduler-assignment')
 
 const componentsWithPendingUpdates = new WeakSet
 let syncUpdatesInProgressCounter = 0
@@ -24,7 +24,7 @@ function isValidVirtualNode (virtualNode) {
 // nodes of the `virtual-dom` tree. Before calling into `virtual-dom` to create
 // the DOM tree, it pushes this `refs` object to a shared stack so it can be
 // accessed by hooks during the creation of individual elements.
-export function initialize(component) {
+function initialize(component) {
   if (typeof component.update !== 'function') {
     throw new Error('Etch components must implement `update(props, children)`.')
   }
@@ -57,7 +57,7 @@ export function initialize(component) {
 //
 // Returns a promise that will resolve when the requested update has been
 // completed.
-export function update (component, replaceNode=true) {
+function update (component, replaceNode=true) {
   if (syncUpdatesInProgressCounter > 0) {
     updateSync(component, replaceNode)
     return Promise.resolve()
@@ -95,7 +95,7 @@ export function update (component, replaceNode=true) {
 // For now, etch does not allow the root tag of the `render` method to change
 // between invocations, because we want to preserve a one-to-one relationship
 // between component objects and DOM elements for simplicity.
-export function updateSync (component, replaceNode=true) {
+function updateSync (component, replaceNode=true) {
   let newVirtualNode = component.render()
   if (!isValidVirtualNode(newVirtualNode)) {
     let namePart = component.constructor && component.constructor.name ? ' in ' + component.constructor.name : ''
@@ -141,7 +141,7 @@ export function updateSync (component, replaceNode=true) {
 // If called as the result of destroying a component higher in the DOM, the
 // element is not removed to avoid redundant DOM manipulation. Returns a promise
 // that resolves when the destruction is completed.
-export function destroy (component, removeNode=true) {
+function destroy (component, removeNode=true) {
   if (syncUpdatesInProgressCounter > 0 || syncDestructionsInProgressCounter > 0) {
     destroySync(component, removeNode)
     return Promise.resolve()
@@ -158,7 +158,7 @@ export function destroy (component, removeNode=true) {
 //
 // Note that we track whether `destroy` calls are in progress and only remove
 // the element if we are not a nested call.
-export function destroySync (component, removeNode=true) {
+function destroySync (component, removeNode=true) {
   syncDestructionsInProgressCounter++
   destroyChildComponents(component.virtualNode)
   if (syncDestructionsInProgressCounter === 1 && removeNode) component.element.remove()
@@ -171,4 +171,10 @@ function destroyChildComponents(virtualNode) {
   } else if (virtualNode.children) {
     virtualNode.children.forEach(destroyChildComponents)
   }
+}
+
+module.exports = {
+  initialize,
+  update, updateSync,
+  destroy, destroySync
 }

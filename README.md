@@ -9,7 +9,7 @@ Etch components are ordinary JavaScript objects that conform to a minimal interf
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class MyComponent {
   // Required: Define an ordinary constructor to initialize your component.
@@ -74,7 +74,7 @@ This function is typically called at the end of your component's constructor:
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class MyComponent {
   constructor (properties) {
@@ -102,7 +102,7 @@ This function takes a component that is already associated with an `.element` pr
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class MyComponent {
   constructor (properties) {
@@ -181,7 +181,7 @@ Components can be nested within other components by referencing a child componen
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class ChildComponent {
   constructor () {
@@ -212,7 +212,7 @@ A constructor function can always take the place of a tag name in any Etch JSX e
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class ChildComponent {
   constructor (properties, children) {

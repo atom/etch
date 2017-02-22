@@ -1,6 +1,6 @@
-import EVENT_LISTENER_PROPS from './event-listener-props'
+const EVENT_LISTENER_PROPS = require('./event-listener-props')
 
-export default function dom (tag, props, ...children) {
+function dom (tag, props, ...children) {
   for (let i = 0; i < children.length;) {
     const child = children[i]
     if (Array.isArray(child)) {
@@ -51,3 +51,5 @@ for (const tagName of TAG_NAMES) {
     return dom(tagName, props, ...children)
   }
 }
+
+module.exports = dom

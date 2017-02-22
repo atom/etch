@@ -1,7 +1,7 @@
-import updateProps from './update-props'
-import SVG_TAGS from './svg-tags'
+const updateProps = require('./update-props')
+const SVG_TAGS = require('./svg-tags')
 
-export default function render (virtualNode, options) {
+function render (virtualNode, options) {
   let domNode
   if (virtualNode.text != null) {
     domNode = document.createTextNode(virtualNode.text)
@@ -12,7 +12,9 @@ export default function render (virtualNode, options) {
     if (typeof tag === 'function') {
       let ref
       if (props && props.ref) {
-        ({ref, ...props} = props)
+        ref = props.ref
+        props = Object.assign({}, props)
+        delete props['ref']
       }
       const component = new tag(props || {}, children)
       virtualNode.component = component
@@ -39,3 +41,5 @@ function addChildren (parent, children, options) {
     parent.appendChild(render(children[i], options))
   }
 }
+
+module.exports = render

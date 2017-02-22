@@ -1,7 +1,7 @@
-import render from './render'
-import updateProps from './update-props'
+const render = require('./render')
+const updateProps = require('./update-props')
 
-export default function patch (oldVirtualNode, newVirtualNode, options) {
+function patch (oldVirtualNode, newVirtualNode, options) {
   const oldNode = oldVirtualNode.domNode
   if (virtualNodesAreEqual(oldVirtualNode, newVirtualNode)) {
     let newNode
@@ -46,7 +46,7 @@ function updateComponent (oldVirtualNode, newVirtualNode, options) {
       if (newRefName) refs[newRefName] = component
     }
     if (newRefName) {
-      newProps = {...newProps}
+      newProps = Object.assign({}, newProps)
       delete newProps.ref
     }
   }
@@ -163,3 +163,5 @@ function mapOldKeysToIndices (children, startIndex, endIndex) {
   }
   return oldIndicesByKey;
 }
+
+module.exports = patch

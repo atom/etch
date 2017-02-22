@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   onCopy: 'copy',
   onCut: 'cut',
   onPaste: 'paste',

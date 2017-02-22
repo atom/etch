@@ -1,11 +1,9 @@
-import dom from './dom'
-import {initialize, update, updateSync, destroy, destroySync, onUpdate} from './component-helpers'
-import {setScheduler, getScheduler} from './scheduler-assignment'
+const dom = require('./dom')
+const {initialize, update, updateSync, destroy, destroySync, onUpdate} = require('./component-helpers')
+const {setScheduler, getScheduler} = require('./scheduler-assignment')
 
-let etch = {
+module.exports = {
   dom,
   initialize, update, updateSync, destroy, destroySync, onUpdate,
   setScheduler, getScheduler
 }
-
-export default etch

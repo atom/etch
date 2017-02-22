@@ -1,11 +1,11 @@
 /** @jsx dom */
 
-import {assert} from 'chai'
-import Random from 'random-seed'
+const {assert} = require('chai')
+const Random = require('random-seed')
 
-import dom from '../../src/dom'
-import render from '../../src/render'
-import patch from '../../src/patch'
+const dom = require('../../src/dom')
+const render = require('../../src/render')
+const patch = require('../../src/patch')
 
 describe('patch (oldVirtualNode, newVirtualNode)', () => {
   describe('attributes', function () {

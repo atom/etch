@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-import etch from '../../src/index'
+const etch = require('../../src/index')
 
 describe('etch.destroySync(component)', () => {
   it('synchronously removes the component\'s element from the document and calls `destroy` on child components', () => {

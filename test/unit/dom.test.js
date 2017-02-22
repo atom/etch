@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-import etch from '../../src/index'
+const etch = require('../../src/index')
 
 describe('etch.dom', () => {
   it('defaults properties to an empty object', () => {
