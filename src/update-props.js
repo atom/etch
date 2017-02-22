@@ -28,7 +28,7 @@ function updateProps (domNode, oldVirtualNode, oldProps, newVirtualNode, newProp
           updateProps(domNode.dataset, null, oldProps && oldProps.dataset, null, null)
         } else if (name === 'style') {
           updateProps(domNode.style, null, oldProps && oldProps.style, null, null)
-        } else if (oldVirtualNode && SVG_TAGS.has(oldVirtualNode.tag)) {
+        } else if (name !== 'innerHTML' && oldVirtualNode && SVG_TAGS.has(oldVirtualNode.tag)) {
           domNode.removeAttribute(SVG_ATTRIBUTE_TRANSLATIONS.get(name) || name)
         } else {
           delete domNode[name]
@@ -51,7 +51,7 @@ function updateProps (domNode, oldVirtualNode, oldProps, newVirtualNode, newProp
         updateProps(domNode.style, null, oldProps && oldProps.style, null, newProps.style)
       } else {
         if (newValue !== oldValue) {
-          if (newVirtualNode && SVG_TAGS.has(newVirtualNode.tag)) {
+          if (name !== 'innerHTML' && newVirtualNode && SVG_TAGS.has(newVirtualNode.tag)) {
             domNode.setAttribute(SVG_ATTRIBUTE_TRANSLATIONS.get(name) || name, newValue)
           } else {
             domNode[name] = newValue

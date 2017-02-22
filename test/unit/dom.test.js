@@ -40,6 +40,18 @@ describe('etch.dom', () => {
     expect(component.element.outerHTML).to.equal('<circle color-profile="foo" color-rendering="bar"></circle>')
   })
 
+  it('supports assigning innerHTML to SVG tags', function () {
+    let component = {
+      render () {
+        return <svg innerHTML="<circle></circle>"></svg>
+      },
+      update () {}
+    }
+
+    etch.initialize(component)
+    expect(component.element.outerHTML).to.equal('<svg><circle></circle></svg>')
+  })
+
   describe('when a component constructor is used as a tag name', () => {
     describe('on initial render', () => {
       it('constructs the component with the specified properties and children, then appends its element to the DOM', () => {

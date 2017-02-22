@@ -443,7 +443,6 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
         </div>
       ).outerHTML)
 
-      global.debug = true
       const virtualNode4 = <div />
       patch(virtualNode3, virtualNode4, {refs})
       assert.equal(component.updateCount, 1)
@@ -468,6 +467,13 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
             <path stroke='red' />
           </g>
         </svg>
+      )
+    })
+
+    it('can update the innerHTML property', function () {
+      assertValidPatch(
+        <svg innerHTML="<circle></circle>"></svg>,
+        <svg innerHTML="<ellipse></ellipse>"></svg>
       )
     })
   })
