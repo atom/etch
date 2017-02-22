@@ -5,7 +5,7 @@ function dom (tag, props, ...children) {
     const child = children[i]
     if (Array.isArray(child)) {
       children.splice(i, 1, ...child)
-    } else if (typeof child === 'string') {
+    } else if (typeof child === 'string' || typeof child === 'number') {
       children.splice(i, 1, {text: child})
       i++
     } else {
