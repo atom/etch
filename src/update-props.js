@@ -31,6 +31,8 @@ function updateProps (domNode, oldVirtualNode, oldProps, newVirtualNode, newProp
         } else if (name !== 'innerHTML' && oldVirtualNode && SVG_TAGS.has(oldVirtualNode.tag)) {
           domNode.removeAttribute(SVG_ATTRIBUTE_TRANSLATIONS.get(name) || name)
         } else {
+          // Null out property for objects that don't support deletion (e.g. style).
+          domNode[name] = null
           delete domNode[name]
         }
       }

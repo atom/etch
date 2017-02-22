@@ -8,14 +8,36 @@ const render = require('../../src/render')
 const patch = require('../../src/patch')
 
 describe('patch (oldVirtualNode, newVirtualNode)', () => {
-  describe('attributes', function () {
-    it('can add, remove, and update attributes', function () {
+  describe('properties', function () {
+    it('can add, remove, and update properties', function () {
       assertValidPatch(<div a='1' b='2' />, <div b='3' c='4' />)
     })
 
-    it('can update from no attributes to some attributes and vice versa', function () {
+    it('can update from no properties to some properties and vice versa', function () {
       assertValidPatch(<div />, <div a='1' />)
       assertValidPatch(<div a='1' />, <div />)
+    })
+
+    it('correctly updates the `dataset` property', function () {
+      assertValidPatch(
+        <div />,
+        <div dataset={{a: 1, b: 2}} />,
+      )
+      assertValidPatch(
+        <div dataset={{a: 1, b: 2}} />,
+        <div dataset={{b: 4, c: 6}} />
+      )
+    })
+
+    it('correctly updates the `style` property', function () {
+      assertValidPatch(
+        <div />,
+        <div style={{display: 'none', color: 'red'}} />,
+      )
+      assertValidPatch(
+        <div style={{display: 'none', color: 'red'}} />,
+        <div style={{color: 'blue', fontFamily: 'monospace'}} />
+      )
     })
   })
 
