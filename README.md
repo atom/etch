@@ -356,7 +356,7 @@ Read comments in the [scheduler assignment][scheduler-assignment] and [default s
 
 ### Handling Events
 
-Etch supports listening to arbitrary events on a DOM node via the `on` property by specifying a hash of `eventName: handlerFunction` pairs:
+Etch supports listening to arbitrary events on DOM nodes via the special `on` property, which can be used to assign a hash of `eventName: listenerFunction` pairs:
 
 ```js
 class ComponentWithEvents {
@@ -380,7 +380,7 @@ class ComponentWithEvents {
 }
 ```
 
-As you can see, the function is automatically bound to the component which registered the event handler. Other than improving readability, this removes the need for rebinding the handler functions in the constructor or, worse, creating a new closure every time the component is updated.
+As you can see, the listener function's `this` value is automatically bound to the parent component. You should rely on this auto-binding facility rather than using arrow functions or `Function.bind` to avoid complexity and extraneous closure allocations.
 
 ### Feature Requests
 
