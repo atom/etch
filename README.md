@@ -356,9 +356,31 @@ Read comments in the [scheduler assignment][scheduler-assignment] and [default s
 
 ### Handling Events
 
-This library doesn't currently prescribe or support a specific approach to binding event handlers. We are considering an API that integrates inline handlers directly into JSX expressions, but we're not convinced the utility warrants the added surface area.
+Etch supports listening to arbitrary events on a DOM node via the `on` property by specifying a hash of `eventName: handlerFunction` pairs:
 
-Compared to efficiently updating the DOM declaratively (the primary focus of this library), binding events is a pretty simple problem. You might try [dom-listener][dom-listener] if you're looking for a library that you could combine with Etch to deal with event binding.
+```js
+class ComponentWithEvents {
+  constructor () {
+    etch.initialize(this)
+  }
+
+  render () {
+    return <div on={click: this.didClick, focus: this.didFocus} />
+  }
+
+  didClick (event) {
+    console.log(event) // ==> MouseEvent {...}
+    console.log(this) // ==> ComponentWithEvents {...}
+  }
+
+  didFocus (event) {
+    console.log(event) // ==> FocusEvent {...}
+    console.log(this) // ==> ComponentWithEvents {...}
+  }
+}
+```
+
+As you can see, the function is automatically bound to the component which registered the event handler. Other than improving readability, this removes the need for rebinding the handler functions in the constructor or, worse, creating a new closure every time the component is updated.
 
 ### Feature Requests
 
