@@ -18,6 +18,7 @@ function patch (oldVirtualNode, newVirtualNode, options) {
       }
     }
     newVirtualNode.domNode = oldNode
+    newVirtualNode.key = oldVirtualNode.key
     if (newNode !== oldNode && oldNode.parentNode) {
       oldNode.parentNode.replaceChild(newNode, oldNode)
     }
@@ -50,6 +51,12 @@ function updateComponent (oldVirtualNode, newVirtualNode, options) {
       delete newProps.ref
     }
   }
+
+  if (newProps && newProps.key) {
+    newProps = Object.assign({}, newProps)
+    delete newProps.key
+  }
+
   component.update(newProps || {}, newChildren)
   return component.element
 }
@@ -92,7 +99,7 @@ function updateChildren (parentElement, oldChildren, newChildren, options) {
       newStartChild = newChildren[++newStartIndex]
     } else {
       if (!oldIndicesByKey) oldIndicesByKey = mapOldKeysToIndices(oldChildren, oldStartIndex, oldEndIndex)
-      const key = getKey(newStartChild)
+      const key = getNewVirtualNodeKey(newStartChild)
       const oldIndex = key ? oldIndicesByKey[key] : null
       if (oldIndex == null) {
         parentElement.insertBefore(render(newStartChild, options), oldStartChild.domNode)
@@ -146,19 +153,23 @@ function removeRefs (virtualNode, refs) {
 
 function virtualNodesAreEqual (oldVirtualNode, newVirtualNode) {
   return (
-    getKey(oldVirtualNode) === getKey(newVirtualNode)
+    getOldVirtualNodeKey(oldVirtualNode) === getNewVirtualNodeKey(newVirtualNode)
       && oldVirtualNode.tag === newVirtualNode.tag
   )
 }
 
-function getKey (virtualNode) {
+function getOldVirtualNodeKey (virtualNode) {
+  return virtualNode.key
+}
+
+function getNewVirtualNodeKey (virtualNode) {
   return virtualNode.props ? virtualNode.props.key : undefined
 }
 
 function mapOldKeysToIndices (children, startIndex, endIndex) {
   let oldIndicesByKey = {}
   for (let i = startIndex; i <= endIndex; i++) {
-    const key = getKey(children[i])
+    const key = getOldVirtualNodeKey(children[i])
     if (key) oldIndicesByKey[key] = i
   }
   return oldIndicesByKey;

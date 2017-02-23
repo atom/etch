@@ -10,14 +10,23 @@ function render (virtualNode, options) {
     let {props} = virtualNode
 
     if (typeof tag === 'function') {
-      let ref
+      let ref, key
+
       if (props && props.ref) {
         ref = props.ref
         props = Object.assign({}, props)
         delete props['ref']
       }
+
+      if (props && props.key) {
+        key = props.key
+        props = Object.assign({}, props)
+        delete props['key']
+      }
+
       const component = new tag(props || {}, children)
       virtualNode.component = component
+      virtualNode.key = key
       domNode = component.element
       if (options && options.refs && ref) {
         options.refs[ref] = component
