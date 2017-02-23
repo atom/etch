@@ -2,13 +2,13 @@
   "name": "etch",
   "version": "0.8.0",
   "description": "Perform virtual DOM updates based on changes to a data model.",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "npm run standard && npm run mocha",
     "mocha": "electron-mocha --renderer --recursive ./test/helpers/register-babel test",
     "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/register-babel  test",
     "prepublish": "npm run standard",
-    "standard": "node_modules/.bin/standard --recursive src test && echo Linting passed"
+    "standard": "node_modules/.bin/standard --recursive lib test && echo Linting passed"
   },
   "repository": {
     "type": "git",

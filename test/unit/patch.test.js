@@ -3,9 +3,9 @@
 const {assert} = require('chai')
 const Random = require('random-seed')
 
-const dom = require('../../src/dom')
-const render = require('../../src/render')
-const patch = require('../../src/patch')
+const dom = require('../../lib/dom')
+const render = require('../../lib/render')
+const patch = require('../../lib/patch')
 
 describe('patch (oldVirtualNode, newVirtualNode)', () => {
   describe('properties', function () {

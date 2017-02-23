@@ -2,8 +2,8 @@
 
 const {assert} = require('chai')
 
-const dom = require('../../src/dom')
-const render = require('../../src/render')
+const dom = require('../../lib/dom')
+const render = require('../../lib/render')
 
 describe('render (virtualNode)', () => {
   it('constructs DOM nodes from virtual DOM trees', function () {

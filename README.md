@@ -38,7 +38,7 @@ class MyComponent {
   async destroy () {
     // call etch.destroy to remove the element and destroy child components
     await etch.destroy(this)
-    // then perform custom teardown logic here...      
+    // then perform custom teardown logic here...
   }
 }
 ```
@@ -365,6 +365,6 @@ Compared to efficiently updating the DOM declaratively (the primary focus of thi
 Etch aims to stay small and focused. If you have a feature idea, consider implementing it as a library that either wraps Etch or, even better, that can be used in concert with it. If it's impossible to implement your feature outside of Etch, we can discuss adding a hook that makes your feature possible.
 
 [babel]: https://babeljs.io/
-[scheduler-assignment]: https://github.com/nathansobo/etch/blob/master/src/scheduler-assignment.js
-[default-scheduler]: https://github.com/nathansobo/etch/blob/master/src/default-scheduler.js
+[scheduler-assignment]: https://github.com/nathansobo/etch/blob/master/lib/scheduler-assignment.js
+[default-scheduler]: https://github.com/nathansobo/etch/blob/master/lib/default-scheduler.js
 [dom-listener]: https://github.com/atom/dom-listener

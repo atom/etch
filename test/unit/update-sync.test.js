@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-const etch = require('../../src/index')
+const etch = require('../../lib/index')
 
 describe('etch.updateSync(component)', () => {
   it('performs an update of the component\'s element and any resulting child updates synchronously', () => {
