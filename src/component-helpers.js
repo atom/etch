@@ -2,7 +2,7 @@ const render = require('./render')
 const patch = require('./patch')
 const {getScheduler} = require('./scheduler-assignment')
 
-const componentsWithPendingUpdates = new WeakSet
+const componentsWithPendingUpdates = new WeakSet()
 let syncUpdatesInProgressCounter = 0
 let syncDestructionsInProgressCounter = 0
 

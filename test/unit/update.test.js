@@ -30,7 +30,7 @@ describe('etch.update(component)', () => {
 
       render () {
         this.renderCount++
-        return <div></div>
+        return <div />
       },
 
       update () {}
@@ -41,7 +41,7 @@ describe('etch.update(component)', () => {
 
       render () {
         this.renderCount++
-        return <div></div>
+        return <div />
       },
 
       update () {}
@@ -139,7 +139,7 @@ describe('etch.update(component)', () => {
       }
 
       render () {
-        return <div></div>
+        return <div />
       }
 
       update () {}
@@ -158,14 +158,13 @@ describe('etch.update(component)', () => {
       update () {}
 
       render () {
-        return <div></div>
+        return <div />
       }
     }
 
     let parent = new ParentComponent()
     let child = parent.refs.child
     let grandchild = child.refs.grandchild
-    let childWithNoDestroyMethod = parent.refs.childWithNoDestroyMethod
 
     parent.renderChildren = false
     await etch.update(parent)
@@ -270,7 +269,7 @@ describe('etch.update(component)', () => {
       }
 
       render () {
-        return <div/>
+        return <div />
       }
 
       update () {
