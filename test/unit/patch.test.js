@@ -285,24 +285,18 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
     it('maintains references to child component instances based on their `ref` property', function () {
       class ChildComponentA {
         constructor (props) {
-          assert(!props.ref, 'Ref property not passed through to component constructor')
           this.element = document.createElement('div')
         }
 
-        update (props) {
-          assert(!props.ref, 'Ref property not passed through to component update')
-        }
+        update (props) {}
       }
 
       class ChildComponentB {
         constructor (props) {
-          assert(!props.ref, 'Ref property not passed through to component constructor')
           this.element = document.createElement('div')
         }
 
-        update (props) {
-          assert(!props.ref, 'Ref property not passed through to component update')
-        }
+        update (props) {}
       }
 
       const refs = {}
