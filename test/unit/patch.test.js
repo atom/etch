@@ -39,6 +39,24 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
         <div style={{color: 'blue', fontFamily: 'monospace'}} />
       )
     })
+
+    it('correctly updates the `className` property', function () {
+      assertValidPatch(
+        <div />,
+        <div className='a' />,
+      )
+      assertValidPatch(
+        <div className='a' />,
+        <div className='b' />
+      )
+
+      const oldVirtualNode = <div className='b' />
+      const oldNode = render(oldVirtualNode)
+      const newVirtualNode = <div />
+      const newNode = render(newVirtualNode)
+      patch(oldNode, newNode)
+      assert(!newNode.className)
+    })
   })
 
   describe('keyed children', function () {
