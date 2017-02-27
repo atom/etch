@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-import etch from '../../src/index'
+const etch = require('../../lib/index')
 
 describe('svg support', () => {
   it('sets the correct tag thingies', () => {

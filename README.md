@@ -9,7 +9,7 @@ Etch components are ordinary JavaScript objects that conform to a minimal interf
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class MyComponent {
   // Required: Define an ordinary constructor to initialize your component.
@@ -38,7 +38,7 @@ class MyComponent {
   async destroy () {
     // call etch.destroy to remove the element and destroy child components
     await etch.destroy(this)
-    // then perform custom teardown logic here...      
+    // then perform custom teardown logic here...
   }
 }
 ```
@@ -74,7 +74,7 @@ This function is typically called at the end of your component's constructor:
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class MyComponent {
   constructor (properties) {
@@ -102,7 +102,7 @@ This function takes a component that is already associated with an `.element` pr
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class MyComponent {
   constructor (properties) {
@@ -181,7 +181,7 @@ Components can be nested within other components by referencing a child componen
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class ChildComponent {
   constructor () {
@@ -212,7 +212,7 @@ A constructor function can always take the place of a tag name in any Etch JSX e
 ```js
 /** @jsx etch.dom */
 
-import etch from 'etch'
+const etch = require('etch')
 
 class ChildComponent {
   constructor (properties, children) {
@@ -356,15 +356,37 @@ Read comments in the [scheduler assignment][scheduler-assignment] and [default s
 
 ### Handling Events
 
-This library doesn't currently prescribe or support a specific approach to binding event handlers. We are considering an API that integrates inline handlers directly into JSX expressions, but we're not convinced the utility warrants the added surface area.
+Etch supports listening to arbitrary events on DOM nodes via the special `on` property, which can be used to assign a hash of `eventName: listenerFunction` pairs:
 
-Compared to efficiently updating the DOM declaratively (the primary focus of this library), binding events is a pretty simple problem. You might try [dom-listener][dom-listener] if you're looking for a library that you could combine with Etch to deal with event binding.
+```js
+class ComponentWithEvents {
+  constructor () {
+    etch.initialize(this)
+  }
+
+  render () {
+    return <div on={click: this.didClick, focus: this.didFocus} />
+  }
+
+  didClick (event) {
+    console.log(event) // ==> MouseEvent {...}
+    console.log(this) // ==> ComponentWithEvents {...}
+  }
+
+  didFocus (event) {
+    console.log(event) // ==> FocusEvent {...}
+    console.log(this) // ==> ComponentWithEvents {...}
+  }
+}
+```
+
+As you can see, the listener function's `this` value is automatically bound to the parent component. You should rely on this auto-binding facility rather than using arrow functions or `Function.bind` to avoid complexity and extraneous closure allocations.
 
 ### Feature Requests
 
 Etch aims to stay small and focused. If you have a feature idea, consider implementing it as a library that either wraps Etch or, even better, that can be used in concert with it. If it's impossible to implement your feature outside of Etch, we can discuss adding a hook that makes your feature possible.
 
 [babel]: https://babeljs.io/
-[scheduler-assignment]: https://github.com/nathansobo/etch/blob/master/src/scheduler-assignment.js
-[default-scheduler]: https://github.com/nathansobo/etch/blob/master/src/default-scheduler.js
+[scheduler-assignment]: https://github.com/nathansobo/etch/blob/master/lib/scheduler-assignment.js
+[default-scheduler]: https://github.com/nathansobo/etch/blob/master/lib/default-scheduler.js
 [dom-listener]: https://github.com/atom/dom-listener

@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-import etch from '../../src/index'
+const etch = require('../../lib/index')
 
 describe('etch.destroy(component)', () => {
   it('removes the component\'s element from the document and calls `destroy` on child components', async () => {

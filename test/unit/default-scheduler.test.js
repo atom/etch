@@ -1,4 +1,4 @@
-import DefaultScheduler from '../../src/default-scheduler'
+const DefaultScheduler = require('../../lib/default-scheduler')
 
 describe('DefaultScheduler', () => {
   let scheduler

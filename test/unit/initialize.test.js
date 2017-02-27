@@ -1,6 +1,6 @@
 /** @jsx etch.dom */
 
-import etch from '../../src/index'
+const etch = require('../../lib/index')
 
 describe('etch.initialize(component)', () => {
   it('returns an element with content based on the render method of the given component', () => {
