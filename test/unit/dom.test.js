@@ -52,6 +52,26 @@ describe('etch.dom', () => {
     expect(component.element.outerHTML).to.equal('<svg><circle></circle></svg>')
   })
 
+  it('ignores nulls passed in the place of children, but throws an error if other invalid values are passed', () => {
+    const element = etch.render(
+      <div><span/>{null}<p/></div>
+    );
+
+    expect(Array.from(element.children).map(c => c.tagName)).to.eql(['SPAN', 'P'])
+
+    expect(() => etch.render(
+      <div>{false}</div>
+    )).to.throw('Invalid child node: false')
+
+    expect(() => etch.render(
+      <div>{undefined}</div>
+    )).to.throw('Invalid child node: undefined')
+
+    expect(() => etch.render(
+      <div>{() => {}}</div>
+    )).to.throw(/Invalid child node: function/)
+  })
+
   describe('when a component constructor is used as a tag name', () => {
     describe('on initial render', () => {
       it('constructs the component with the specified properties and children, then appends its element to the DOM', () => {
