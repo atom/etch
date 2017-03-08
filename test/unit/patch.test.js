@@ -38,6 +38,14 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
         <div style={{display: 'none', color: 'red'}} />,
         <div style={{color: 'blue', fontFamily: 'monospace'}} />
       )
+      assertValidPatch(
+        <div style={{display: 'none', color: 'red'}} />,
+        <div style="color: 'blue'; fontFamily: 'monospace'" />
+      )
+      assertValidPatch(
+        <div style="color: blue; font-family: monospace;" />,
+        <div style={{display: 'none', color: 'red'}} />
+      )
     })
 
     it('correctly updates the `className` property', function () {
