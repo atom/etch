@@ -483,6 +483,53 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert.equal(component.destroyCount, 1)
       assert.equal(element.outerHTML, render(<div/>).outerHTML)
     })
+
+    it('can replace normal elements with components and vice-versa', () => {
+      class Component {
+        constructor () {
+          this.element = render(<span/>)
+        }
+        update () {}
+      }
+
+      const refs = {}
+      const virtualNode1 = <div><div ref='a'/></div>
+      const element = render(virtualNode1, {refs})
+      const virtualNode2 = <div><Component ref='a'/></div>
+      patch(virtualNode1, virtualNode2, {refs})
+
+      assert.equal(element.outerHTML, '<div><span></span></div>')
+      assert(refs.a instanceof Component)
+
+      const virtualNode3 = <div><a ref='a'/></div>
+      patch(virtualNode2, virtualNode3, {refs})
+      assert.equal(element.outerHTML, '<div><a></a></div>')
+      assert(refs.a instanceof HTMLElement)
+    })
+
+    it('can handle components that change their root element during update', () => {
+      class Component {
+        constructor (props) {
+          this.element = document.createElement(props.rootElement)
+        }
+        update (props) {
+          this.element = document.createElement(props.rootElement)
+        }
+      }
+
+      const refs = {}
+      const virtualNode1 = <div><Component rootElement='div'/></div>
+      const element = render(virtualNode1)
+      assert.equal(element.outerHTML, '<div><div></div></div>')
+
+      const virtualNode2 = <div><Component rootElement='span'/></div>
+      patch(virtualNode1, virtualNode2, {refs})
+      assert.equal(element.outerHTML, '<div><span></span></div>')
+
+      const virtualNode3 = <div><Component rootElement='a'/></div>
+      patch(virtualNode2, virtualNode3, {refs})
+      assert.equal(element.outerHTML, '<div><a></a></div>')
+    })
   })
 
   describe('svg elements', function () {
