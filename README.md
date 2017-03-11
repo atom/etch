@@ -257,6 +257,12 @@ Nothing about the component composition rules requires that the child component 
 
 This feature makes it easy to mix components written in different versions of Etch or wrap components written in other technologies for integration into an Etch component. You can even just use raw DOM APIs for simple or performance-critical components and use them straightforwardly within Etch.
 
+### Keys
+
+To keep DOM update times linear in the size of the virtual tree, Etch applies a very simple strategy when updating lists of elements. By default, if a child at a given location has the same tag name in both the previous and current virtual DOM tree, Etch proceeds to apply updates for the entire subtree.
+
+If your virtual DOM contains a list into which you are inserting and removing elements frequently, you can associate each element in the list with a unique `key` property to identify it. This improves performance by allowing Etch to determine whether a given element tree should be *inserted* as a new DOM node, or whether it corresponds to a node that already exists that needs to be *updated*.
+
 ### References
 
 Etch interprets any `ref` property on a virtual DOM element as an instruction to wire a reference to the underlying DOM element or child component. These references are collected in a `refs` object that Etch assigns on your component.
