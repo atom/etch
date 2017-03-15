@@ -65,6 +65,19 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       patch(oldNode, newNode)
       assert(!newNode.className)
     })
+
+    it('allows attributes to be updated via the special `attributes` property', () => {
+      const virtualNode1 = <div attributes={{a: 1, b: 2}} />
+      const element = render(virtualNode1)
+      assert.equal(element.getAttribute('a'), '1')
+      assert.equal(element.getAttribute('b'), '2')
+
+      const virtualNode2 = <div attributes={{b: 3, c: 4}} />
+      patch(virtualNode1, virtualNode2)
+      assert(!element.hasAttribute('a'))
+      assert.equal(element.getAttribute('b'), '3')
+      assert.equal(element.getAttribute('c'), '4')
+    })
   })
 
   describe('keyed children', function () {

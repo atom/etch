@@ -287,6 +287,45 @@ component.refs.childComponent // This is a ChildComponent instance
 ```
 Note that `ref` properties on normal HTML elements create references to raw DOM nodes, while `ref` properties on child components create references to the constructed component object, which makes its DOM node available via its `element` property.
 
+### Handling Events
+
+Etch supports listening to arbitrary events on DOM nodes via the special `on` property, which can be used to assign a hash of `eventName: listenerFunction` pairs:
+
+```js
+class ComponentWithEvents {
+  constructor () {
+    etch.initialize(this)
+  }
+
+  render () {
+    return <div on={click: this.didClick, focus: this.didFocus} />
+  }
+
+  didClick (event) {
+    console.log(event) // ==> MouseEvent {...}
+    console.log(this) // ==> ComponentWithEvents {...}
+  }
+
+  didFocus (event) {
+    console.log(event) // ==> FocusEvent {...}
+    console.log(this) // ==> ComponentWithEvents {...}
+  }
+}
+```
+
+As you can see, the listener function's `this` value is automatically bound to the parent component. You should rely on this auto-binding facility rather than using arrow functions or `Function.bind` to avoid complexity and extraneous closure allocations.
+
+### Assigning DOM Attributes
+
+With the exception of SVG elements, Etch assigns *properties* on DOM nodes rather than HTML attributes. If you want to bypass this behavior and assign attributes instead, use the special `attributes` property with a nested object. For example, `a` and `b` below will yield the equivalent DOM node.
+
+```js
+const a = <div className='foo' />
+const b = <div attributes={{class: 'foo'}}
+```
+
+This can be useful for custom attributes that don't map to DOM node properties.
+
 ### Organizing Component State
 
 To keep the API surface area minimal, Etch is deliberately focused only on updating the DOM, leaving management of component state to component authors.
@@ -359,34 +398,6 @@ etch.setScheduler(atom.views)
 ```
 
 Read comments in the [scheduler assignment][scheduler-assignment] and [default scheduler][default-scheduler] source code for more information on implementing your own scheduler.
-
-### Handling Events
-
-Etch supports listening to arbitrary events on DOM nodes via the special `on` property, which can be used to assign a hash of `eventName: listenerFunction` pairs:
-
-```js
-class ComponentWithEvents {
-  constructor () {
-    etch.initialize(this)
-  }
-
-  render () {
-    return <div on={click: this.didClick, focus: this.didFocus} />
-  }
-
-  didClick (event) {
-    console.log(event) // ==> MouseEvent {...}
-    console.log(this) // ==> ComponentWithEvents {...}
-  }
-
-  didFocus (event) {
-    console.log(event) // ==> FocusEvent {...}
-    console.log(this) // ==> ComponentWithEvents {...}
-  }
-}
-```
-
-As you can see, the listener function's `this` value is automatically bound to the parent component. You should rely on this auto-binding facility rather than using arrow functions or `Function.bind` to avoid complexity and extraneous closure allocations.
 
 ### Feature Requests
 
