@@ -176,6 +176,48 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
         )
       }
     })
+
+    it('allows arbitrary objects to be used as keys', () => {
+      const keyA = {key: 'a'}
+      const keyB = {key: 'b'}
+      const keyC = {key: 'c'}
+      const keyD = {key: 'c'}
+
+      class ChildComponent {
+        constructor (props) {
+          this.element = document.createElement('div')
+          this.element.textContent = props.text
+        }
+
+        update (props) {
+          this.element.textContent = props.text
+        }
+      }
+
+      const virtualNode1 = (
+        <div>
+          <ChildComponent key={keyA} text='a'/>
+          <ChildComponent key={keyB} text='b'/>
+        </div>
+      )
+      const element = render(virtualNode1)
+      const [elementA, elementB] = element.children
+
+      const virtualNode2 = (
+        <div>
+          <ChildComponent key={keyB} text='d'/>
+          <ChildComponent key={keyD} text='y'/>
+          <ChildComponent key={keyA} text='c'/>
+          <ChildComponent key={keyC} text='x'/>
+        </div>
+      )
+      patch(virtualNode1, virtualNode2)
+
+      assert.equal(element.children[0], elementB)
+      assert.equal(element.children[2], elementA)
+      assert.equal(elementA.textContent, 'c')
+      assert.equal(elementB.textContent, 'd')
+    })
   })
 
   describe('unkeyed children', function () {
