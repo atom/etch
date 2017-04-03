@@ -302,7 +302,7 @@ class ComponentWithEvents {
   }
 
   render () {
-    return <div on={click: this.didClick, focus: this.didFocus} />
+    return <div on={{click: this.didClick, focus: this.didFocus}} />
   }
 
   didClick (event) {
