@@ -87,7 +87,7 @@ describe('etch.initialize(component)', () => {
   it('allows for deep multi dimensional refs', async function () {
     let component = {
       render () {
-        return <div ref='divs[test[first]]'>hello</div>
+        return <div ref='divs[test][first]'>hello</div>
       },
 
       update () {}
