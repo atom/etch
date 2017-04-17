@@ -69,13 +69,12 @@ describe('etch.initialize(component)', () => {
   it('allows for multi dimensional refs', async function () {
     let component = {
       render () {
-        return <div ref='divs[first]'><div ref='divs[second]'>second</div></div>
+        return <div ref={['divs', 'first']}><div ref={['divs', 'second']}>second</div></div>
       },
 
       update () {}
     }
 
-    component.flatRefs = false
     etch.initialize(component)
 
     expect('divs[first]' in component.refs).to.be.false
@@ -84,32 +83,15 @@ describe('etch.initialize(component)', () => {
     expect(component.refs.divs.second.textContent).to.equal('second')
   })
 
-  it('should only use multi dimensional refs if flatRefs is false', async function () {
-    let component = {
-      render () {
-        return <div ref='divs[first]'><div ref='divs[second]'>second</div></div>
-      },
-
-      update () {}
-    }
-
-    component.flatRefs = true
-    etch.initialize(component)
-
-    expect('divs[first]' in component.refs).to.be.true
-    expect('divs' in component.refs).to.be.false
-  })
-
   it('allows for deep multi dimensional refs', async function () {
     let component = {
       render () {
-        return <div ref='divs[test][first]'>hello</div>
+        return <div ref={['divs', 'test', 'first']}>hello</div>
       },
 
       update () {}
     }
 
-    component.flatRefs = false
     etch.initialize(component)
 
     expect(component.refs.divs.test.first.textContent).to.equal('hello')
@@ -120,7 +102,7 @@ describe('etch.initialize(component)', () => {
     let component = {
       render () {
         return (<div>
-          <div ref={'tests[num_' + testNumber + ']'}>Testing</div>
+          <div ref={['tests', 'num_' + testNumber]}>Testing</div>
         </div>)
       },
 
@@ -129,7 +111,6 @@ describe('etch.initialize(component)', () => {
 
     let testNumber = 0
 
-    component.flatRefs = false
     etch.initialize(component)
 
     expect(component.refs.tests.num_0.textContent).to.equal('Testing')
