@@ -66,6 +66,28 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert(!newNode.className)
     })
 
+    it('correctly updates the `input.value` property', function () {
+      const virtualNode1 = <input type='text' value='pig' />
+      const element = render(virtualNode1)
+
+      // Assume the user changed the value to `ping` by
+      // moving the cursor after the `i` and adding `n`.
+      // The new value is now `ping` and the cursor
+      // position is after the `n` on index 3
+      element.value = 'ping'
+      element.selectionStart = 3
+      element.selectionEnd = 3
+
+      // Assume that the input is a "controlled" input so
+      // it updates the virtual node with the same value
+      const virtualNode2 = <input type='text' value='ping' />
+      patch(virtualNode1, virtualNode2)
+
+      // the selection should have stayed in the same position
+      assert.equal(element.selectionStart, 3)
+      assert.equal(element.selectionEnd, 3)
+    })
+
     it('allows attributes to be updated via the special `attributes` property', () => {
       const virtualNode1 = <div attributes={{a: 1, b: 2}} />
       const element = render(virtualNode1)
