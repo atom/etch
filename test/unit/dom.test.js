@@ -438,4 +438,25 @@ describe('etch.dom', () => {
       })
     })
   })
+
+  describe('object styles', () => {
+    it('should still accept strings', () => {
+      let element = etch.dom.div({style: 'color: #fff;'})
+
+      expect(element.props.style).to.equal('color: #fff;')
+    })
+
+    it('should turn an object into a string', () => {
+      let element = etch.dom.div({
+        style: {
+          color: '#fff',
+          fontSize: 10,
+          padding: '10px',
+          zIndex: 1
+        }
+      })
+
+      expect(element.props.style).to.equal('color: #fff; font-size: 10px; padding: 10px; z-index: 1;')
+    })
+  })
 })
