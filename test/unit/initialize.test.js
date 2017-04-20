@@ -77,7 +77,6 @@ describe('etch.initialize(component)', () => {
 
     etch.initialize(component)
 
-    expect('divs[first]' in component.refs).to.be.false
     expect('divs' in component.refs).to.be.true
     expect(component.refs.divs).to.have.all.keys(['first', 'second'])
     expect(component.refs.divs.second.textContent).to.equal('second')
@@ -95,7 +94,6 @@ describe('etch.initialize(component)', () => {
     etch.initialize(component)
 
     expect(component.refs.divs.test.first.textContent).to.equal('hello')
-    expect('divs[test][first]' in component.refs).to.be.false
   })
 
   it('allows updating multi dimensional refs', async function () {
@@ -120,5 +118,56 @@ describe('etch.initialize(component)', () => {
     await etch.update(component)
 
     expect(component.refs.tests.num_1.textContent).to.equal('Testing')
+  })
+
+  it('should remove refs in a logical manner', async function () {
+    let component = {
+      render () {
+        return (<div>
+          <div ref={['tests', testNumber, 'div']}>Testing</div>
+          <span ref={['tests', testNumber, 'span']}>Testing</span>
+          <p ref={['tests', 0, 'p']}>Testing</p>
+        </div>)
+      },
+
+      update () {}
+    }
+
+    process.throwThis = true
+
+    let testNumber = 0
+
+    etch.initialize(component)
+
+    expect(component.refs.tests[0].div.textContent).to.equal('Testing')
+    expect(component.refs.tests[0].span.textContent).to.equal('Testing')
+    expect(component.refs.tests[0].p.textContent).to.equal('Testing')
+
+    expect(Object.keys(component.refs).length).to.equal(1)
+    expect(Object.keys(component.refs.tests).length).to.equal(1)
+
+    testNumber = 1
+
+    await etch.update(component)
+
+    expect(component.refs.tests[1].div.textContent).to.equal('Testing')
+    expect(component.refs.tests[1].span.textContent).to.equal('Testing')
+    expect(component.refs.tests[0].p.textContent).to.equal('Testing')
+
+    expect(Object.keys(component.refs).length).to.equal(1)
+    expect(Object.keys(component.refs.tests).length).to.equal(2)
+
+    testNumber = 2
+
+    await etch.update(component)
+
+    expect(component.refs.tests[2].div.textContent).to.equal('Testing')
+    expect(component.refs.tests[2].span.textContent).to.equal('Testing')
+    expect(component.refs.tests[0].p.textContent).to.equal('Testing')
+
+    expect(Object.keys(component.refs).length).to.equal(1)
+    expect(Object.keys(component.refs.tests).length).to.equal(2)
+
+    process.throwThis = false
   })
 })
