@@ -1,6 +1,6 @@
 {
   "name": "etch",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Perform virtual DOM updates based on changes to a data model.",
   "main": "lib/index.js",
   "scripts": {
