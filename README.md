@@ -63,7 +63,7 @@ await component.update({bar: 2})
 await component.destroy()
 ```
 
-Note that using an Etch component does not require a reference to the Etch library. Etch is an implementation detail, and from the outside the component is just an ordinary object with a simple interface and an `.element` property. You can also take a more declarative approach by embeddding Etch components directly within other Etch components, which we'll cover later in this document.
+Note that using an Etch component does not require a reference to the Etch library. Etch is an implementation detail, and from the outside the component is just an ordinary object with a simple interface and an `.element` property. You can also take a more declarative approach by embedding Etch components directly within other Etch components, which we'll cover later in this document.
 
 ### Etch Lifecycle Functions
 
