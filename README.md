@@ -291,6 +291,29 @@ component.refs.childComponent // This is a ChildComponent instance
 ```
 Note that `ref` properties on normal HTML elements create references to raw DOM nodes, while `ref` properties on child components create references to the constructed component object, which makes its DOM node available via its `element` property.
 
+`ref` can also be set to an array to create a sub key of the `refs` object.
+
+```js
+class ParentComponent {
+  constructor () {
+    etch.initialize(this)
+  }
+
+  render () {
+    <div>
+      <span ref={['greeting', 'span']}>Hello</span>
+      <ChildComponent ref={['greeting', 'child']} />
+    </div>
+  }
+}
+
+let component = new ParentComponent()
+component.refs.greeting.span // This is a span DOM node
+component.refs.greeting.child // This is a ChildComponent instance
+```
+
+Arrays can be used to set any depth on `refs`.
+
 ### Handling Events
 
 Etch supports listening to arbitrary events on DOM nodes via the special `on` property, which can be used to assign a hash of `eventName: listenerFunction` pairs:
