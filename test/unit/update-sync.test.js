@@ -222,6 +222,38 @@ describe('etch.updateSync(component)', () => {
     }).to.throw(/invalid falsy value.*in MyComponent/)
   })
 
+  it('throws a class-specific exception if the component instance does not have a valid virtualNode property', () => {
+    class MyComponent {
+      render () {
+        return <div />
+      }
+      update () {}
+    }
+
+    const component = new MyComponent()
+
+    expect(function () {
+      etch.updateSync(component)
+    }).to.throw(/MyComponent instance is not associated with a valid virtualNode/)
+  })
+
+  it('throws a class-specific exception if the component instance does not have an element property', () => {
+    class MyComponent {
+      render () {
+        return <div />
+      }
+      update () {}
+    }
+
+    const component = new MyComponent()
+    etch.initialize(component)
+    component.element = null
+
+    expect(function () {
+      etch.updateSync(component)
+    }).to.throw(/MyComponent instance is not associated with a DOM element/)
+  })
+
   it('calls destroy on a replaced component', () => {
     let updated = false
     let destroyed = false
