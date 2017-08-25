@@ -403,6 +403,12 @@ etch.setScheduler(atom.views)
 
 Read comments in the [scheduler assignment][scheduler-assignment] and [default scheduler][default-scheduler] source code for more information on implementing your own scheduler.
 
+### Performance
+
+The [github.com/krausest/js-framework-benchmark](https://github.com/krausest/js-framework-benchmark) runs various benchmarks using different frameworks. It should give you an idea how etch performs compared to other frameworks.
+
+Checkout the benchmarks [here](https://rawgit.com/krausest/js-framework-benchmark/master/webdriver-ts-results/table.html).
+
 ### Feature Requests
 
 Etch aims to stay small and focused. If you have a feature idea, consider implementing it as a library that either wraps Etch or, even better, that can be used in concert with it. If it's impossible to implement your feature outside of Etch, we can discuss adding a hook that makes your feature possible.
