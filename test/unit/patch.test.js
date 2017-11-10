@@ -477,6 +477,16 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert.equal(listenerCalls[0].event.type, 'b')
     })
 
+    it('allows event listeners to be nulled', function () {
+      const virtualNode1 = <div onClick={() => {}} />
+      const virtualNode2 = <div onClick={null} />
+      const element = render(virtualNode1)
+      assert.doesNotThrow(
+        () => { patch(virtualNode1, virtualNode2 ,{listenerContext: {}}) },
+        "Cannot read property 'bind' of null"
+      )
+    })
+
     it('allows standard event listeners to be specified as props like onClick or onMouseDown', function () {
       let listenerCalls = []
       function recordEvent (event) {
