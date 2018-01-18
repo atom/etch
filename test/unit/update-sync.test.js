@@ -284,7 +284,11 @@ describe('etch.updateSync(component)', () => {
 
     let component = {
       render () {
-        if (updated) { return <ComponentB /> } else { return <ComponentA /> }
+        if (updated) {
+          return <div><ComponentB /></div>
+        } else {
+          return <div><ComponentA /></div>
+        }
       },
 
       update () {}
