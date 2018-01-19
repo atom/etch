@@ -37,13 +37,13 @@ describe('function refs', () => {
     etch.initialize(component)
 
     expect(saved_nodes[0].textContent).to.equal('Testing')
-    expect(saved_nodes[1]).not.to.exist
+    expect(saved_nodes[1]).to.be.undefined
 
     testNumber = 1
 
     await etch.update(component)
 
-    expect(saved_nodes[0]).not.to.exist
+    expect(saved_nodes[0]).to.be.null
     expect(saved_nodes[1].textContent).to.equal('Testing')
   })
 
@@ -68,21 +68,21 @@ describe('function refs', () => {
     etch.initialize(component)
 
     expect(component.refs.savedNode.textContent).to.equal('Testing')
-    expect(saved_node).not.to.exist
+    expect(saved_node).to.be.undefined
 
     testNumber = 1
 
     await etch.update(component)
 
     expect(saved_node.textContent).to.equal('Testing')
-    expect(component.refs.savedNode).not.to.exist
+    expect(component.refs.savedNode).to.be.undefined
 
     testNumber = 0
 
     await etch.update(component)
 
     expect(component.refs.savedNode.textContent).to.equal('Testing')
-    expect(saved_node).not.to.exist
+    expect(saved_node).to.be.null
   })
 
   it('are removed correctly', async function () {
@@ -116,23 +116,23 @@ describe('function refs', () => {
 
     expect(saved_nodes.div.textContent).to.equal('Testing 1')
     expect(saved_nodes.span.textContent).to.equal('Testing 1')
-    expect(saved_nodes.p).not.to.exist
+    expect(saved_nodes.p).to.be.null
 
     testNumber = 2
 
     await etch.update(component)
 
     expect(saved_nodes.div.textContent).to.equal('Testing 2')
-    expect(saved_nodes.span).not.to.exist
-    expect(saved_nodes.p).not.to.exist
+    expect(saved_nodes.span).to.be.null
+    expect(saved_nodes.p).to.be.null
 
     testNumber = 3
 
     await etch.update(component)
 
-    expect(saved_nodes.div).not.to.exist
-    expect(saved_nodes.span).not.to.exist
-    expect(saved_nodes.p).not.to.exist
+    expect(saved_nodes.div).to.be.null
+    expect(saved_nodes.span).to.be.null
+    expect(saved_nodes.p).to.be.null
 
     process.throwThis = false
   })
@@ -190,13 +190,13 @@ describe('function refs', () => {
       etch.initialize(component)
 
       expect(saved_nodes[0].element.textContent).to.equal('Testing')
-      expect(saved_nodes[1]).not.to.exist
+      expect(saved_nodes[1]).to.be.undefined
 
       testNumber = 1
 
       await etch.update(component)
 
-      expect(saved_nodes[0]).not.to.exist
+      expect(saved_nodes[0]).to.be.null
       expect(saved_nodes[1].element.textContent).to.equal('Testing')
     })
 
@@ -221,21 +221,21 @@ describe('function refs', () => {
       etch.initialize(component)
 
       expect(component.refs.savedNode.element.textContent).to.equal('Testing')
-      expect(saved_node).not.to.exist
+      expect(saved_node).to.be.undefined
 
       testNumber = 1
 
       await etch.update(component)
 
       expect(saved_node.element.textContent).to.equal('Testing')
-      expect(component.refs.savedNode).not.to.exist
+      expect(component.refs.savedNode).to.be.undefined
 
       testNumber = 0
 
       await etch.update(component)
 
       expect(component.refs.savedNode.element.textContent).to.equal('Testing')
-      expect(saved_node).not.to.exist
+      expect(saved_node).to.be.null
     })
 
     it('are removed correctly', async function () {
@@ -269,23 +269,23 @@ describe('function refs', () => {
 
       expect(saved_nodes.Component.element.textContent).to.equal('Testing 1')
       expect(saved_nodes.span.textContent).to.equal('Testing 1')
-      expect(saved_nodes.p).not.to.exist
+      expect(saved_nodes.p).to.be.null
 
       testNumber = 2
 
       await etch.update(component)
 
       expect(saved_nodes.Component.element.textContent).to.equal('Testing 2')
-      expect(saved_nodes.span).not.to.exist
-      expect(saved_nodes.p).not.to.exist
+      expect(saved_nodes.span).to.be.null
+      expect(saved_nodes.p).to.be.null
 
       testNumber = 3
 
       await etch.update(component)
 
-      expect(saved_nodes.Component).not.to.exist
-      expect(saved_nodes.span).not.to.exist
-      expect(saved_nodes.p).not.to.exist
+      expect(saved_nodes.Component).to.be.null
+      expect(saved_nodes.span).to.be.null
+      expect(saved_nodes.p).to.be.null
 
       process.throwThis = false
     })
