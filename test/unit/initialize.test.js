@@ -54,6 +54,45 @@ describe('etch.initialize(component)', () => {
     expect(component.refs.selected.textContent).to.equal('one')
   })
 
+  it('nests references correctly', async () => {
+    class Component {
+      constructor(props, children) {
+        this.children = children
+        etch.initialize(this)
+      }
+
+      update() {}
+
+      render () {
+        return <div>{this.children}</div>
+      }
+    }
+
+    class TestHarness {
+      constructor() {
+        etch.initialize(this)
+      }
+
+      update() {}
+
+      render() {
+        return (
+          <Component ref="outer">
+            <Component ref="middle">
+              <div ref="inner" />
+            </Component>
+          </Component>
+        )
+      }
+    }
+
+    const harness = new TestHarness()
+    expect(harness.refs.outer).to.be.ok
+    expect(harness.refs.middle).to.be.ok
+    expect(harness.refs.inner).to.be.ok
+    expect(harness.refs.outer.refs.middle).to.be.undefined
+  })
+
   it('throws an exception if undefined is returned from render', () => {
     let component = {
       render () {},
