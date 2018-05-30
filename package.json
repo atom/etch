@@ -15,7 +15,14 @@
     "url": "https://github.com/atom/etch.git"
   },
   "keywords": [
-    "virtual-dom dom view element custom-elements dom-diff atom electron"
+    "virtual-dom",
+    "dom",
+    "view",
+    "element",
+    "custom-elements",
+    "dom-diff",
+    "atom",
+    "electron"
   ],
   "author": "Nathan Sobo <nathan@github.com>",
   "license": "MIT",
