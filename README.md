@@ -203,10 +203,12 @@ class ParentComponent {
   }
 
   render () {
-    <div>
-      <h1>I am a parent</div>
-      <ChildComponent />
-    </div>
+    return (
+      <div>
+        <h1>I am a parent</div>
+        <ChildComponent />
+      </div>
+    )
   }
 }
 ```
@@ -242,13 +244,15 @@ class ParentComponent {
   }
 
   render () {
-    <div>
-      <h1>I am a parent</div>
-      <ChildComponent adjective='good'>
-        <div>Grandchild 1</div>
-        <div>Grandchild 2</div>
-      <ChildComponent/>
-    </div>
+    return (
+      <div>
+        <h1>I am a parent</div>
+        <ChildComponent adjective='good'>
+          <div>Grandchild 1</div>
+          <div>Grandchild 2</div>
+        <ChildComponent/>
+      </div>
+    )
   }
 }
 ```
@@ -278,10 +282,12 @@ class ParentComponent {
   }
 
   render () {
-    <div>
-      <span ref='greetingSpan'>Hello</span>
-      <ChildComponent ref='childComponent' />
-    </div>
+    return (
+      <div>
+        <span ref='greetingSpan'>Hello</span>
+        <ChildComponent ref='childComponent' />
+      </div>
+    )
   }
 }
 
@@ -371,12 +377,14 @@ class StatefulComponent {
   }
 
   render () {
-    <div>
-      <span>{this.counter}</span>
-      <button onclick={() => this.incrementCounter()}>
-        Increment Counter
-      </button>
-    </div>
+    return (
+      <div>
+        <span>{this.counter}</span>
+        <button onclick={() => this.incrementCounter()}>
+          Increment Counter
+        </button>
+      </div>
+    )
   }
 
   incrementCounter () {
