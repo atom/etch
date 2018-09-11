@@ -250,7 +250,7 @@ class ParentComponent {
         <ChildComponent adjective='good'>
           <div>Grandchild 1</div>
           <div>Grandchild 2</div>
-        <ChildComponent/>
+        </ChildComponent>
       </div>
     )
   }
@@ -331,7 +331,7 @@ With the exception of SVG elements, Etch assigns *properties* on DOM nodes rathe
 
 ```js
 const a = <div className='foo' />
-const b = <div attributes={{class: 'foo'}}
+const b = <div attributes={{class: 'foo'}} />
 ```
 
 This can be useful for custom attributes that don't map to DOM node properties.
