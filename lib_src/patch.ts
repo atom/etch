@@ -1,8 +1,8 @@
-const render = require('./render')
-const updateProps = require('./update-props')
-const updateRef = require('./update-ref')
+import {render} from './render'
+import {updatePropsMain} from './update-props'
+import {updateRef}  from './update-ref'
 
-function patch (oldVirtualNode, newVirtualNode, options) {
+export function patch (oldVirtualNode, newVirtualNode, options) {
   const oldNode = oldVirtualNode.domNode
 
   if (newVirtualNode === oldVirtualNode) return oldNode
@@ -17,7 +17,7 @@ function patch (oldVirtualNode, newVirtualNode, options) {
         newNode = updateComponent(oldVirtualNode, newVirtualNode, options)
       } else {
         updateChildren(oldNode, oldVirtualNode.children, newVirtualNode.children, options)
-        updateProps(oldNode, oldVirtualNode, newVirtualNode, options)
+        updatePropsMain(oldNode, oldVirtualNode, newVirtualNode, options)
         newNode = oldNode
       }
     }
@@ -164,5 +164,3 @@ function mapOldKeysToIndices (oldIndicesByKey, children, startIndex, endIndex) {
   }
   return oldIndicesByKey
 }
-
-module.exports = patch

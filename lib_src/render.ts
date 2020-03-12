@@ -1,7 +1,7 @@
-const updateProps = require('./update-props')
-const SVG_TAGS = require('./svg-tags')
+import {updatePropsMain} from './update-props'
+import {SVG_TAGS} from './svg-tags'
 
-function render (virtualNode, options) {
+export function render (virtualNode, options) {
   let domNode
   if (virtualNode.text != null) {
     domNode = document.createTextNode(virtualNode.text)
@@ -29,11 +29,11 @@ function render (virtualNode, options) {
     } else if (SVG_TAGS.has(tag)) {
       domNode = document.createElementNS("http://www.w3.org/2000/svg", tag);
       if (children) addChildren(domNode, children, options)
-      if (props) updateProps(domNode, null, virtualNode, options)
+      if (props) updatePropsMain(domNode, null, virtualNode, options)
     } else {
       domNode = document.createElement(tag)
       if (children) addChildren(domNode, children, options)
-      if (props) updateProps(domNode, null, virtualNode, options)
+      if (props) updatePropsMain(domNode, null, virtualNode, options)
     }
   }
   virtualNode.domNode = domNode
@@ -45,5 +45,3 @@ function addChildren (parent, children, options) {
     parent.appendChild(render(children[i], options))
   }
 }
-
-module.exports = render
