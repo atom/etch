@@ -2,7 +2,14 @@
 // this class will be used to schedule updates to the document. The
 // `updateDocument` method accepts functions to be run at some point in the
 // future, then runs them on the next animation frame.
-module.exports = class DefaultScheduler {
+export class DefaultScheduler {
+  private updateRequests: any[]
+  private readRequests: any[]
+  private pendingAnimationFrame: number | null
+  private performingUpdates: boolean
+  private nextUpdatePromise: Promise<unknown> | null
+  private resolveNextUpdatePromise: ((resolve?: unknown) => void ) | null
+
   constructor () {
     this.updateRequests = []
     this.readRequests = []
