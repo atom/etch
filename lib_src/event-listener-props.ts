@@ -1,4 +1,4 @@
-module.exports = {
+export const EVENT_LISTENER_PROPS = {
   onCopy: 'copy',
   onCut: 'cut',
   onPaste: 'paste',

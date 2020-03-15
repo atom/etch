@@ -1,7 +1,7 @@
 const dom = require('./dom')
-const render = require('./render')
-const {initialize, update, updateSync, destroy, destroySync} = require('./component-helpers')
-const {setScheduler, getScheduler} = require('./scheduler-assignment')
+import {render} from "./render";
+import {initialize, update, updateSync, destroy, destroySync} from './component-helpers'
+import {setScheduler, getScheduler} from './scheduler-assignment'
 
 module.exports = {
   dom, render,

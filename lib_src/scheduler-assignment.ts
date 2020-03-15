@@ -22,15 +22,15 @@
 // associated functions repeatedly. Again, they should be scheduled in such a
 // way so as to avoid synchronous reflows.
 
-const DefaultScheduler = require('./default-scheduler')
+import {DefaultScheduler} from './default-scheduler'
 
-let scheduler = null
+let scheduler : DefaultScheduler | null =  null
 
-module.exports.setScheduler = function setScheduler (customScheduler) {
+export function setScheduler (customScheduler) {
   scheduler = customScheduler
 }
 
-module.exports.getScheduler = function getScheduler () {
+export function getScheduler () {
   if (!scheduler) {
     scheduler = new DefaultScheduler()
   }
