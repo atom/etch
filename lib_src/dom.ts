@@ -2,14 +2,20 @@ import {EVENT_LISTENER_PROPS} from './event-listener-props'
 import {SVG_TAGS} from './svg-tags'
 import {HTML_TAGS} from './html-tags'
 
+declare interface ChildObject {
+  text: string | number,
+  ambiguous?: Array<object>,
+  context?: any
+}
+
 export interface EtchElement<T extends string, P = any> {
   tag: T
   props: P
-  children: Array<string | number | object>
+  children: Array<string | number | ChildObject>
   ambiguous: Array<object>
 }
 
-export type EtchCreateElement<T extends string, P> = (props :P, ...children :Array<string | number | object>) => EtchElement<T, P>
+export type EtchCreateElement<T extends string, P> = (props :P, ...children :Array<string | number | ChildObject>) => EtchElement<T, P>
 
 declare global {
   export namespace JSX {
@@ -286,7 +292,7 @@ export interface EtchDOM {
 
 
 
-export function dom<T extends string, P>(tag :T, props :P, ...children :Array<string | number | object>) :EtchElement<T, P> {
+export function dom<T extends string, P>(tag :T, props :P, ...children :Array<string | number | ChildObject>) :EtchElement<T, P> {
 
   let ambiguous :Array<object> = []
 
@@ -340,13 +346,13 @@ export function dom<T extends string, P>(tag :T, props :P, ...children :Array<st
 export declare const dom :EtchDOM
 
 for (const tagName of HTML_TAGS) {
-  dom[tagName] = function <tagName extends string, P>(props :P, ...children :Array<string | number | object>) :EtchElement<tagName, P> {
+  dom[tagName] = function <tagName extends string, P>(props :P, ...children :Array<string | number | ChildObject>) :EtchElement<tagName, P> {
     return dom(tagName, props, ...children)
   }
 }
 
 for (const tagName of SVG_TAGS) {
-  dom[tagName] = function <tagName extends string, P>(props :P, ...children :Array<string | number | object>) :EtchElement<tagName, P> {
+  dom[tagName] = function <tagName extends string, P>(props :P, ...children :Array<string | number | ChildObject>) :EtchElement<tagName, P> {
     return dom(tagName, props, ...children)
   }
 }
