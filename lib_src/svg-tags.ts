@@ -1,5 +1,5 @@
 // taken from https://github.com/facebook/react/blob/67f8524e88abbf1ac0fd86d38a0477d11fbc7b3e/src/isomorphic/classic/element/ReactDOMFactories.js#L153
-export const SVG_TAGS = new Set([
+export const SVG_TAGS = [
     'circle',
     'clipPath',
     'defs',
@@ -18,7 +18,6 @@ export const SVG_TAGS = new Set([
     'stop',
     'svg',
     'text',
-    'tspan'
-  ])
+    'tspan']
 
 

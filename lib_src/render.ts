@@ -26,7 +26,7 @@ export function render (virtualNode, options) {
       } else if (options && options.refs && ref) {
         options.refs[ref] = component
       }
-    } else if (SVG_TAGS.has(tag)) {
+    } else if (SVG_TAGS.includes(tag)) {
       domNode = document.createElementNS("http://www.w3.org/2000/svg", tag);
       if (children) addChildren(domNode, children, options)
       if (props) updatePropsMain(domNode, null, virtualNode, options)
