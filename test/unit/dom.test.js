@@ -69,7 +69,7 @@ describe('etch.dom', () => {
 
     expect(() => etch.render(
       <div>{() => {}}</div>
-    )).to.throw(/Invalid child node: function/)
+    )).to.throw('Invalid child node: () => {}')
   })
 
   describe('when a component constructor is used as a tag name', () => {
