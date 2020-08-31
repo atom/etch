@@ -1,7 +1,9 @@
 language: node_js
 
 node_js:
-  - "node"
+  - 14
+  - 12
+  - 10
 
 notifications:
   email:
