@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run standard && npm run mocha",
-    "mocha": "electron-mocha --renderer --recursive ./test/helpers/register-babel test",
-    "tdd": "npm run standard && node_modules/.bin/electron-mocha --renderer --interactive --recursive ./test/helpers/register-babel  test",
+    "mocha": "electron-mocha test --renderer --recursive --require @babel/register",
+    "tdd": "npm run standard && electron-mocha test --renderer --recursive --interactive --require @babel/register",
     "prepublish": "npm run standard",
     "standard": "node_modules/.bin/standard --recursive lib test && echo Linting passed"
   },
