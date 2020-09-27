@@ -56,3 +56,6 @@ type SingleOrArray<T> = T | T[]
 /** type of etch elements' children */
 type ChildSpec = SingleOrArray<string | number | EtchJSXElement | null>
 
+
+type ElementClassConstructor<T extends JSX.ElementClass> = new (props: T["props"], children: EtchJSXElement[]) => T
+
