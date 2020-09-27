@@ -51,3 +51,8 @@ type EtchJSXElement =
   | EtchSVGElement<keyof SVGElementTagNameMap>
   | EtchElement<TagSpec>
   | {text: string | number}
+
+type SingleOrArray<T> = T | T[]
+/** type of etch elements' children */
+type ChildSpec = SingleOrArray<string | number | EtchJSXElement | null>
+
