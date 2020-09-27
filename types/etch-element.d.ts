@@ -37,3 +37,10 @@ export interface EtchSVGElement<Tag extends keyof SVGElementTagNameMap> {
 /** Etch element's tag */
 type TagSpec = string | ElementClassConstructor<JSX.ElementClass> | keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap
 
+/** General Etch element */
+export interface EtchElement<Tag extends TagSpec> {
+  tag: Tag
+  props: EtchExtraProps & Props
+  children?: ChildSpec
+  ambiguous: Array<object>
+}
