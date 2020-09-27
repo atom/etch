@@ -59,3 +59,16 @@ type ChildSpec = SingleOrArray<string | number | EtchJSXElement | null>
 
 type ElementClassConstructor<T extends JSX.ElementClass> = new (props: T["props"], children: EtchJSXElement[]) => T
 
+export declare namespace JSX {
+  type Element = EtchJSXElement
+  type IntrinsicElements = EtchJSXElement
+  class ElementClass {
+    public props: Props
+    constructor(props: Props, children?: EtchJSXElement[])
+    public render?(): EtchJSXElement
+    public update(props: Props, children?: EtchJSXElement[]): Promise<void>
+  }
+  interface ElementAttributesProperty {
+    props: Props // specify the property name to use
+  }
+}
