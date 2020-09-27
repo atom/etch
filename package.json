@@ -3,6 +3,7 @@
   "version": "0.14.1",
   "description": "Perform virtual DOM updates based on changes to a data model.",
   "main": "lib/index.js",
+  "types": "types/etch.d.ts",
   "scripts": {
     "test": "npm run standard && npm run mocha",
     "mocha": "electron-mocha test --renderer --recursive --require @babel/register",
