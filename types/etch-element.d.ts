@@ -16,3 +16,11 @@ interface EtchExtraProps {
   innerText?: string
   key?: any
 }
+
+/** Etch HTML element */
+export interface EtchHTMLElement<Tag extends keyof HTMLElementTagNameMap> {
+  tag: Tag
+  props: HTMLElementTagNameMap[Tag] & EtchExtraProps & Props
+  children: ChildSpec
+  ambiguous: Array<object>
+}
