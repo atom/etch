@@ -24,3 +24,12 @@ export interface EtchHTMLElement<Tag extends keyof HTMLElementTagNameMap> {
   children: ChildSpec
   ambiguous: Array<object>
 }
+
+/** Etch SVG element */
+export interface EtchSVGElement<Tag extends keyof SVGElementTagNameMap> {
+  tag: Tag
+  props: SVGElementTagNameMap[Tag] & EtchExtraProps & Props
+  children?: ChildSpec
+  ambiguous: Array<object>
+}
+
