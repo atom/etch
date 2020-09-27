@@ -44,3 +44,10 @@ export interface EtchElement<Tag extends TagSpec> {
   children?: ChildSpec
   ambiguous: Array<object>
 }
+
+/** Etch JSX Element */
+type EtchJSXElement =
+  | EtchHTMLElement<keyof HTMLElementTagNameMap>
+  | EtchSVGElement<keyof SVGElementTagNameMap>
+  | EtchElement<TagSpec>
+  | {text: string | number}
