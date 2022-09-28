@@ -1,4 +1,5 @@
-# ![Logo](https://cloud.githubusercontent.com/assets/378023/18806594/927cb104-826c-11e6-8e4b-7b54be52108e.png)
+##### Atom and all repositories under Atom will be archived on December 15, 2022. Learn more in our [official announcement](https://github.blog/2022-06-08-sunsetting-atom/)
+ # ![Logo](https://cloud.githubusercontent.com/assets/378023/18806594/927cb104-826c-11e6-8e4b-7b54be52108e.png)
 
 [![CI](https://github.com/atom/etch/actions/workflows/ci.yml/badge.svg)](https://github.com/atom/etch/actions/workflows/ci.yml)
 
