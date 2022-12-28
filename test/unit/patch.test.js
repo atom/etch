@@ -66,26 +66,72 @@ describe('patch (oldVirtualNode, newVirtualNode)', () => {
       assert(!newNode.className)
     })
 
-    it('correctly updates the `input.value` property', function () {
+    describe('`input.value` property', function () {
+      it('conserves the selection when possible', function () {
+        const virtualNode1 = <input type='text' value='pig' />
+        const element = render(virtualNode1)
+
+        // Assume the user changed the value to `ping` by
+        // moving the cursor after the `i` and adding `n`.
+        // The new value is now `ping` and the cursor
+        // position is after the `n` on index 3
+        element.value = 'ping'
+        element.selectionStart = 3
+        element.selectionEnd = 3
+
+        // Assume that the input is a "controlled" input so
+        // it updates the virtual node with the same value
+        const virtualNode2 = <input type='text' value='ping' />
+        patch(virtualNode1, virtualNode2)
+
+        // the selection should have stayed in the same position
+        assert.equal(element.selectionStart, 3)
+        assert.equal(element.selectionEnd, 3)
+      })
+
+      it('correctly updates the `select.value` property', function () {
+        const virtualNode1 = (
+          <select value='a'>
+            <option value='a' />
+            <option value='b' />
+          </select>
+        )
+        const element = render(virtualNode1)
+
+        // Assume the user changed the value to `b`.
+        element.value = 'b'
+
+        // Assume that the select is a "controlled" select and
+        // the changes have been rejected, so the virtual node
+        // remains the same
+        const virtualNode2 = (
+          <select value='a'>
+            <option value='a' />
+            <option value='b' />
+          </select>
+        )
+        patch(virtualNode1, virtualNode2)
+
+        // the value should have been reverted
+        assert.equal(element.value, 'a')
+      })
+    })
+
+    it('reverts when change is rejected', function () {
       const virtualNode1 = <input type='text' value='pig' />
       const element = render(virtualNode1)
 
-      // Assume the user changed the value to `ping` by
-      // moving the cursor after the `i` and adding `n`.
-      // The new value is now `ping` and the cursor
-      // position is after the `n` on index 3
+      // Assume the user changed the value to `ping`.
       element.value = 'ping'
-      element.selectionStart = 3
-      element.selectionEnd = 3
 
-      // Assume that the input is a "controlled" input so
-      // it updates the virtual node with the same value
-      const virtualNode2 = <input type='text' value='ping' />
+      // Assume that the input is a "controlled" input and
+      // the changes have been rejected, so the virtual node
+      // remains the same
+      const virtualNode2 = <input type='text' value='pig' />
       patch(virtualNode1, virtualNode2)
 
-      // the selection should have stayed in the same position
-      assert.equal(element.selectionStart, 3)
-      assert.equal(element.selectionEnd, 3)
+      // the value should have been reverted
+      assert.equal(element.value, 'pig')
     })
 
     it('allows attributes to be updated via the special `attributes` property', () => {
