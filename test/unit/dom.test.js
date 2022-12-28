@@ -52,16 +52,12 @@ describe('etch.dom', () => {
     expect(component.element.outerHTML).to.equal('<svg><circle></circle></svg>')
   })
 
-  it('ignores nulls passed in the place of children, but throws an error if other invalid values are passed', () => {
+  it('ignores nulls and false passed in the place of children, but throws an error if other invalid values are passed', () => {
     const element = etch.render(
-      <div><span/>{null}<p/></div>
+      <div><span/>{null}{false}<p/></div>
     );
 
     expect(Array.from(element.children).map(c => c.tagName)).to.eql(['SPAN', 'P'])
-
-    expect(() => etch.render(
-      <div>{false}</div>
-    )).to.throw('Invalid child node: false')
 
     expect(() => etch.render(
       <div>{undefined}</div>
